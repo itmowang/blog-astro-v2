@@ -1,54 +1,52 @@
-# Astro Starter Kit: Basics
+## 介绍
 
-```sh
-npm create astro@latest -- --template basics
+基于 Astro 的静态博客，主题使用沉冰浮水的 [wdssmq/blog-astro](https://github.com/wdssmq/blog-astro "wdssmq/blog-astro: 一个基于 Astro 的静态博客；")
+
+## 升级日志
+
+    2024.05.06 更新astro版本 预计下一步更新图片灯箱
+
+## 使用
+
+1、使用上面的仓库作为模板，创建一个新的仓库；
+
+2、克隆到本地；
+
+3、安装依赖及运行，推荐使用 pnpm；
+
+```bash
+pnpm install
+# 调试开发
+pnpm dev
+# 构建
+pnpm build
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+4、各种说明：
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+1. 这东西虽然可以当博客，但并没有一般博客意义上的「主题」规范，姑且仍然尝试将文件放到了 `src/theme-simple` 目录下，`src/pages` 则因为 Astro 的限制，只能放外边；
+2. `src/theme-simple/config.ts`用于主题的配置选项；「是不是也放外边或者直接用 `consts.ts` 比较好」
+3. `package.json` 内的 `name` 字段也可自行修改，虽然并没有什么用；
+4. 文章内容路径为 `src/content`，可以符号链接或快捷方式到其他地方方便管理；
+5. 内置了一个「关于」页面，路径 `src/content/pages/about.md`，**应该是不能删除，其他文件名也并不会被解析为新页面**；
+6. 「文章」存放于`src/content/blog`路径内，可自行清空后新建；
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+## 文档
 
-## 🚀 Project Structure
+入门指南 🚀 Astro 文档：
 
-Inside of your Astro project, you'll see the following folders and files:
+[https://docs.astro.build/zh-cn/getting-started/](https://docs.astro.build/zh-cn/getting-started/ "入门指南 🚀 Astro 文档")
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+astro/examples/blog at latest · withastro/astro · GitHub：
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+[https://github.com/withastro/astro/tree/latest/examples/blog?on=github#astro-starter-kit-blog](https://github.com/withastro/astro/tree/latest/examples/blog?on=github#astro-starter-kit-blog "astro/examples/blog at latest · withastro/astro · GitHub")
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-Any static assets, like images, can be placed in the `public/` directory.
+### 主题预览
+![切图0](http://img.blog.loli.wang/2023-9-01-AsTro/01.png)
 
-## 🧞 Commands
+![切图1](http://img.blog.loli.wang/2023-9-01-AsTro/02.png)
 
-All commands are run from the root of the project, from a terminal:
+![切图2](http://img.blog.loli.wang/2023-9-01-AsTro/03.png)
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+![切图3](http://img.blog.loli.wang/2023-9-01-AsTro/04.png)
