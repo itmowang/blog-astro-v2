@@ -1,0 +1,46 @@
+---
+import { config_global,config_author,config_menu } from "../theme-simple/config";
+
+const {url,title,description,copy} = config_global;
+const {name,bio,avatar} = config_author;
+const  menus  = config_menu;
+
+---
+<div class="sidebar"> 
+    <div class="top-container" data-aos="fade-right">
+        <div class="top-header-container">
+            <a href={url} title={`${name} - ${bio}`} class="site-title-container"
+                ><img src={avatar} alt={name} class="site-logo" />
+                <h1 class="site-title">{title}</h1></a
+            >
+            <div class="menu-btn">
+                <div class="line"></div>
+            </div>
+        </div>
+        <div>
+            {
+                menus.map((item) => (
+                    <a href={item.path} title={item.name} class="site-nav">
+                        {item.name}
+                    </a>
+                ))
+            }
+        </div>
+    </div>
+    <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+        <div class="social-container"></div>
+        <div class="site-description">{description}</div>
+        <div class="site-footer">
+            {copy} | <a href={`${url}rss.xml`} title="RSS" target="_blank" class="rss">RSS</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const $menuBtn = document.querySelector('.menu-btn');
+    const $sidebar = document.querySelector('.sidebar');
+    // 点击菜单按钮
+    $menuBtn?.addEventListener('click', () => {
+        $sidebar?.classList.toggle('full-height');
+    });
+</script>

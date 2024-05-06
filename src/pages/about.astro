@@ -1,0 +1,13 @@
+---
+import BlogContext from "@/components/BlogContext.astro";
+import BlogSingle from "@/components/BlogSingle.astro";
+import { getEntryBySlug } from "astro:content";
+const about = await getEntryBySlug("pages", "about");
+const { Content } = await about.render();
+---
+
+<BlogContext>
+    <BlogSingle {...about.data}>
+        <Content />
+    </BlogSingle>
+</BlogContext>

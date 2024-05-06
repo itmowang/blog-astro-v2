@@ -1,0 +1,27 @@
+---
+import BlogContext from "@/components/BlogContext.astro";
+import {config_link,config_global}from '@/theme-simple/config'
+const {linkInfo } = config_global;
+---
+
+<BlogContext>
+    <h2 class="archives-title">{linkInfo.title}</h2>
+          <div class="archives-container">
+            {
+              config_link.map((item) => {
+                return (
+                  <div class="archives-item">
+                    <a href={item.href}>
+                      <div class="archives-item-img">
+                        <img src={item.icon} />
+                      </div>
+                      <div class="archives-item-info">
+                        <label>{item.name}</label>
+                      </div>
+                    </a>
+                  </div>
+                );
+              })
+            }
+          </div>
+</BlogContext>

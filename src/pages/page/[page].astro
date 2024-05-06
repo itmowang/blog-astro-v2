@@ -1,0 +1,57 @@
+---
+import BlogContext from "@/components/BlogContext.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import GetAbstract from "@/components/GetAbstract.astro";
+import PageBar from "@/components/PageBar.astro";
+
+import { config_authorsPages, config_fun } from "@/theme-simple/config";
+import { getCollection } from "astro:content";
+
+const { getPagination } = config_fun;
+export async function getStaticPaths({ paginate }: any) {
+  const { pageSize } = config_authorsPages;
+  const { sortPosts } = config_fun;
+  const allPost = (await getCollection("blog")).sort(sortPosts)
+  return paginate(allPost, { pageSize });
+}
+const { page } = Astro.props as any;
+
+const pagination = getPagination(page.total, page.size, page.currentPage);
+
+---
+
+<BlogContext>
+  <ul>
+    {
+      page.data.map((post: any) => (
+        <article class="post-item">
+          <div class="left">
+            <a href={`/blog/${post.slug}/`} title={post.data.title}>
+              <h2 class="post-title">{post.data.title}</h2>
+            </a>
+            <div class="post-date">
+              <FormattedDate date={post.data.pubDate} />
+            </div>
+            <div class="post-abstract">
+              <GetAbstract content={post.body} />
+            </div>
+          </div>
+          {post.data.heroImage && (
+            <a
+              class="right"
+              href={`/blog/${post.slug}/`}
+              title={post.data.title}
+            >
+              <div
+                class="feature-container"
+                style={`background-image: url('${post.data.heroImage}');`}
+              />
+            </a>
+          )}
+        </article>
+      ))
+    }
+    
+  </ul>
+  {page.size < page.total && <PageBar {...pagination} isBar={true} />}
+</BlogContext>

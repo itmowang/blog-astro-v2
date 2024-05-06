@@ -1,0 +1,32 @@
+---
+import BlogContext from "@/components/BlogContext.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import {config_global}from '@/theme-simple/config'
+const {archive} = config_global
+ 
+import { getCollection } from "astro:content";
+
+const allPost = await getCollection("blog");
+
+
+---
+
+<BlogContext>
+    <h2 class="archives-title">{archive.title}</h2>
+    <div class="archives-container">
+        {
+            allPost.map((post) => (
+                <article class="post">
+                    <a
+                        href={`/blog/${post.slug}/index.html`}
+                        title={post.data.title}
+                    >
+                        <h2 class="post-title">
+                            [<FormattedDate date={post.data.pubDate} />] {post.data.title}
+                        </h2>
+                    </a>
+                </article>
+            ))
+        }
+    </div>
+</BlogContext>

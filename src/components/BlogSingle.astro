@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from "astro:content";
+type Props = CollectionEntry<"blog">["data"];
+
+const { title, pubDate, heroImage, tags } = Astro.props;
+
+
+import FormattedDate from "./FormattedDate.astro";
+import PostShare from "./PostShare.astro";
+
+---
+
+<div class="post-detail">
+    <h2 class="post-title">{title}</h2>
+    <div class="post-date">
+        <FormattedDate date={pubDate} />
+    </div>
+    <div class="post-share">
+        <PostShare title={title} heroImage={heroImage} />
+    </div>
+    {
+        heroImage && (
+            <div
+                class="feature-container"
+                style={`background-image: url('${heroImage}');`}
+            ></div>
+        )
+    }
+    <div class="post-content">
+        <slot />
+    </div>
+    <div class="tag-container">
+        {
+            tags?.map((tag:string) => (
+                <a href={`/tags/${tag}`} class="tag" title={tag}>{tag}</a>
+            ))
+        }
+    </div>
+</div>

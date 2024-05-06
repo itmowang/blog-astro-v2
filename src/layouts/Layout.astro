@@ -1,0 +1,51 @@
+---
+import { config_global } from "../theme-simple/config";
+import "@/assets/styles/main.less";
+import "@/assets/styles/iconfont/iconfont.css"
+interface Props {
+  subTitle?: string;
+}
+const { subTitle } = Astro.props;
+
+const { title, description, favicon, image } = config_global;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const Title = subTitle? `${subTitle} - ${title}` : title;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href={favicon} />
+    <meta name="generator" content={Astro.generator} />
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalURL} />
+
+    <title>{Title}</title>
+    <meta name="title" content={Title} />
+    <meta name="description" content={description} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url} />
+    <meta property="og:title" content={Title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.url)} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={Astro.url} />
+    <meta property="twitter:title" content={Title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, Astro.url)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global></style>

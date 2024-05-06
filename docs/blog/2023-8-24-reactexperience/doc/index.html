@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width"><link rel="icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- Canonical URL --><link rel="canonical" href="https://loli.wang/blog/2023-8-24-reactexperience/doc/"><title>魔王の博客</title><meta name="title" content="魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://loli.wang/blog/2023-8-24-reactexperience/doc/"><meta property="og:title" content="魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://loli.wang/blog/2023-8-24-reactexperience/doc/"><meta property="twitter:title" content="魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.BGNrxykZ.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2024 YOUR NAME HERE. | <a href="https://loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail"> <h2 class="post-title">React之路 - 第一篇</h2> <div class="post-date"> <time datetime="2023-07-01T16:00:00.000Z">2023-07-02 00:00</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://loli.wang/blog/2023-8-24-reactexperience/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2023-8-24-ReactExperience/01.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://loli.wang/blog/2023-8-24-reactexperience/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2023-8-24-ReactExperience/01.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2023-8-24-ReactExperience/01.png');"></div> <div class="post-content">  <h3 id="常用的-react-库">常用的 React 库</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span>- react   // 不必多说</span></span>
+<span class="line"><span>- react-dom  // React的官方渲染库，用于将React组件渲染到浏览器中</span></span>
+<span class="line"><span>- react-router-dom // React 官方路由库</span></span>
+<span class="line"><span>- react-redux // React 官方状态管理库</span></span>
+<span class="line"><span>- react-query // 用于管理和处理数据的React库</span></span>
+<span class="line"><span>- @tanstack/react-query 是 react-query 的一个扩展库，由 TanStack 维护 有一些react-query 没有的功能</span></span>
+<span class="line"><span>- redux-persist 用于持久化存储Redux状态的库，会将Redux的状态缓存到loaclStorage sessionStorage中 能够使页面刷新保留状态</span></span>
+<span class="line"><span></span></span></code></pre>
+<h3 id="函数式组件写法">函数式组件写法</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">//</span><span style="color:#9ECBFF"> 参数1父组件传递进来的参数接收</span></span>
+<span class="line"><span style="color:#B392F0">//</span><span style="color:#9ECBFF"> 参数2用于访问组件实例的方法和属性，或者直接操作</span><span style="color:#9ECBFF"> DOM</span><span style="color:#9ECBFF"> 元素</span><span style="color:#9ECBFF"> React.forwardRef</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">MyComponent</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#9ECBFF"> 组件名</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">props,ref</span><span style="color:#E1E4E8">)</span><span style="color:#9ECBFF">{</span></span>
+<span class="line"><span style="color:#B392F0">    const</span><span style="color:#9ECBFF"> {name}</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> props</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#F97583"> &#x3C;</span><span style="color:#9ECBFF">di</span><span style="color:#E1E4E8">v</span><span style="color:#F97583">></span><span style="color:#9ECBFF"> {name}</span><span style="color:#F97583"> &#x3C;</span><span style="color:#9ECBFF">/di</span><span style="color:#E1E4E8">v</span><span style="color:#F97583">></span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#E1E4E8"> default 组件名</span></span>
+<span class="line"></span></code></pre>
+<h3 id="类组件写法">类组件写法</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">import</span><span style="color:#9ECBFF"> React</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> 'react'</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">class</span><span style="color:#9ECBFF"> 组件名</span><span style="color:#9ECBFF"> extends</span><span style="color:#9ECBFF"> React.Component{</span></span>
+<span class="line"><span style="color:#B392F0">    constructor(props</span><span style="color:#E1E4E8">){</span></span>
+<span class="line"><span style="color:#B392F0">        super(props</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#B392F0">        this.state</span><span style="color:#9ECBFF">={</span></span>
+<span class="line"><span style="color:#B392F0">            count:</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#B392F0">    //</span><span style="color:#9ECBFF"> 组件生命周期方法</span></span>
+<span class="line"><span style="color:#B392F0">    componentDidMount</span><span style="color:#E1E4E8">() {</span></span>
+<span class="line"><span style="color:#B392F0">        //</span><span style="color:#9ECBFF"> 组件挂载后执行的操作</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">    render</span><span style="color:#E1E4E8">(){</span></span>
+<span class="line"><span style="color:#F97583">        return</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#F97583">            &#x3C;</span><span style="color:#B392F0">div</span><span style="color:#E1E4E8">> </span><span style="color:#9ECBFF">{this.state.count}</span><span style="color:#F97583"> &#x3C;</span><span style="color:#9ECBFF">/di</span><span style="color:#E1E4E8">v</span><span style="color:#F97583">></span></span>
+<span class="line"><span style="color:#E1E4E8">        )</span></span>
+<span class="line"><span style="color:#E1E4E8">    }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<h3 id="常用的hook">常用的Hook</h3>
+<h5 id="1-usestate">1. useState</h5>
+<p>用来存储状态变量变量 [something, setSomething] 用解构方式取值
+something 为状态变量，setSomething 为改变状态变量的方法</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 示例</span></span>
+<span class="line"><span style="color:#B392F0">import</span><span style="color:#9ECBFF"> React,</span><span style="color:#9ECBFF"> {</span><span style="color:#9ECBFF"> useState</span><span style="color:#9ECBFF"> }</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> "react"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#E1E4E8"> [something, </span><span style="color:#9ECBFF">setSomething]</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useState</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">0</span><span style="color:#E1E4E8">); </span></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#E1E4E8"> [something1, </span><span style="color:#9ECBFF">setSomething1]</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useState</span><span style="color:#E1E4E8">({</span></span>
+<span class="line"><span style="color:#79B8FF">    test</span><span style="color:#9ECBFF">:222</span></span>
+<span class="line"><span style="color:#E1E4E8">});</span></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#E1E4E8"> [something2, </span><span style="color:#9ECBFF">setSomething2]</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useState</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">"222"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 修改状态变量something的方法</span></span>
+<span class="line"><span style="color:#B392F0">setSomething(1</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 修改状态变量something1的方法</span></span>
+<span class="line"><span style="color:#B392F0">setSomething1(</span><span style="color:#9ECBFF">{</span></span>
+<span class="line"><span style="color:#B392F0">    something1，</span><span style="color:#9ECBFF"> //</span><span style="color:#9ECBFF"> 这里的something1</span><span style="color:#9ECBFF"> 为上面的状态变量</span><span style="color:#E1E4E8">   </span></span>
+<span class="line"><span style="color:#79B8FF">    test</span><span style="color:#9ECBFF">:333</span></span>
+<span class="line"><span style="color:#E1E4E8">});</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 修改状态变量something2的方法</span></span>
+<span class="line"><span style="color:#B392F0">setSomething2(</span><span style="color:#B392F0">"333"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<h5 id="2-useeffect">2. useEffect</h5>
+<p>用来处理副作用，比如异步请求，定时器等</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 示例</span></span>
+<span class="line"><span style="color:#B392F0">import</span><span style="color:#9ECBFF"> React,</span><span style="color:#9ECBFF"> {</span><span style="color:#9ECBFF"> useState,</span><span style="color:#9ECBFF"> useEffect</span><span style="color:#9ECBFF"> }</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> "react"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#E1E4E8"> [something, </span><span style="color:#9ECBFF">setSomething]</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useState</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">useEffect((</span><span style="color:#E1E4E8">) => {</span></span>
+<span class="line"><span style="color:#B392F0">    //</span><span style="color:#9ECBFF"> ....用来处理需要的副作用的处理</span></span>
+<span class="line"><span style="color:#E1E4E8">}, [something]); // something 为依赖项，当something发生变化时，useEffect会重新执行</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">#如果依赖项为空数组，他只会执行一次，相当于componentDidMount</span></span>
+<span class="line"><span style="color:#B392F0">useEffect((</span><span style="color:#E1E4E8">) => {</span></span>
+<span class="line"><span style="color:#B392F0">    //</span><span style="color:#9ECBFF"> ....用来处理需要的副作用的处理</span></span>
+<span class="line"><span style="color:#E1E4E8">}, []);</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<h5 id="3-usecontext">3. useContext</h5>
+<p>用来处理跨组件传值，类似于vue中的provide/inject ,方便数据各种组件之间的传递，也可以叫做上下文传递</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 示例</span></span>
+<span class="line"><span style="color:#B392F0">import</span><span style="color:#9ECBFF"> React,</span><span style="color:#9ECBFF"> {</span><span style="color:#9ECBFF"> useState,</span><span style="color:#9ECBFF"> useContext</span><span style="color:#9ECBFF"> }</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> "react"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#E1E4E8"> [something, </span><span style="color:#9ECBFF">setSomething]</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useState</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#9ECBFF"> Context</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> React.createContext</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">null</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 组件声明</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8">Context.Provider value</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{</span><span style="color:#B392F0">context}</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#F97583">    &#x3C;</span><span style="color:#B392F0">组件名</span><span style="color:#E1E4E8"> /</span><span style="color:#F97583">></span></span>
+<span class="line"><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8">/Context.Provider</span><span style="color:#F97583">></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 组件接收</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#9ECBFF"> context</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useContext</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">Context</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<h5 id="4-useref">4. useRef</h5>
+<p>用来获取DOM元素或者保存变量</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 示例</span></span>
+<span class="line"><span style="color:#B392F0">import</span><span style="color:#9ECBFF"> React,</span><span style="color:#9ECBFF"> {</span><span style="color:#9ECBFF"> useState,</span><span style="color:#9ECBFF"> useRef</span><span style="color:#9ECBFF"> }</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> "react"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#E1E4E8"> [something, </span><span style="color:#9ECBFF">setSomething]</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useState</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">0</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#9ECBFF"> ref</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useRef</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">null</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 获取DOM元素</span></span>
+<span class="line"><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8">div ref</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{</span><span style="color:#B392F0">ref}</span><span style="color:#E1E4E8">>&#x3C;/div></span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 获取变量</span></span>
+<span class="line"><span style="color:#B392F0">ref.current</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<h5 id="5-usereducer">5. useReducer</h5>
+<p>useReducer 是 useState 的替代方案,用来进行性能优化，用于处理复杂的状态逻辑,他不会改变原有的状态，而是返回一个新的状态。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 示例</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">import</span><span style="color:#9ECBFF"> React,</span><span style="color:#9ECBFF"> {</span><span style="color:#9ECBFF"> useReducer</span><span style="color:#9ECBFF"> }</span><span style="color:#9ECBFF"> from</span><span style="color:#9ECBFF"> "react"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">//</span><span style="color:#9ECBFF"> 初始化状态</span></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#9ECBFF"> initState</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> {</span><span style="color:#9ECBFF"> name:</span><span style="color:#9ECBFF"> '123'</span><span style="color:#9ECBFF"> }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">//</span><span style="color:#9ECBFF"> reducer</span><span style="color:#9ECBFF"> 函数</span></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#9ECBFF"> reducer</span><span style="color:#9ECBFF"> =</span><span style="color:#E1E4E8"> (state: </span><span style="color:#9ECBFF">any,</span><span style="color:#9ECBFF"> action:</span><span style="color:#9ECBFF"> any</span><span style="color:#E1E4E8">) =</span><span style="color:#F97583">></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#9ECBFF"> action.type</span><span style="color:#9ECBFF"> ===</span><span style="color:#9ECBFF"> 'add'</span><span style="color:#9ECBFF"> ?</span><span style="color:#9ECBFF"> {</span><span style="color:#9ECBFF"> name:</span><span style="color:#9ECBFF"> '456'</span><span style="color:#9ECBFF"> }</span><span style="color:#9ECBFF"> :</span><span style="color:#9ECBFF"> {</span><span style="color:#9ECBFF"> name:</span><span style="color:#9ECBFF"> '789'</span><span style="color:#9ECBFF"> }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">//</span><span style="color:#9ECBFF"> useReducer</span><span style="color:#9ECBFF"> 接收两个参数，第一个参数为reducer函数，第二个参数为初始化状态</span></span>
+<span class="line"><span style="color:#B392F0">const</span><span style="color:#E1E4E8"> [state, </span><span style="color:#9ECBFF">dispatch]</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> useReducer</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">reducer,</span><span style="color:#9ECBFF"> initState</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 修改状态</span></span>
+<span class="line"><span style="color:#B392F0">dispatch(</span><span style="color:#9ECBFF">{</span><span style="color:#9ECBFF"> type:</span><span style="color:#9ECBFF"> 'add'</span><span style="color:#9ECBFF"> }</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2023-8-24-ReactExperience/02.png" alt="切图2"></p>
+<p>下一次写脚手架的时候再去填充。。。。</p>
+<p>参考文档 <a href="https://www.ruanyifeng.com/blog/2019/09/react-hooks.html">阮一峰博客</a></p>  </div> <div class="tag-container"> <a href="/tags/React" class="tag" title="React">React</a><a href="/tags/学习折腾" class="tag" title="学习折腾">学习折腾</a><a href="/tags/React之路 - 第一篇" class="tag" title="React之路 - 第一篇">React之路 - 第一篇</a> </div> </div>  </div> </div> </div>  </body></html> 

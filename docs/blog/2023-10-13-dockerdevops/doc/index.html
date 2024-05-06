@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width"><link rel="icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- Canonical URL --><link rel="canonical" href="https://loli.wang/blog/2023-10-13-dockerdevops/doc/"><title>魔王の博客</title><meta name="title" content="魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://loli.wang/blog/2023-10-13-dockerdevops/doc/"><meta property="og:title" content="魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://loli.wang/blog/2023-10-13-dockerdevops/doc/"><meta property="twitter:title" content="魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.BGNrxykZ.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2024 YOUR NAME HERE. | <a href="https://loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail"> <h2 class="post-title">docker 配置 nginx 环境</h2> <div class="post-date"> <time datetime="2023-10-13T15:27:24.000Z">2023-10-13 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://loli.wang/blog/2023-10-13-dockerdevops/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2023-10-13-dockerDevops/01.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://loli.wang/blog/2023-10-13-dockerdevops/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2023-10-13-dockerDevops/01.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2023-10-13-dockerDevops/01.png');"></div> <div class="post-content">  <p>如果是windows环境下，记得安装上 ubuntu ，然后安装好docker Desktop</p>
+<p><img src="http://img.blog.loli.wang/2023-10-13-dockerDevops/01.png" alt="切图1"></p>
+<h2 id="搜索nginx镜像">搜索nginx镜像</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"></span>
+<span class="line"><span style="color:#B392F0">打开ubuntu的命令行。</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0"> docker</span><span style="color:#9ECBFF"> search</span><span style="color:#9ECBFF"> nginx</span><span style="color:#6A737D"> # 搜索nginx镜像</span></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#B392F0"> NAME:</span><span style="color:#9ECBFF"> 镜像仓库源的名称</span></span>
+<span class="line"><span style="color:#B392F0"> DESCRIPTION:</span><span style="color:#9ECBFF"> 镜像的描述</span></span>
+<span class="line"><span style="color:#B392F0"> OFFICIAL:</span><span style="color:#9ECBFF"> 是否为</span><span style="color:#9ECBFF"> docker</span><span style="color:#9ECBFF"> 官方发布</span></span>
+<span class="line"><span style="color:#B392F0"> stars:</span><span style="color:#9ECBFF"> 类似</span><span style="color:#9ECBFF"> Github</span><span style="color:#9ECBFF"> 里面的</span><span style="color:#9ECBFF"> star</span></span>
+<span class="line"><span style="color:#B392F0"> AUTOMATED:</span><span style="color:#9ECBFF"> 自动构建。</span></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2023-10-13-dockerDevops/02.png" alt="切图2"></p>
+<h2 id="拉取最新nginx-docker镜像">拉取最新NGINX Docker镜像</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> pull</span><span style="color:#9ECBFF"> nginx:latest</span><span style="color:#6A737D"> # latest 代表最新版本的意思 同样也可以在这里制定版本</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2023-10-13-dockerDevops/03.png" alt="切图3"></p>
+<h2 id="查看镜像">查看镜像</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0"> docker</span><span style="color:#9ECBFF"> images</span><span style="color:#6A737D"> # 查看所有已经拉取和自己的镜像</span></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2023-10-13-dockerDevops/04.png" alt="切图4"></p>
+<h2 id="使用执行镜像创建一个新的容器">使用执行镜像创建一个新的容器</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> run</span><span style="color:#79B8FF"> -it</span><span style="color:#9ECBFF"> nginx</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">语法：docker</span><span style="color:#9ECBFF"> run</span><span style="color:#E1E4E8"> [OPTIONS] IMAGE [COMMAND] [ARG…]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">OPTIONS说明：</span></span>
+<span class="line"><span style="color:#B392F0">-a</span><span style="color:#9ECBFF"> stdin:</span><span style="color:#9ECBFF"> 指定标准输入输出内容类型，可选</span><span style="color:#9ECBFF"> STDIN/STDOUT/STDERR</span><span style="color:#9ECBFF"> 三项；</span></span>
+<span class="line"><span style="color:#B392F0">-d:</span><span style="color:#9ECBFF"> 后台运行容器，并返回容器ID；</span></span>
+<span class="line"><span style="color:#B392F0">-i:</span><span style="color:#9ECBFF"> 以交互模式运行容器，通常与</span><span style="color:#79B8FF"> -t</span><span style="color:#9ECBFF"> 同时使用；</span></span>
+<span class="line"><span style="color:#B392F0">-P:</span><span style="color:#9ECBFF"> 随机端口映射，容器内部端口随机映射到主机的端口</span></span>
+<span class="line"><span style="color:#B392F0">-p:</span><span style="color:#9ECBFF"> 指定端口映射，格式为：主机</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">宿主</span><span style="color:#E1E4E8">)</span><span style="color:#9ECBFF">端口:容器端口</span></span>
+<span class="line"><span style="color:#B392F0">-t:</span><span style="color:#9ECBFF"> 为容器重新分配一个伪输入终端，通常与</span><span style="color:#79B8FF"> -i</span><span style="color:#9ECBFF"> 同时使用；</span></span>
+<span class="line"><span style="color:#B392F0">–name</span><span style="color:#9ECBFF">=</span><span style="color:#B392F0">"nginx-lb"</span><span style="color:#79B8FF">:</span><span style="color:#9ECBFF"> 为容器指定一个名称；</span></span>
+<span class="line"><span style="color:#B392F0">–dns</span><span style="color:#9ECBFF"> 8.8.8.8:</span><span style="color:#9ECBFF"> 指定容器使用的DNS服务器，默认和宿主一致；</span></span>
+<span class="line"><span style="color:#B392F0">–dns-search</span><span style="color:#9ECBFF"> example.com:</span><span style="color:#9ECBFF"> 指定容器DNS搜索域名，默认和宿主一致；</span></span>
+<span class="line"><span style="color:#B392F0">-h</span><span style="color:#9ECBFF"> “mars”:</span><span style="color:#9ECBFF"> 指定容器的hostname；</span></span>
+<span class="line"><span style="color:#B392F0">-e</span><span style="color:#9ECBFF"> username=“ritchie”:</span><span style="color:#9ECBFF"> 设置环境变量；</span></span>
+<span class="line"><span style="color:#B392F0">–env-file</span><span style="color:#9ECBFF">=[]</span><span style="color:#79B8FF">:</span><span style="color:#9ECBFF"> 从指定文件读入环境变量；</span></span>
+<span class="line"><span style="color:#B392F0">–cpuset</span><span style="color:#9ECBFF">=</span><span style="color:#B392F0">"0-2”"</span><span style="color:#9ECBFF"> or</span><span style="color:#79B8FF"> --cpuset=</span><span style="color:#9ECBFF">"0,1,2"</span><span style="color:#79B8FF">:</span><span style="color:#9ECBFF"> 绑定容器到指定CPU运行；</span></span>
+<span class="line"><span style="color:#B392F0">-m</span><span style="color:#9ECBFF"> :设置容器使用内存最大值；</span></span>
+<span class="line"><span style="color:#B392F0">–net</span><span style="color:#9ECBFF">=</span><span style="color:#B392F0">"bridge"</span><span style="color:#79B8FF">:</span><span style="color:#9ECBFF"> 指定容器的网络连接类型，支持</span><span style="color:#9ECBFF"> bridge/host/none/container:</span><span style="color:#9ECBFF"> 四种类型；</span></span>
+<span class="line"><span style="color:#B392F0">–link</span><span style="color:#9ECBFF">=[]</span><span style="color:#79B8FF">:</span><span style="color:#9ECBFF"> 添加链接到另一个容器；</span></span>
+<span class="line"><span style="color:#B392F0">–expose</span><span style="color:#9ECBFF">=[]</span><span style="color:#79B8FF">:</span><span style="color:#9ECBFF"> 开放一个端口或一组端口；</span></span>
+<span class="line"><span style="color:#B392F0">–volume</span><span style="color:#9ECBFF"> ,</span><span style="color:#79B8FF"> -v:</span><span style="color:#9ECBFF"> 绑定一个卷</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 使用指令</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> run</span><span style="color:#79B8FF"> -it</span><span style="color:#79B8FF"> --name=</span><span style="color:#9ECBFF">"testNgx"</span><span style="color:#9ECBFF"> nginx</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2023-10-13-dockerDevops/05.png" alt="切图5"></p>
+<p>可以看到我们这里有了新的我们创建的容器。可以对容器启动关闭销毁等快捷的操作。</p>
+<p>当然 我们是nginx 要配置个ip和端口，方便本地测试</p>
+<h2 id="实践测试">实践测试</h2>
+<p>写上第二个测试 ，可以看到我们正常创建了个新的容器，并8080端口映射了80端口</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 指令</span></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> run</span><span style="color:#79B8FF"> --name</span><span style="color:#9ECBFF"> nginx-test</span><span style="color:#79B8FF"> -p</span><span style="color:#9ECBFF"> 8080:80</span><span style="color:#79B8FF"> -d</span><span style="color:#9ECBFF"> nginx</span></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2023-10-13-dockerDevops/06.png" alt="切图6"></p>
+<p><img src="http://img.blog.loli.wang/2023-10-13-dockerDevops/07.png" alt="切图7"></p>
+<p><img src="http://img.blog.loli.wang/2023-10-13-dockerDevops/08.png" alt="切图8"></p>
+<p>改变docker nginx的conf配置改为自己的配置就可以啦</p>  </div> <div class="tag-container"> <a href="/tags/docker" class="tag" title="docker">docker</a><a href="/tags/学习折腾" class="tag" title="学习折腾">学习折腾</a><a href="/tags/docker 容器" class="tag" title="docker 容器">docker 容器</a> </div> </div>  </div> </div> </div>  </body></html> 

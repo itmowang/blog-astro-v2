@@ -1,0 +1,18 @@
+---
+import SideBar from "@/components/SideBar.astro";
+import Layout from "@/layouts/Layout.astro";
+---
+
+<Layout>
+  <div id="app" class="main">
+    <SideBar />
+    <div class="main-container">
+      <div class="content-container" data-aos="fade-up">
+        <slot />
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style></style>
+
