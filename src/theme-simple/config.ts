@@ -5,7 +5,7 @@ const copy = `© ${today.getFullYear()} YOUR NAME HERE.`;
 export const config_global: Record<string, any> = {
     title: '魔王の博客',
     description: '高兴的使用astro构建',
-    url: 'https://loli.wang/',
+    url: 'https://blog.loli.wang/',
     favicon: "/favicon.ico",
     locales: "zh-CN", // 'en-us'
     image: "/placeholder-social.jpg",
