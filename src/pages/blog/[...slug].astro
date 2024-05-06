@@ -14,10 +14,12 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 
 const { Content } = await entry.render();
-
 ---
-  <BlogContext>
-    <BlogSingle {...entry.data}>
-      <Content />
-    </BlogSingle>
-  </BlogContext> 
+
+<BlogContext>
+  <BlogSingle {...entry.data}>
+    <Content />
+  </BlogSingle>
+</BlogContext>
+
+<script></script>
