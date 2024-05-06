@@ -1,0 +1,59 @@
+---
+import BlogContext from "@/components/BlogContext.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import GetAbstract from "@/components/GetAbstract.astro";
+// import PageBar from "@/components/PageBar.astro";
+
+import { config_fun } from "@/theme-simple/config";
+import { getCollection } from "astro:content";
+
+export async function getStaticPaths() {
+  const { sortPosts } = config_fun;
+  const allPost = (await getCollection("blog")).sort(sortPosts);
+  const tags = [...new Set(allPost.map((post) => post.data.tags).flat())];
+  return tags.map((tag) => {
+    return {
+      params: { tag },
+      props: {
+        posts: allPost.filter((post) => post.data.tags.includes(tag)),
+      },
+    };
+  });
+}
+
+const { posts } = Astro.props;
+---
+
+<BlogContext>
+  <ul>
+    {
+      posts.map((post: any) => (
+        <article class="post-item">
+          <div class="left">
+            <a href={`/blog/${post.slug}/`} title={post.data.title}>
+              <h2 class="post-title">{post.data.title}</h2>
+            </a>
+            <div class="post-date">
+              <FormattedDate date={post.data.pubDate} />
+            </div>
+            <div class="post-abstract">
+              <GetAbstract content={post.body} />
+            </div>
+          </div>
+          {post.data.heroImage && (
+            <a
+              class="right"
+              href={`/blog/${post.slug}/`}
+              title={post.data.title}
+            >
+              <div
+                class="feature-container"
+                style={`background-image: url('${post.data.heroImage}');`}
+              />
+            </a>
+          )}
+        </article>
+      ))
+    }
+  </ul>
+</BlogContext>
