@@ -12,6 +12,24 @@ const { title, description, favicon, image } = config_global;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const Title = subTitle? `${subTitle} - ${title}` : title;
+
+const favInfo = {
+    ext: favicon.split(".").pop(),
+    url: favicon,
+    type: "image/x-icon",
+};
+switch (favInfo.ext) {
+    case "svg":
+        favInfo.type = "image/svg+xml";
+        break;
+    case "png":
+        favInfo.type = "image/png";
+        break;
+    default:
+    case "ico":
+        favInfo.type = "image/x-icon";
+        break;
+}
 ---
 
 <!doctype html>
@@ -19,13 +37,18 @@ const Title = subTitle? `${subTitle} - ${title}` : title;
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="Astro description" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type={favInfo.type} href={favInfo.url} />
     <link rel="icon" href={favicon} />
     <meta name="generator" content={Astro.generator} />
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+
     <!-- Canonical URL -->
     <link rel="canonical" href={canonicalURL} />
-
+    
+    <!-- Primary Meta Tags -->
     <title>{Title}</title>
+
     <meta name="title" content={Title} />
     <meta name="description" content={description} />
 
