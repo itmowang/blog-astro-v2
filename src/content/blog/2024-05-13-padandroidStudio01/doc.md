@@ -1,5 +1,5 @@
 ---
-title: "UNIAPP 离线打包 plus.runtime.install 无法吊起安装问题的解决方法"
+title: "UNIAPP 离线打包 plus.runtime.install 无法调起安装问题的解决方法"
 description: "记录一次UniAPP项目离线打包后项目无法调起安装包的问题"
 pubDate: "2024-05-13  23:27:24"
 heroImage: "http://img.blog.loli.wang/2024-05-13-padandroidStudio01/02.png"
