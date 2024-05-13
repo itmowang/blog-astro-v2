@@ -13,13 +13,11 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
-console.log(entry);
-
 
 const { Content } = await entry.render();
 
 ---
-  <BlogContext>
+  <BlogContext subTitle={entry.data.title}>
     <BlogSingle {...entry.data}>
       <Content />
     </BlogSingle>
