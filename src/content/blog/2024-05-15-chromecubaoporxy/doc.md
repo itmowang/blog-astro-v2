@@ -2,7 +2,7 @@
 title: "chrome浏览器暴力解决跨域的方案"
 description: "chrome浏览器暴力解决跨域的方案"
 pubDate: "2024-05-15 23:27:24"
-heroImage: "http://img.blog.loli.wang/2024-05-13-padandroidStudio01/02.png"
+heroImage: "http://img.blog.loli.wang/2024-05-15-chromecubaoporxy/02.png"
 tags:
     - chrome
     - 跨域解决
