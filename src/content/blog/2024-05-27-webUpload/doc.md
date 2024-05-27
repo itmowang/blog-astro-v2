@@ -1,7 +1,7 @@
 ---
 title: "前端大文件切片上传以及使用webWorker"
 description: "前端大文件切片上传以及使用webWorke"
-pubDate: "2024-05-15 23:27:24"
+pubDate: "2024-05-28 23:27:24"
 heroImage: "http://img.blog.loli.wang/2024-05-27-webUpload/01.png"
 tags:
     - 前端大文件上传
