@@ -85,4 +85,91 @@
 <p>效果如下
 <img src="http://img.blog.loli.wang/2024-05-27-webUpload/01.png" alt="1">
 <img src="http://img.blog.loli.wang/2024-05-27-webUpload/02.png" alt="2"></p>
-<p>成功切片上传 但是会影响到页面卡顿 使用webworker</p>  </div> <div class="tag-container"> <a href="/tags/前端大文件上传" class="tag" title="前端大文件上传"> 前端大文件上传 </a><a href="/tags/跨域解决" class="tag" title="跨域解决"> 跨域解决 </a><a href="/tags/前端进阶" class="tag" title="前端进阶"> 前端进阶 </a> </div> </div>   </div> </div> </div>  </body></html> 
+<p>成功切片上传 但是会影响到页面卡顿 使用webworker</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="jsx"><code><span class="line"><span style="color:#6A737D">//worker.ts</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 上传的切片</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#B392F0"> uploadChunks</span><span style="color:#F97583"> =</span><span style="color:#F97583"> async</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">chunks</span><span style="color:#F97583">:</span><span style="color:#79B8FF"> any</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  for</span><span style="color:#E1E4E8"> (</span><span style="color:#F97583">let</span><span style="color:#E1E4E8"> i </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">; i </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> chunks.</span><span style="color:#79B8FF">length</span><span style="color:#E1E4E8">; i</span><span style="color:#F97583">++</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#F97583">    const</span><span style="color:#79B8FF"> formData</span><span style="color:#F97583"> =</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> FormData</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">    formData.</span><span style="color:#B392F0">append</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"fileChunk"</span><span style="color:#E1E4E8">, chunks[i]);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">    // 发送切片上传请求</span></span>
+<span class="line"><span style="color:#F97583">    await</span><span style="color:#B392F0"> fetch</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"/update"</span><span style="color:#E1E4E8">, {</span></span>
+<span class="line"><span style="color:#E1E4E8">      method: </span><span style="color:#9ECBFF">"POST"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">      body: formData,</span></span>
+<span class="line"><span style="color:#E1E4E8">    });</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 创建接收消息通知</span></span>
+<span class="line"><span style="color:#79B8FF">this</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">addEventListener</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"message"</span><span style="color:#E1E4E8">, </span><span style="color:#F97583">async</span><span style="color:#E1E4E8"> (</span><span style="color:#FFAB70">event</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> chunkSize</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> 1</span><span style="color:#F97583"> *</span><span style="color:#79B8FF"> 1024</span><span style="color:#F97583"> *</span><span style="color:#79B8FF"> 1024</span><span style="color:#E1E4E8">; </span><span style="color:#6A737D">// 1M</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> file</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> event.data.payload.file;</span></span>
+<span class="line"><span style="color:#6A737D">  // 切片的内容存放</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#79B8FF"> chunks</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> [];</span></span>
+<span class="line"><span style="color:#6A737D">  // 切片的位置</span></span>
+<span class="line"><span style="color:#F97583">  let</span><span style="color:#E1E4E8"> offset </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  while</span><span style="color:#E1E4E8"> (offset </span><span style="color:#F97583">&#x3C;</span><span style="color:#E1E4E8"> file.size) {</span></span>
+<span class="line"><span style="color:#6A737D">    // 分割切片位置以及每次切片的大小</span></span>
+<span class="line"><span style="color:#F97583">    const</span><span style="color:#79B8FF"> chunk</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> file.</span><span style="color:#B392F0">slice</span><span style="color:#E1E4E8">(offset, offset </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> chunkSize);</span></span>
+<span class="line"><span style="color:#E1E4E8">    chunks.</span><span style="color:#B392F0">push</span><span style="color:#E1E4E8">(chunk);</span></span>
+<span class="line"><span style="color:#6A737D">    // 切片的位置计算</span></span>
+<span class="line"><span style="color:#E1E4E8">    offset </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> offset </span><span style="color:#F97583">+</span><span style="color:#E1E4E8"> chunkSize;</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  //   上传切片</span></span>
+<span class="line"><span style="color:#F97583">  await</span><span style="color:#B392F0"> uploadChunks</span><span style="color:#E1E4E8">(chunks);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">  // 通知完成</span></span>
+<span class="line"><span style="color:#B392F0">  postMessage</span><span style="color:#E1E4E8">({ type: </span><span style="color:#9ECBFF">"uploadComplete"</span><span style="color:#E1E4E8"> });</span></span>
+<span class="line"><span style="color:#E1E4E8">});</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p>主页面</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="jsx"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> React, { useEffect } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "react"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#B392F0"> Login</span><span style="color:#F97583">:</span><span style="color:#B392F0"> React</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">FC</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  const</span><span style="color:#B392F0"> click</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">    document.</span><span style="color:#B392F0">getElementById</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"upload"</span><span style="color:#E1E4E8">)?.</span><span style="color:#B392F0">click</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"><span style="color:#E1E4E8">  };</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">  useEffect</span><span style="color:#E1E4E8">(() </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">    // 创建Worker的实例，并启动实例</span></span>
+<span class="line"><span style="color:#F97583">    const</span><span style="color:#79B8FF"> worker</span><span style="color:#F97583"> =</span><span style="color:#F97583"> new</span><span style="color:#B392F0"> Worker</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"src/pages/login/worker.ts"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    document.</span><span style="color:#B392F0">getElementById</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"upload"</span><span style="color:#E1E4E8">)?.</span><span style="color:#B392F0">addEventListener</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"change"</span><span style="color:#E1E4E8">, (</span><span style="color:#FFAB70">e</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">      // 获得当前上传的文件</span></span>
+<span class="line"><span style="color:#F97583">      const</span><span style="color:#79B8FF"> files</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> (e.target </span><span style="color:#F97583">as</span><span style="color:#B392F0"> HTMLInputElement</span><span style="color:#E1E4E8">).files?.[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">      // 接收消息</span></span>
+<span class="line"><span style="color:#E1E4E8">      worker.</span><span style="color:#B392F0">addEventListener</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"message"</span><span style="color:#E1E4E8">, (</span><span style="color:#FFAB70">event</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">        const</span><span style="color:#E1E4E8"> { </span><span style="color:#79B8FF">type</span><span style="color:#E1E4E8"> } </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> event.data;</span></span>
+<span class="line"><span style="color:#F97583">        if</span><span style="color:#E1E4E8"> (type </span><span style="color:#F97583">===</span><span style="color:#9ECBFF"> "uploadComplete"</span><span style="color:#E1E4E8">) {</span></span>
+<span class="line"><span style="color:#E1E4E8">          console.</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"文件上传完成！"</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"><span style="color:#E1E4E8">        }</span></span>
+<span class="line"><span style="color:#E1E4E8">      });</span></span>
+<span class="line"><span style="color:#F97583">      if</span><span style="color:#E1E4E8"> (files) {</span></span>
+<span class="line"><span style="color:#6A737D">        // 向worker发送消息</span></span>
+<span class="line"><span style="color:#E1E4E8">        worker.</span><span style="color:#B392F0">postMessage</span><span style="color:#E1E4E8">({ type: </span><span style="color:#9ECBFF">"upload"</span><span style="color:#E1E4E8">, payload: { file: files } });</span></span>
+<span class="line"><span style="color:#E1E4E8">      }</span></span>
+<span class="line"><span style="color:#E1E4E8">    });</span></span>
+<span class="line"><span style="color:#E1E4E8">  }, []);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">  return</span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">    &#x3C;</span><span style="color:#85E89D">div</span><span style="color:#B392F0"> className</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"login"</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">      &#x3C;</span><span style="color:#85E89D">h1</span><span style="color:#E1E4E8">>大文件上传&#x3C;/</span><span style="color:#85E89D">h1</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">      &#x3C;</span><span style="color:#85E89D">button</span><span style="color:#B392F0"> onClick</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{click}> 选择上传文件&#x3C;/</span><span style="color:#85E89D">button</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">      &#x3C;</span><span style="color:#85E89D">input</span><span style="color:#B392F0"> type</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"file"</span><span style="color:#B392F0"> id</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"upload"</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{{ display: </span><span style="color:#9ECBFF">"none"</span><span style="color:#E1E4E8"> }} /></span></span>
+<span class="line"><span style="color:#E1E4E8">    &#x3C;/</span><span style="color:#85E89D">div</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">  );</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> default</span><span style="color:#E1E4E8"> Login;</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p>完成配合使用webWorker</p>
+<p><img src="http://img.blog.loli.wang/2024-05-27-webUpload/03.png" alt="1">
+<img src="http://img.blog.loli.wang/2024-05-27-webUpload/04.png" alt="2"></p>
+<h1 id="最近状态不好看上去不能写的太细节当作demo预览吧">最近状态不好。。。看上去不能写的太细节，当作demo预览吧</h1>  </div> <div class="tag-container"> <a href="/tags/前端大文件上传" class="tag" title="前端大文件上传"> 前端大文件上传 </a><a href="/tags/跨域解决" class="tag" title="跨域解决"> 跨域解决 </a><a href="/tags/前端进阶" class="tag" title="前端进阶"> 前端进阶 </a> </div> </div>   </div> </div> </div>  </body></html> 
