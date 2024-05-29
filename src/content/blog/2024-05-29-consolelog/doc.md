@@ -2,7 +2,7 @@
 title: "好玩的console - 水一篇"
 description: "奇妙的console - 水一篇"
 pubDate: "2024-05-29 23:27:24"
-heroImage: "http://img.blog.loli.wang/2024-05-27-webUpload/01.png"
+heroImage: "http://img.blog.loli.wang/2024-05-29-consolelog/06.png"
 tags:
     - 好玩的console
     - 跨域解决
