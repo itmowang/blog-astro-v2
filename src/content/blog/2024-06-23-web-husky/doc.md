@@ -71,6 +71,11 @@ echo "npm test" > .husky/pre-commit
 
 可以看到.husky 文件夹中增加了一个 pre-commit的文件
 
-![2](http://img.blog.loli.wang/2024-06-23-web-husky/03.png)
+![3](http://img.blog.loli.wang/2024-06-23-web-husky/03.png)
+
+里面会有一个 npm test 的指令代表 你每次执行 git commit 的时候就会先执行 npm test 指令，然后再走正常的git commit
+
+![4](http://img.blog.loli.wang/2024-06-23-web-husky/4.png)
+
 
 -------- 剩下的交给下个文章再写 《使用husky提交代码时使用eslint检测代码》
