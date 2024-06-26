@@ -1,7 +1,7 @@
 ---
 title: "husky + eslint + lint-staged 进行代码规范检测并修复代码"
 description: "husky + eslint + lint-staged 进行代码规范检测并修复代码"
-pubDate: "2024-06-24 23:27:24"
+pubDate: "2024-06-26 23:27:24"
 heroImage: "http://img.blog.loli.wang/2024-06-26-lintstaged/01.png"
 tags:
     - Husky配合ESLint
