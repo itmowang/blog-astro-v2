@@ -11,6 +11,8 @@ const { pageSize } = config_authorsPages;
 const { sortPosts, getPagination } = config_fun;
 
 const allPost = await getCollection("blog");
+
+
 const postLength = allPost.length;
 const homePostAlll = allPost.sort(sortPosts).splice(0, pageSize);
 const pagination = getPagination(postLength, pageSize);
