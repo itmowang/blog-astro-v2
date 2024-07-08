@@ -84,7 +84,8 @@ export async function GET(context: { site: any; }) {
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/05.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
 &lt;h2&gt;使用RSS Feeder 订阅成功&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/06.png&quot; alt=&quot;5&quot; /&gt;
-&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/07.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/07.png&quot; alt=&quot;5&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/08.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
 </content:encoded></item><item><title>使用 Prisma 配合 Cloudflare D1 构建应用</title><link>https://blog.loli.wang/blog/2024-07-06-cfd1prisma/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-06-cfd1prisma/doc/</guid><description>使用 Prisma 配合 Cloudflare D1 构建应用</description><pubDate>Sat, 06 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;介绍&lt;/h2&gt;
 &lt;p&gt;Cloudflare Workers 是一种分布在全球范围内的轻量级无服务器计算形式。它们允许您尽可能靠近最终用户部署和运行应用程序 ,&lt;/p&gt;
 &lt;p&gt;D1 是 Cloudflare 的原生无服务器数据库。基于 SQLite，可在通过 Cloudflare 部署应用程序时使用&lt;/p&gt;
