@@ -119,3 +119,8 @@ export async function GET(context: { site: any; }) {
 ```
 
 ![5](http://img.blog.loli.wang/2024-07-08-jiluRSS/05.png)
+
+## 使用RSS Feeder 订阅成功
+
+![5](http://img.blog.loli.wang/2024-07-08-jiluRSS/06.png)
+![5](http://img.blog.loli.wang/2024-07-08-jiluRSS/07.png)
