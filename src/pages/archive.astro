@@ -15,7 +15,7 @@ const allPost = await getCollection("blog");
     <h2 class="archives-title">{archive.title}</h2>
     <div class="archives-container">
         {
-            allPost.map((post) => (
+            allPost.map((post:any) => (
                 <article class="post">
                     <a
                         href={`/blog/${post.slug}/index.html`}

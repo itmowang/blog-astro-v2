@@ -2,7 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 type Props = CollectionEntry<"blog">["data"];
 
-const { title, pubDate, heroImage, tags } = Astro.props;
+const { title, pubDate, heroImage, tags } = Astro.props as any;
 
 import FormattedDate from "./FormattedDate.astro";
 import PostShare from "./PostShare.astro";

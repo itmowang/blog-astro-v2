@@ -1,0 +1,3942 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>记录一次修复 个人记录Blog 的 RSS </title><link>https://blog.loli.wang/blog/2024-07-08-jilurss/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-08-jilurss/doc/</guid><description>记录一次修复 个人记录Blog 的 RSS </description><pubDate>Mon, 08 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;为什么要使用 RSS ?&lt;/h3&gt;
+&lt;p&gt;RSS是一种用于发布经常更新的内容的网站的一种数据格式。通过RSS，网站可以将最新的文章、新闻、博客等内容以统一的格式提供给用户。而用户则可以通过RSS订阅这些内容，无需再次访问网站，便能够及时获取更新。&lt;/p&gt;
+&lt;p&gt;RSS的优点：
+1. 更新及时：RSS订阅可以实时获取最新的内容，用户无需手动刷新页面，从而提高了用户体验。
+2. 离线阅读：RSS订阅可以离线阅读，用户可以在没有网络连接的情况下查看订阅的RSS内容。
+3. 聚合阅读：RSS订阅可以聚合多个来源的RSS内容，用户可以查看来自不同网站的内容。&lt;/p&gt;
+&lt;h3&gt;起因&lt;/h3&gt;
+&lt;p&gt;因为之前重新基于沉冰的项目升级除了故障,所以紧急自己写了一版.结果对RSS这部分有遗漏,这次就正好重新补上吧&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/01.png&quot; alt=&quot;1&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;安装 Astro RSS 插件&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;pnpm add @astrojs/rss
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;配置 RSS 插件&lt;/h3&gt;
+&lt;p&gt;装载RSS 插件完成后,去修改astro的配置文件，配置文件的site属性一定要有正确配置。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;然后再pages目录下新建一个 &lt;strong&gt;rss.xml.ts&lt;/strong&gt; 文件，然后写上如下代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import rss from &apos;@astrojs/rss&apos;;
+
+export function GET(context) {
+  return rss({
+    // 输出的 xml 中的`&amp;lt;title&amp;gt;`字段
+    title: &apos;Buzz’s Blog&apos;,
+    // 输出的 xml 中的`&amp;lt;description&amp;gt;`字段
+    description: &apos;A humble Astronaut’s guide to the stars&apos;,
+    // 从端点上下文获取项目“site”
+    // https://docs.astro.build/zh-cn/reference/api-reference/#contextsite
+    site: context.site,
+    // 输出的 xml 中的`&amp;lt;item&amp;gt;`数组
+    // 有关使用内容集合和 glob 导入的示例，请参阅“生成`items`”部分
+    items: [],
+    // (可选) 注入自定义 xml
+    customData: `&amp;lt;language&amp;gt;en-us&amp;lt;/language&amp;gt;`,
+  });
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;然后在 /src/config.ts 中添加以下内容：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { defineCollection } from &apos;astro:content&apos;;
+import { rssSchema } from &apos;@astrojs/rss&apos;;
+
+const blog = defineCollection({
+  schema: rssSchema,
+});
+
+export const collections = { blog };
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/04.png&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来我们启动下本地项目,访问url/rss.xml,就可以看到rss文件了。&lt;/p&gt;
+&lt;p&gt;接下来进行让展示的内容也出现在rss中&lt;/p&gt;
+&lt;p&gt;修改&lt;strong&gt;rss.xml.ts&lt;/strong&gt; 文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import rss from &apos;@astrojs/rss&apos;;
+import { config_global,config_fun } from &quot;@/theme-simple/config&quot;;
+import { getCollection } from &apos;astro:content&apos;;
+import sanitizeHtml from &apos;sanitize-html&apos;;
+import MarkdownIt from &apos;markdown-it&apos;;
+const parser = new MarkdownIt();
+export async function GET(context: { site: any; }) {
+    const {title,description} = config_global;
+    const { sortPosts  } = config_fun;
+    const blog = await getCollection(&apos;blog&apos;);
+    return rss({
+        // 输出的 xml 中的`&amp;lt;title&amp;gt;`字段
+          title, 
+        // 输出的 xml 中的`&amp;lt;description&amp;gt;`字段
+        description,
+        // 从端点上下文获取项目“site”
+        site: context.site,
+        // 输出的 xml 中的`&amp;lt;item&amp;gt;`数组
+        // 有关使用内容集合和 glob 导入的示例，请参阅“生成`items`”部分
+        items:blog.sort(sortPosts).map((post) =&amp;gt; ({
+            link: `/blog/${post.slug}/`,
+            // 注意：这不会处理 MDX 文件中的组件或 JSX 表达式。
+            content: sanitizeHtml(parser.render(post.body), {
+              allowedTags: sanitizeHtml.defaults.allowedTags.concat([&apos;img&apos;])
+            }),
+            ...post.data,
+          })),
+        
+        // (可选) 注入自定义 xml
+        customData: `&amp;lt;language&amp;gt;en-us&amp;lt;/language&amp;gt;`,
+    });
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-08-jiluRSS/05.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>使用 Prisma 配合 Cloudflare D1 构建应用</title><link>https://blog.loli.wang/blog/2024-07-06-cfd1prisma/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-06-cfd1prisma/doc/</guid><description>使用 Prisma 配合 Cloudflare D1 构建应用</description><pubDate>Sat, 06 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;介绍&lt;/h2&gt;
+&lt;p&gt;Cloudflare Workers 是一种分布在全球范围内的轻量级无服务器计算形式。它们允许您尽可能靠近最终用户部署和运行应用程序 ,&lt;/p&gt;
+&lt;p&gt;D1 是 Cloudflare 的原生无服务器数据库。基于 SQLite，可在通过 Cloudflare 部署应用程序时使用&lt;/p&gt;
+&lt;p&gt;Prisma  数据库ORM框架。&lt;/p&gt;
+&lt;h2&gt;开始前准备&lt;/h2&gt;
+&lt;p&gt;提前建立一个空的前端node项目。&lt;/p&gt;
+&lt;p&gt;node版本大于18+&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;创建 CloudFlare Worker&lt;/h2&gt;
+&lt;p&gt;在使用cloudFlare D1 之前先需要安装 &lt;strong&gt;Wrangler&lt;/strong&gt; 并登录CloudFlare账户,&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; #npm 
+ npm install wrangler --save-dev 
+ #pnpm
+ pnpm add wrangler --save-dev 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;安装好 &lt;strong&gt;Wrangler&lt;/strong&gt; 后, 使用指令登录我们的cloudflare账户&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx wrangler login
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在仪表盘建立我们 worker ，这个我是我目前建立的worker，然后我们在项目文件下编写我们的wrangler的配置文件
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;创建文件 wrangler.toml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# wrangler.toml
+name = &quot;d1-prisma&quot; ## 指向我们的worker项目名称
+main = &quot;src/index.ts&quot; ## 指定启动入口文件
+compatibility_date = &quot;2024-07-01&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在src/目录下建立个index.ts , 写个测试的demo&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+export default {
+  async fetch(request) {
+    const data = {
+      hello: &quot;hello world Mw!&quot;,
+    };
+
+    return Response.json(data);
+  },
+};
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在package.json中编写发布脚本,并启动本地测试和发布到cloudFlare worker中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;dev&quot;:&quot;npx wrangler dev&quot;,
+  &quot;deploy&quot;: &quot;npx wrangler deploy&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到，本地测试是成功的，&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/04.png&quot; alt=&quot;4&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/05.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;发布到worker , 外网也可以正常访问
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/06.png&quot; alt=&quot;6&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/07.png&quot; alt=&quot;7&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;初始化 Prisma ORM&lt;/h2&gt;
+&lt;p&gt;刚刚那一步我们worker已经正常了。现在我们开始初始化ORM工具&lt;/p&gt;
+&lt;p&gt;详细看这篇文章 &lt;a href=&quot;https://www.prisma.io/docs/orm/overview/databases/cloudflare-d1#what-is-cloudflare-d1&quot;&gt;cloudFlare D1&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;安装prisma依赖和对d1的支持&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#pnpm
+pnpm add prisma --save-dev
+pnpm add @prisma/client @prisma/adapter-d1
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写 prisma 配置和数据进行测试 ,创建文件 &lt;strong&gt;/prsima/schema.prisma&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//  ./schema.prisma
+
+generator client {
+  provider = &quot;prisma-client-js&quot;
+}
+
+datasource db {
+  provider = &quot;sqlite&quot;
+  url      = &quot;file:./dev.db&quot;
+}
+
+
+// 测试写的用户表
+model User {
+  id       Int     @id @default(autoincrement()) // 用户唯一ID
+  email    String  @unique // 用户的联系邮箱 
+  name     String? // 用户的名称
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用指令初始化prisma的数据库，初始化成功后会看到本地有db文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx prisma migrate dev --name init
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;建立测试创建和查询sql的测试文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// ./prisma/test.ts
+import { PrismaClient } from &apos;@prisma/client&apos;
+
+const prisma = new PrismaClient()
+
+async function main() {
+  const users = await prisma.user.findMany()
+  console.log(users)
+}
+
+
+main()
+  .then(async () =&amp;gt; {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) =&amp;gt; {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// ./prisma/testCreate.ts
+import { PrismaClient } from &apos;@prisma/client&apos;
+
+const prisma = new PrismaClient()
+
+async function main() {
+  const user = await prisma.user.create({
+    data: {
+      name: &apos;Bob&apos;,
+      email: &apos;bob@prisma.io&apos;,
+    },
+  })
+  console.log(user)
+}
+
+main()
+  .then(async () =&amp;gt; {
+    await prisma.$disconnect()
+  })
+  .catch(async (e) =&amp;gt; {
+    console.error(e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写新的指令 方便测试创建和查看数据库数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+   &quot;test:select&quot;:&quot;npx tsx ./prisma/test.ts&quot;,
+   &quot;test:create&quot;:&quot;npx tsx ./prisma/testCreate.ts&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/08.png&quot; alt=&quot;8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;创建新数据
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/09.png&quot; alt=&quot;9&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;查看所有数据
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/10.png&quot; alt=&quot;10&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;到目前为止我们Prisma简单配置好了。&lt;/p&gt;
+&lt;h2&gt;创建D1 数据库&lt;/h2&gt;
+&lt;p&gt;在我们目前例子中都是通过仪表盘创建的worker项目，创建D1我们也通过仪表盘去创建。当然你也可以选择使用cli或者其他方式去创建
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/11.png&quot; alt=&quot;11&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/12.png&quot; alt=&quot;12&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;创建好D1数据库后，修改 &lt;strong&gt;wrangler.toml&lt;/strong&gt;配置文件,对应你自己的D1配置就好。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+[[d1_databases]]
+binding = &quot;DB&quot;  
+database_name = &quot;prisma_d1&quot;
+database_id = &quot;你自己的D1的id&quot;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/13.png&quot; alt=&quot;13&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;编写生成迁移文件指令和diff指令到package.json&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;transfer&quot;:&quot;npx wrangler d1 migrations create prisma_d1 create_user_table&quot;,
+    &quot;diff&quot;: &quot;npx prisma migrate diff --from-empty --to-schema-datamodel ./prisma/schema.prisma --script &amp;gt; migrations/0001_create_user_table.sql&quot;,
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行后会生成 迁移文件的配置和sql文件
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/14.png&quot; alt=&quot;14&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/15.png&quot; alt=&quot;15&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;新增迁移指令进行迁移，然后开始迁移&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &quot;apply:local&quot;:&quot;npx wrangler d1 migrations apply prisma_d1 --local&quot;,
+    &quot;apply:remote&quot;:&quot;npx wrangler d1 migrations apply prisma_d1 --remote&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到我们迁移成功了。去仪表盘看看D1上有没有相关的表文件。是正常和成功的&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/16.png&quot; alt=&quot;16&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/17.png&quot; alt=&quot;16&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;修改index.ts 文件，查询D1数据库内的数据，进行收尾&lt;/h2&gt;
+&lt;p&gt;打开 src/index.ts 并将整个内容替换为以下内容：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// src/index.ts
+import { PrismaClient } from &quot;@prisma/client&quot;;
+import { PrismaD1 } from &quot;@prisma/adapter-d1&quot;;
+
+export interface Env {
+  DB: D1Database;
+}
+
+export default {
+  async fetch(request: Request, env: Env, ctx: any): Promise&amp;lt;Response&amp;gt; {
+    const adapter = new PrismaD1(env.DB);
+
+    const prisma = new PrismaClient({ adapter });
+
+    const users = await prisma.user.findMany();
+
+    const result = JSON.stringify(users);
+    return new Response(result);
+  },
+};
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;重新发布到 Worker&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pnpm run deploy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;发布成功后我们去D1仪表盘，随意新增任意条数据作为测试。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/18.png&quot; alt=&quot;18&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;访问外网测试地址，看看是否能打印我们从D1数据库中查询出来的全部User数据&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-06-cfd1prisma/19.png&quot; alt=&quot;19&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;测试成功，搭建应用完成&lt;/p&gt;
+&lt;h2&gt;心得&lt;/h2&gt;
+&lt;p&gt;无服务器应用远远不止这点应用那么简单，他还有很多可以搭配的方案，我只是写了个小的demo&lt;/p&gt;
+&lt;p&gt;大晚上写的。累死了，应该没有质量可言把&lt;/p&gt;
+&lt;h2&gt;相关文档&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/itmowang/prisma-D1-demo&quot;&gt;完整Demo&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.prisma.io/docs/orm/prisma-client/deployment/edge/deploy-to-cloudflare#cloudflare-d1&quot;&gt;prisma 官方完整示例 &lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.prisma.io/docs/orm/overview/databases/cloudflare-d1&quot;&gt;prisma 官方D1介绍&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developers.cloudflare.com/d1/get-started/&quot;&gt;D1 文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developers.cloudflare.com/workers/&quot;&gt;Workers 文档&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>使用CloudFlare的Pages服务部署自己的前端项目</title><link>https://blog.loli.wang/blog/2024-07-04-cfpages/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-04-cfpages/doc/</guid><description>使用CloudFlare的Pages服务部署自己的前端项目</description><pubDate>Thu, 04 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;因为最近在折腾SSR项目，看上了Cloudflare的Worker可以部署Node项目，所以打算写几篇CloudFlare利用的文章。之前也有写过使用利用CloudFlare进行反向代理&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://blog.loli.wang/blog/2023-8-21-cfworkerproxy/doc/index.html&quot;&gt;CloudFlare Worker 反向代理 github 给静态博客做图床&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;使用Cloudflare的Pages部署自己的前端静态项目&lt;/h3&gt;
+&lt;p&gt;先给自己项目安装 Wrangler ,Wrangler 需要 Node 版本大于 16.17.0+ 才能够正常运行。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#npm 
+npm install wrangler --save-dev 
+#pnpm
+pnpm add wrangler --save-dev 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;先登录并授权项目&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx wrangler login
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-04-cfpages/04.png&quot; alt=&quot;4&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-04-cfpages/05.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;给项目安装好&lt;strong&gt;Wrangler&lt;/strong&gt;并授权后，可以执行&lt;strong&gt;npx wrangler pages project create&lt;/strong&gt;  帮忙快速建立配置。可以看到我们建立的是名为mw-blog的项目名称，并且给了一个测试地址，在Cloudflare Workers管理页面也可以看到有新增相关的项目&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx wrangler pages project create
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-04-cfpages/01.png&quot; alt=&quot;1&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-04-cfpages/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;然后自己手动创建&lt;strong&gt;wrangler.toml&lt;/strong&gt;文件自行配置。&lt;/p&gt;
+&lt;p&gt;目前写了个简单的配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+name = &quot;mw-blog&quot;  # 对应 Cloudflare Workers 刚刚创建的项目名
+compatibility_date = &quot;2024-07-04&quot;    # 变更兼容日期
+pages_build_output_dir = &quot;./docs&quot;  # 你需要上传打包的目录
+send_metrics = false
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-04-cfpages/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;然后编写我们的前端项目的指令，修改package.json, 增加新的指令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;deploy&quot;: &quot;npx wrangler pages deploy&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-04-cfpages/07.png&quot; alt=&quot;7&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;执行发布&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# npm
+npm run deploy
+
+#pnpm 
+pnpm run deploy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-04-cfpages/08.png&quot; alt=&quot;8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;打开给我们的测试页面&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-04-cfpages/09.png&quot; alt=&quot;9&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;成功&lt;/p&gt;
+&lt;h3&gt;总结&lt;/h3&gt;
+&lt;p&gt;CloudFlare Pages  还有很多部署方式，比如和github关联，通过插件，通过流水线等等都可以进行一个非常快速的部署。 这只是介绍最简单最轻松的一种。看自己的个人灵活利用咯。&lt;/p&gt;
+&lt;h3&gt;相关资料&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://developers.cloudflare.com/pages/&quot;&gt;CloudFlare Pages &lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>[工具] 再也不需要破解Navicat了，Navicat推出免费版 Navicat Premium Lite </title><link>https://blog.loli.wang/blog/2024-07-03-sqltoolsnavicat/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-03-sqltoolsnavicat/doc/</guid><description>[工具] 再也不需要破解navicat了，Navicat推出免费版 Navicat Navicat Premium Lite </description><pubDate>Wed, 03 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;数据库管理工具领域的知名品牌Navicat，推出其免费版本——Navicat Premium Lite，用户可从Navicat官网下载体验这款软件。&lt;/p&gt;
+&lt;p&gt;Navicat Premium Lite支持创建连接多种数据库，包括MySQL、Redis、PostgreSQL、SQL Server、Oracle、MariaDB、SQLite 和 MongoDB，覆盖了当前市场上主流的数据库平台。&lt;/p&gt;
+&lt;h2&gt;使用体验&lt;/h2&gt;
+&lt;p&gt;能够胜任我日常的MySQL数据库管理，拥有漂亮的ui界面，可惜高级功能收费, 但是免费版本已经足够使用。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-03-sqltoolsNavicat/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-03-sqltoolsNavicat/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;带Ent 的就是需要收费的功能。但是日常使用是没什么问题的&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-03-sqltoolsNavicat/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;功能差异 Lite版本 和企业版&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.navicat.com.cn/products/navicat-premium-feature-matrix&quot;&gt;navicat-premium-feature-matrix&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;下载地址&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.navicat.com.cn/download/navicat-premium-lite&quot;&gt;navicat-premium-lite&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Vite 搭建 SSR 进行服务器渲染</title><link>https://blog.loli.wang/blog/2024-06-29-vitessr/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-06-29-vitessr/doc/</guid><description>Vite 搭建 SSR 进行服务器渲染</description><pubDate>Sat, 29 Jun 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;为什么要使用 SSR&lt;/h3&gt;
+&lt;p&gt;GPT 回复&lt;/p&gt;
+&lt;p&gt;更快的首屏加载时间：SSR 将初始 HTML 页面在服务器上生成并发送给客户端，从而使用户在请求页面时无需等待 JavaScript 的加载和执行即可看到页面内容。这种方式可以显著提升首屏加载时间和用户体验。&lt;/p&gt;
+&lt;p&gt;更好的 SEO：搜索引擎蜘蛛能够更容易地抓取和索引由 SSR 生成的页面内容，从而提高网站在搜索引擎中的排名。这对于内容驱动的网站（如博客、新闻网站等）尤为重要。&lt;/p&gt;
+&lt;p&gt;便于预渲染静态页面：对于不经常变化的页面内容，SSR 可以预渲染并缓存生成的静态页面，从而减少服务器的负载和请求处理时间。&lt;/p&gt;
+&lt;p&gt;说白了 ，更快的加载速度 不用向 spa 项目一样进行首次进去加载比较久, seo 友好，并且可以预渲染&lt;/p&gt;
+&lt;h3&gt;起步工作&lt;/h3&gt;
+&lt;p&gt;安装&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 安装vue
+pnpm add vue
+# 安装vite 和 vitejs支持vue的插件
+pnpm add vite @vitejs/plugin-vue -D
+# 安装服务端插件
+pnpm add express
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建 vite 配置文件 vite.config.ts&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { defineConfig } from &quot;vite&quot;;
+import vue from &quot;@vitejs/plugin-vue&quot;;
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [vue()],
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建 src 目录，建立 App.vue 和 main.ts 目录&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// main.ts
+import { createSSRApp } from &quot;vue&quot;;
+import App from &quot;./App.vue&quot;;
+
+export function createApp() {
+  const app = createSSRApp(App);
+  return { app };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// App.vue
+&amp;lt;template&amp;gt;
+  &amp;lt;div&amp;gt;
+   &amp;lt;h1&amp;gt;Vite SSR&amp;lt;/h1&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;style scoped&amp;gt;
+
+&amp;lt;/style&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建 entry-client.ts 和 entry-server.ts 文件， 并且将 index.html 连接至 entry-client.ts&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- index.html --&amp;gt;
+
+&amp;lt;!DOCTYPE html&amp;gt;
+&amp;lt;html lang=&quot;en&quot;&amp;gt;
+  &amp;lt;head&amp;gt;
+    &amp;lt;meta charset=&quot;UTF-8&quot; /&amp;gt;
+    &amp;lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&amp;gt;
+    &amp;lt;title&amp;gt;Vite + Vue&amp;lt;/title&amp;gt;
+    &amp;lt;!--app-head--&amp;gt;
+  &amp;lt;/head&amp;gt;
+  &amp;lt;body&amp;gt;
+    &amp;lt;div id=&quot;app&quot;&amp;gt;&amp;lt;!--app-html--&amp;gt;&amp;lt;/div&amp;gt;
+    &amp;lt;script type=&quot;module&quot; src=&quot;/src/entry-client.ts&quot;&amp;gt;&amp;lt;/script&amp;gt;
+  &amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写客户端入口和服务端入口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// entry-client.ts
+import { createApp } from &quot;./main&quot;;
+
+const { app } = createApp();
+
+app.mount(&quot;#app&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// entry-server.ts
+import { renderToString } from &quot;vue/server-renderer&quot;;
+import { createApp } from &quot;./main&quot;;
+
+export async function render() {
+  const { app } = createApp();
+
+  const ctx = {};
+  const html = await renderToString(app, ctx);
+
+  return { html };
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-29-vitessr/02.png&quot; alt=&quot;2&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-06-29-vitessr/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;编写编译客户端编译指令 和 服务端编译指令&lt;/p&gt;
+&lt;p&gt;package.json&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;scripts&quot;: {
+    &quot;build&quot;: &quot;pnpm build:client &amp;amp;&amp;amp; pnpm build:server&quot;,
+    &quot;build:client&quot;: &quot;vite build --ssrManifest --outDir dist/client&quot;,
+    &quot;build:server&quot;: &quot;vite build --ssr src/entry-server.ts --outDir dist/server&quot;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行 pnpm build 命令 , 构建客户端和服务端查看结果&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-29-vitessr/04.png&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;可以看到分别构建了 SSR的客户端和服务端&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 安装 压缩插件 和 静态资源插件
+pnpm add sirv compression
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写server.ts 启动服务,完成开发环境场景&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import express from &apos;express&apos;;
+import fs from &apos;node:fs/promises&apos;
+
+
+// 区分开发环境和生产环境
+const isProd = process.env.NODE_ENV === &apos;production&apos;;
+
+// 根路径
+const base = process.env.BASE || &apos;/&apos;
+
+// 启动端口
+const port = 3000
+
+// 读取客户端模板
+const templateHtml = isProd ? await fs.readFile(&apos;./dist//index.html&apos;, &apos;utf-8&apos;) : &quot;&quot;;
+
+// 读取ssr资源
+const ssrManifest = isProd ? await fs.readFile(&apos;./dist/client/.vite/ssr-manifest.json&apos;, undefined) : undefined;
+
+
+// 创建http服务
+const app = express();
+
+let vite
+
+// 如果不是生产环境，启动vite  , 如果不是启动express中间件
+if (!isProd) {
+    const { createServer } = await import(&apos;vite&apos;)
+
+    vite = await createServer({
+        server: {
+            middlewareMode: true
+        },
+        appType: &apos;custom&apos;,
+        base
+    })
+
+    app.use(vite.middlewares)
+} else {
+    const compression = (await import(&apos;compression&apos;)).default;
+    const sirv = (await import(&apos;sirv&apos;)).default;
+
+    app.use(compression());
+    app.use(base, sirv(&apos;./dist/client&apos;, { extensions: [] }))
+
+}
+
+// 服务端拦截，并且使用占位符去渲染页面
+app.use(&apos;*&apos;, async (req, res) =&amp;gt; {
+    try {
+        const url = req.originalUrl.replace(base, &apos;/&apos;)
+
+        let template
+        let render
+
+        if (!isProd) {
+            // 如果是开发环境
+            template = await fs.readFile(&apos;./index.html&apos;, &apos;utf-8&apos;)
+            template = await vite.transformIndexHtml(url, template)
+            render = (await vite.ssrLoadModule(&apos;/src/entry-server.ts&apos;)).render
+        } else {
+            // 如果是生产
+            template = templateHtml;
+            render = (await import(&apos;./dist/server/entry-server&apos;))
+        }
+
+        const rendered = await render(url, ssrManifest);
+
+        // 占位符替换渲染
+        const html = template
+            .replace(`&amp;lt;!--app-head--&amp;gt;`, rendered.head ?? &apos;&apos;)
+            .replace(`&amp;lt;!--app-html--&amp;gt;`, rendered.html ?? &apos;&apos;)
+
+        res.status(200).set({ &apos;Content-Type&apos;: &apos;text/html&apos; }).send(html)
+
+    } catch (e) {
+        vite?.ssrFixStacktrace(e)
+        console.log(e.stack)
+        res.status(500).end(e.stack)
+    }
+})
+
+// 启动服务
+app.listen(port, () =&amp;gt; {
+    console.log(`SSR项目已经启动 http://localhost:${port}`)
+})
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写启动指令,因为我们是ts语言, 我们使用antfu大佬写的&apos;tsx&apos;轮子来启动&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pnpm add tsx -D
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改命令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&quot;scripts&quot;: {
+    &quot;dev&quot;:&quot;tsx server&quot;,
+    &quot;build&quot;: &quot;pnpm build:client &amp;amp;&amp;amp; pnpm build:server&quot;,
+    &quot;build:client&quot;: &quot;vite build --ssrManifest --outDir dist/client&quot;,
+    &quot;build:server&quot;: &quot;vite build --ssr src/entry-server.ts --outDir dist/server&quot;
+},
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到我们已经启动成功了,页面渲染也正常 ，成功！&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-29-vitessr/05.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-29-vitessr/06.png&quot; alt=&quot;6&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;相关资料&lt;/h3&gt;
+&lt;p&gt;编写的测试模板存放地址：https://github.com/itmowang/vite-vue-ssr-template.git&lt;/p&gt;
+</content:encoded></item><item><title>husky + eslint + lint-staged 进行代码规范检测并修复代码</title><link>https://blog.loli.wang/blog/2024-06-26-lintstaged/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-06-26-lintstaged/doc/</guid><description>husky + eslint + lint-staged 进行代码规范检测并修复代码</description><pubDate>Wed, 26 Jun 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;上次配置好了eslint ，在我们每次提交代码的时候就进行代码检测，这次我们写上配置lint-staged 进行代码修复。&lt;/p&gt;
+&lt;h3&gt;安装 lint-staged&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 安装指令
+pnpm add lint-staged -D
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;在package.json中添加lint-staged的配置&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;&quot;lint-staged&quot;:{
+    &quot;*.js&quot;:&quot;eslint --fix&quot;,
+    &quot;*.ts&quot;:&quot;eslint --fix&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改 git hooks 钩子，每次提交的时候让他执行 &lt;strong&gt;eslint --fix&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo &quot;npx eslint --fix&quot; &amp;gt; .husky/pre-commit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;测试一下&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-26-lintstaged/01.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;可以看到我们错误的代码格式已经帮我们解决了，并且严格按照规则给我们编写修复了代码。 （上面有test警告单纯是插件未安装问题 无关紧要）&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-26-lintstaged/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Husky配合ESLint保证提交代码前的提交规范</title><link>https://blog.loli.wang/blog/2024-06-24-eslint/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-06-24-eslint/doc/</guid><description>Husky配合ESLint</description><pubDate>Mon, 24 Jun 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;之前说过了husky的简单安装和使用，而我们需要在每次代码提交前做一些代码检测和代码修复，一般有很多种方式，可以依赖于cicd自动化的时候进行代码检测等工作，但是我们也可以在开发的情况下避免这些情况的发生。&lt;/p&gt;
+&lt;p&gt;ESLint 是用来检查我们写的 js 代码是否满足指定规则的静态代码检查工具。 通过用 ESLint 来检查一些规则,我们可以用来统一代码风格规则&lt;/p&gt;
+&lt;h1&gt;ESLint  的安装和使用&lt;/h1&gt;
+&lt;p&gt;安装eslint&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pnpm add eslint  -D
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;初始化eslint&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx eslint --init
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;根据指示选择项目配置，生成eslint的项目配置文件 &lt;strong&gt;eslint.config.mjs&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-24-eslint/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;给项目添加 eslint的 git hooks&lt;/h2&gt;
+&lt;p&gt;上一篇文章说过如何使用Husky， 先写一个提交 &lt;strong&gt;pre-commit&lt;/strong&gt; 的钩子，在每次提交之前进行一次检查下整个项目代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+echo &quot;npx eslint .&quot; &amp;gt; .husky/pre-commit
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-24-eslint/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;配置eslint&lt;/h2&gt;
+&lt;p&gt;可以通过修改 &lt;strong&gt;eslint.config.mjs&lt;/strong&gt; 文件修改你的代码的风格和规则&lt;/p&gt;
+&lt;p&gt;我给出一个我自己常用的eslint规则&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;module.exports = {
+  parser: &apos;@typescript-eslint/parser&apos;,
+  plugins: [&apos;@typescript-eslint&apos;],
+  rules: {
+    &apos;no-var&apos;: &apos;error&apos;, // 不能使用var声明变量
+    &apos;no-extra-semi&apos;: &apos;error&apos;,
+    &apos;@typescript-eslint/indent&apos;: [&apos;error&apos;, 2],
+    &apos;import/extensions&apos;: &apos;off&apos;,
+    &apos;linebreak-style&apos;: [0, &apos;error&apos;, &apos;windows&apos;],
+    indent: [&apos;error&apos;, 2, { SwitchCase: 1 }], // error类型，缩进2个空格
+    &apos;space-before-function-paren&apos;: 0, // 在函数左括号的前面是否有空格
+    &apos;eol-last&apos;: 0, // 不检测新文件末尾是否有空行
+    semi: [&apos;error&apos;, &apos;always&apos;], // 在语句后面加分号
+    quotes: [&apos;error&apos;, &apos;single&apos;], // 字符串使用单双引号,double,single
+    &apos;no-console&apos;: [&apos;error&apos;, { allow: [&apos;log&apos;, &apos;warn&apos;] }], // 允许使用console.log()
+    &apos;arrow-parens&apos;: 0,
+    &apos;no-new&apos;: 0, //允许使用 new 关键字
+    &apos;comma-dangle&apos;: [2, &apos;never&apos;], // 数组和对象键值对最后一个逗号， never参数：不能带末尾的逗号, always参数：必须带末尾的逗号，always-multiline多行模式必须带逗号，单行模式不能带逗号
+    &apos;no-undef&apos;: 0,
+  },
+  parserOptions: {
+    ecmaVersion: 6,
+    sourceType: &apos;module&apos;,
+    ecmaFeatures: {
+      modules: true,
+    },
+  },
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;执行测试&lt;/h2&gt;
+&lt;p&gt;我们估计在我们的测试代码中写一个错误的示例，并且写上禁止使用var作为声明变量&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-24-eslint/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;执行代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git add . 
+git commit -m &quot;Love is lonely&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行结果，发现被禁止了提交 ，完成了eslint的语法规范&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-24-eslint/04.png&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;相关文档&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://zh-hans.eslint.org/docs/latest/use/configure/ignore&quot;&gt;eslint相关配置&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;明天写利用 husky + eslint + lint-staged 进行代码规范检测并修复代码&lt;/p&gt;
+</content:encoded></item><item><title>husky 的安装和使用</title><link>https://blog.loli.wang/blog/2024-06-23-web-husky/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-06-23-web-husky/doc/</guid><description>husky的使用</description><pubDate>Sun, 23 Jun 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;什么是husky&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;Husky 是一个用于 Git hooks 的工具，它能够在特定的 Git 操作（如 commit、push 等）之前或之后自动运行脚本，从而帮助开发者保持代码质量、执行代码检查、自动化任务等。将白了，用来约束git的。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;安装并使用husky&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;安装&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;# npm 安装
+npm install husky -D
+# yarn 安装
+yarn add husky -D
+#pnpm 安装 
+pnpm add husky -D
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;配置husky&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;在给前端项目配置husky的之前一定要给项目建立版本控制&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 建立 git 版本控制
+git init
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用指令创建husky配置, 会自动创建.husky文件夹，里面会包含git hooks的配置等。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 指令创建 (老版本是这样)
+npx husky install
+# 指令创建 (新版本)
+npx husky init
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-23-web-husky/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;测试配置是否成功&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;git commit -m &quot;Keep calm and commit&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到我们提交命令被拦截了，不能被自由的正常使用git commit&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-23-web-husky/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;创建husky钩子&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;创建一个husky钩子，让我们使用 npm test 的时候执行 .husky/pre-commit 的提交规则&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;echo &quot;npm test&quot; &amp;gt; .husky/pre-commit
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到.husky 文件夹中增加了一个 pre-commit的文件&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-23-web-husky/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;里面会有一个 npm test 的指令代表 你每次执行 git commit 的时候就会先执行 npm test 指令，然后再走正常的git commit&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-06-23-web-husky/04.png&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;-------- 剩下的交给下个文章再写 《使用husky提交代码时使用eslint检测代码》&lt;/p&gt;
+</content:encoded></item><item><title>好玩的console - 水一篇</title><link>https://blog.loli.wang/blog/2024-05-29-consolelog/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-05-29-consolelog/doc/</guid><description>奇妙的console - 水一篇</description><pubDate>Wed, 29 May 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;console.log&lt;/h2&gt;
+&lt;p&gt;常规的打印&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;console.log(&quot;魔王&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-29-consolelog/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;console.warm&lt;/h2&gt;
+&lt;p&gt;警告的打印&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;console.warn(&quot;魔王&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-29-consolelog/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;console.error&lt;/h2&gt;
+&lt;p&gt;错误的打印&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;console.error(&quot;魔王&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-29-consolelog/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;console.dir&lt;/h2&gt;
+&lt;p&gt;输出对象&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; const obj = { name: &quot;魔王&quot;, age: 999 };
+ console.dir(obj);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-29-consolelog/04.png&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;console.clear()&lt;/h2&gt;
+&lt;p&gt;清空控制台&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;console.clear();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-29-consolelog/05.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;console.table&lt;/h2&gt;
+&lt;p&gt;以表格的形式输出对象或者数组&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const test = [&quot;Apple&quot;, &quot;Banana&quot;, &quot;Orange&quot;];
+    const test1 = {
+      name: &quot;mowang&quot;,
+      age: 999,
+    };
+    console.table(test);
+    console.table(test1);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-29-consolelog/06.png&quot; alt=&quot;6&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;console.assert()&lt;/h2&gt;
+&lt;p&gt;用于条件不满足的时候输出信息&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;console.assert(2 + 2 === 5, &quot;2+2不等于5&quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-29-consolelog/07.png&quot; alt=&quot;7&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>前端大文件切片上传以及使用webWorker</title><link>https://blog.loli.wang/blog/2024-05-27-webupload/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-05-27-webupload/doc/</guid><description>前端大文件切片上传以及使用webWorke</description><pubDate>Tue, 28 May 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;常规项目日常开发的时候我们经常用到上传这个功能,一般日常的话不会有很大的文件上传，但是就是有不长眼的需求过来。 ==&lt;/p&gt;
+&lt;h2&gt;切片上传优点&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;大文件分割，切片后分批上传，减轻服务器压力&lt;/li&gt;
+&lt;li&gt;断点续传，可以记录上传位置，方便上次上传未结束的操作&lt;/li&gt;
+&lt;li&gt;上传进度控制的功能，不然无法知道文件是否上传的进度。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;为什么使用web worker&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;让线程不阻塞 ，切片 和 上传大文件是一个比较耗费时间的操作，如果在主要线程直行这个操作，容易卡死和卡顿，影响体验和效果&lt;/li&gt;
+&lt;li&gt;提高性能充分利用处理器&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;切片主要代码演示&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;import React, { useEffect } from &quot;react&quot;;
+
+const Login: React.FC = () =&amp;gt; {
+  const chunkSize = 1 * 1024 * 1024; // 1M
+  // 将文件切片
+  const sliceFile = (file: File) =&amp;gt; {
+    // 切片的内容存放
+    const chunks = [];
+    // 切片的位置
+    let offset = 0;
+
+    while (offset &amp;lt; file.size) {
+      // 分割切片位置以及每次切片的大小
+      const chunk = file.slice(offset, offset + chunkSize);
+      chunks.push(chunk);
+      // 切片的位置计算
+      offset = offset + chunkSize;
+    }
+    return chunks;
+  };
+
+  // 上传的切片
+  const uploadChunks = async (chunks: any) =&amp;gt; {
+    for (let i = 0; i &amp;lt; chunks.length; i++) {
+      const formData = new FormData();
+      formData.append(&quot;fileChunk&quot;, chunks[i]);
+
+      // 发送切片上传请求
+      await fetch(&quot;/update&quot;, {
+        method: &quot;POST&quot;,
+        body: formData,
+      });
+    }
+  };
+
+  // 上传的主函数
+  const uploadFile = async (file: File) =&amp;gt; {
+    const chunks = await sliceFile(file);
+
+    await uploadChunks(chunks);
+  };
+
+  const click = () =&amp;gt; {
+    document.getElementById(&quot;upload&quot;)?.click();
+  };
+
+  useEffect(() =&amp;gt; {
+    document.getElementById(&quot;upload&quot;)?.addEventListener(&quot;change&quot;, (e) =&amp;gt; {
+      // 获得当前上传的文件
+      const files = (e.target as HTMLInputElement).files?.[0];
+      if (files) {
+        uploadFile(files);
+      }
+    });
+  }, []);
+
+  return (
+    &amp;lt;div className=&quot;login&quot;&amp;gt;
+      &amp;lt;h1&amp;gt;大文件上传&amp;lt;/h1&amp;gt;
+      &amp;lt;button onClick={click}&amp;gt; 选择上传文件&amp;lt;/button&amp;gt;
+      &amp;lt;input type=&quot;file&quot; id=&quot;upload&quot; style={{ display: &quot;none&quot; }} /&amp;gt;
+    &amp;lt;/div&amp;gt;
+  );
+};
+
+export default Login;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;效果如下
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-27-webUpload/01.png&quot; alt=&quot;1&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-27-webUpload/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;成功切片上传 但是会影响到页面卡顿 使用webworker&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//worker.ts
+
+// 上传的切片
+const uploadChunks = async (chunks: any) =&amp;gt; {
+  for (let i = 0; i &amp;lt; chunks.length; i++) {
+    const formData = new FormData();
+    formData.append(&quot;fileChunk&quot;, chunks[i]);
+
+    // 发送切片上传请求
+    await fetch(&quot;/update&quot;, {
+      method: &quot;POST&quot;,
+      body: formData,
+    });
+  }
+};
+
+// 创建接收消息通知
+this.addEventListener(&quot;message&quot;, async (event) =&amp;gt; {
+  const chunkSize = 1 * 1024 * 1024; // 1M
+  const file = event.data.payload.file;
+  // 切片的内容存放
+  const chunks = [];
+  // 切片的位置
+  let offset = 0;
+
+  while (offset &amp;lt; file.size) {
+    // 分割切片位置以及每次切片的大小
+    const chunk = file.slice(offset, offset + chunkSize);
+    chunks.push(chunk);
+    // 切片的位置计算
+    offset = offset + chunkSize;
+  }
+
+  //   上传切片
+  await uploadChunks(chunks);
+
+  // 通知完成
+  postMessage({ type: &quot;uploadComplete&quot; });
+});
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;主页面&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import React, { useEffect } from &quot;react&quot;;
+
+const Login: React.FC = () =&amp;gt; {
+  const click = () =&amp;gt; {
+    document.getElementById(&quot;upload&quot;)?.click();
+  };
+
+  useEffect(() =&amp;gt; {
+    // 创建Worker的实例，并启动实例
+    const worker = new Worker(&quot;src/pages/login/worker.ts&quot;);
+
+    document.getElementById(&quot;upload&quot;)?.addEventListener(&quot;change&quot;, (e) =&amp;gt; {
+      // 获得当前上传的文件
+      const files = (e.target as HTMLInputElement).files?.[0];
+
+      // 接收消息
+      worker.addEventListener(&quot;message&quot;, (event) =&amp;gt; {
+        const { type } = event.data;
+        if (type === &quot;uploadComplete&quot;) {
+          console.log(&quot;文件上传完成！&quot;);
+        }
+      });
+      if (files) {
+        // 向worker发送消息
+        worker.postMessage({ type: &quot;upload&quot;, payload: { file: files } });
+      }
+    });
+  }, []);
+
+  return (
+    &amp;lt;div className=&quot;login&quot;&amp;gt;
+      &amp;lt;h1&amp;gt;大文件上传&amp;lt;/h1&amp;gt;
+      &amp;lt;button onClick={click}&amp;gt; 选择上传文件&amp;lt;/button&amp;gt;
+      &amp;lt;input type=&quot;file&quot; id=&quot;upload&quot; style={{ display: &quot;none&quot; }} /&amp;gt;
+    &amp;lt;/div&amp;gt;
+  );
+};
+
+export default Login;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;完成配合使用webWorker&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-27-webUpload/03.png&quot; alt=&quot;1&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-27-webUpload/04.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;最近状态不好。。。看上去不能写的太细节，当作demo预览吧&lt;/h1&gt;
+</content:encoded></item><item><title>chrome浏览器暴力解决跨域的方案</title><link>https://blog.loli.wang/blog/2024-05-15-chromecubaoporxy/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-05-15-chromecubaoporxy/doc/</guid><description>chrome浏览器暴力解决跨域的方案</description><pubDate>Wed, 15 May 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;为什么会知道这个&lt;/h3&gt;
+&lt;p&gt;一个群交流看见的。 有这么个解决方案，记录下。毕竟有时候真的需要很粗暴的解决方式。&lt;/p&gt;
+&lt;p&gt;原先随意请求一个非同源的接口。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-15-chromecubaoporxy/01.png&quot; alt=&quot;处理前&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-15-chromecubaoporxy/05.png&quot; alt=&quot;处理后&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;可以看到，现在报错是提示403错误。代表没有权限，也就是我们能正常请求到接口了，跨域已经处理成功了&lt;/p&gt;
+&lt;h3&gt;步骤&lt;/h3&gt;
+&lt;p&gt;首先右键我们的google浏览器，选择&lt;strong&gt;属性&lt;/strong&gt;,&lt;strong&gt;打开文件所在位置&lt;/strong&gt;，右键发送一个快捷方式到桌面&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-15-chromecubaoporxy/02.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在鼠标右键刚刚新建的快捷方式，选择&lt;strong&gt;属性&lt;/strong&gt;，在&lt;strong&gt;目标&lt;/strong&gt;中&lt;strong&gt;追加&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;--disable-web-security 代表禁用同源策略
+--user-data-dir  代表用户缓存目录&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+目标路径 --args --disable-web-security --user-data-dir=D:\MyChromeDevUserData
+
+或
+
+目标路径 --disable-web-security --user-data-dir=D:\MyChromeDevUserData
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-15-chromecubaoporxy/03.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;关闭所有谷歌浏览器进程，重新运行一下这个快捷方式，就可以看到&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-15-chromecubaoporxy/04.png&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;并且访问接口的时候，跨域也被解决掉了&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-15-chromecubaoporxy/05.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>UNIAPP离线打包plus.runtime.install无法调起安装的解决方法</title><link>https://blog.loli.wang/blog/2024-05-13-padandroidstudio01/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-05-13-padandroidstudio01/doc/</guid><description>记录一次UniAPP项目离线打包后项目无法调起安装包的问题</description><pubDate>Mon, 13 May 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;起因&lt;/h3&gt;
+&lt;p&gt;公司项目出现问题了，业务人员说设备APP升级了无法安装，我想了想最近除了改过业务类的代码，也没有动过其他代码啊，为什么会出现问题 ？&lt;/p&gt;
+&lt;h3&gt;判断问题&lt;/h3&gt;
+&lt;ol&gt;
+&lt;li&gt;测试环境测试，云打包测试，打包后安装，可以安装。&lt;/li&gt;
+&lt;li&gt;离线打包测试，打包后升级出现问题，无法出现问题，自从前一阵子切换成离线打包后就出现这个问题了。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;发现问题。&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-13-padandroidStudio01/02.png&quot; alt=&quot;切1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;下载完最新的安装包后，无法调起最新的安装包，而我又是最新的SDK。&lt;/p&gt;
+&lt;p&gt;看官方文档&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://ask.dcloud.net.cn/article/35703&quot;&gt;针对plus.runtime.install在安卓9.0+上无法执行的解决方案&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;使用&lt;strong&gt;云打包&lt;/strong&gt;的话，只用在UNIAPP的manifest.json中添加相关的&lt;strong&gt;权限&lt;/strong&gt;配置就好，但是离线打包的话，需要自己手动在 &lt;strong&gt;Android Studio&lt;/strong&gt; 进行权限配置。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-13-padandroidStudio01/03.png&quot; alt=&quot;切1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;既然知道问题了，就进行修改吧。打开&lt;strong&gt;Android Studio&lt;/strong&gt;，在&lt;strong&gt;AndroidManifest.xml&lt;/strong&gt;中，找到&lt;strong&gt;manifest&lt;/strong&gt;标签，在里面添加如下代码：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  &amp;lt;uses-permission android:name=&quot;android.permission.REQUEST_INSTALL_PACKAGES&quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-13-padandroidStudio01/04.png&quot; alt=&quot;切1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;重新打包运行，成功安装。&lt;/p&gt;
+&lt;h3&gt;相关文章&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://blog.loli.wang/blog/2023-12-28-uniapppackage/doc/index.html&quot;&gt;UNIAPP离线打包配置&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Nestjs的微服务</title><link>https://blog.loli.wang/blog/2024-05-04-manest/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-05-04-manest/doc/</guid><description>使用NestJs的微服务</description><pubDate>Sat, 04 May 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;2024 年 5月 3日&lt;/h2&gt;
+&lt;p&gt;到晚上了，QQ没人找，微信没人回。当然这么好的假日应该出去玩才对，但是我不愿意浪费这点时间给自己好好休息。偶然看到了某技术群聊微服务，很有兴趣，看资料折腾下吧。&lt;/p&gt;
+&lt;h2&gt;使用nest的cli工具创建项目&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# 全局安装nestjs的cli
+npm i -g @nestjs/cli
+
+# 安装第一个项目
+nest new aa
+
+# 启动aa项目
+cd aa
+pnpm run start
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-04-MANest/01.png&quot; alt=&quot;切1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;启动访问成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-04-MANest/02.png&quot; alt=&quot;切2&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;创建一个 微服务项目&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# 通过cli安装一个新的项目
+nest new micro-service
+
+# 安装nestjs 微服务插件
+pnpm add @nestjs/microservices
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;引用 @nestjs/microservices 修改main.ts&lt;/h2&gt;
+&lt;p&gt;将原本启动http服务,改为启动微服务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// main.ts
+
+import { NestFactory } from &apos;@nestjs/core&apos;;
+import { AppModule } from &apos;./app.module&apos;;
+import { Transport, MicroserviceOptions } from &apos;@nestjs/microservices&apos;;
+
+async function bootstrap() {
+  // const app = await NestFactory.create(AppModule);
+
+  const app = await NestFactory.createMicroservice&amp;lt;MicroserviceOptions&amp;gt;(
+    AppModule,
+    {
+      transport: Transport.TCP,
+      options: {
+        port: 8888,
+      },
+    },
+  );
+
+  await app.listen();
+}
+bootstrap();
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改 &lt;strong&gt;app.controller.ts&lt;/strong&gt; 改为接受Message通知，&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// app.controller.ts
+
+import { Controller, Get } from &apos;@nestjs/common&apos;;
+import { AppService } from &apos;./app.service&apos;;
+import { MessagePattern } from &apos;@nestjs/microservices&apos;;
+
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @MessagePattern(&apos;sum&apos;)
+  sum(numArr: Array&amp;lt;number&amp;gt;): number {
+    return numArr.reduce((total, item) =&amp;gt; total + item, 0);
+  }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;改造 aa 项目，让他能够连接微服务&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# 安装微服务依赖
+pnpm add @nestjs/microservices
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;进入 app.module.ts 注册&lt;strong&gt;微服务&lt;/strong&gt;那个项目,指定TCP端口为8888，让他直到我们的微服务项目端口是8888&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { Module } from &apos;@nestjs/common&apos;;
+import { AppController } from &apos;./app.controller&apos;;
+import { AppService } from &apos;./app.service&apos;;
+import { ClientsModule, Transport } from &apos;@nestjs/microservices&apos;;
+
+@Module({
+  imports: [
+
+    ClientsModule.register([
+      {
+        name: &apos;MICRO_SERVICE&apos;,
+        transport: Transport.TCP,
+        options: {
+          port: 8888,
+        },
+      },
+    ]),
+
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-04-MANest/03.png&quot; alt=&quot;切2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这样就注册完了。 然后在 &lt;strong&gt;aa&lt;/strong&gt; 项目中注册客户端代理&lt;strong&gt;clientProxy&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;//app.controller.ts
+
+import { Controller, Get, Query, Inject } from &apos;@nestjs/common&apos;;
+// import { AppService } from &apos;./app.service&apos;;
+import { ClientProxy } from &apos;@nestjs/microservices&apos;;
+import { Observable } from &apos;rxjs&apos;;
+
+@Controller()
+export class AppController {
+  constructor(@Inject(&apos;MICRO_SERVICE&apos;) private serviceClient: ClientProxy) {}
+
+  @Get()
+  server(@Query(&apos;num&apos;) str): Observable&amp;lt;number&amp;gt; {
+    const numArr = str.split(&apos;,&apos;).map((item) =&amp;gt; parseInt(item));
+
+    return this.serviceClient.send(&apos;sum&apos;, numArr);
+  }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;重启下微服务，查看结果&lt;/p&gt;
+&lt;p&gt;访问 aa 服务的看看是否有进行一个累加的计算 http://localhost:3000/?num=1,2,3&lt;/p&gt;
+&lt;p&gt;能够正常进行的互相传递接收，微服务配置成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-04-MANest/04.png&quot; alt=&quot;切2&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-04-MANest/05.png&quot; alt=&quot;切2&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;照葫芦画瓢整的，虽然能够理解，但是目前没有合适的东西能让我启用这一套，当作学习记录一下吧&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://juejin.cn/post/7207637337571901495?searchId=202405032014240A690D4981415C621CB4&quot;&gt;神说要有光 - 掘金&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/itmowang/nest-microservices-demo&quot;&gt;我的github - nestjs 微服务demo&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>搭建第一个Angular的Demo</title><link>https://blog.loli.wang/blog/2024-05-05-angulardevinit/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-05-05-angulardevinit/doc/</guid><description>搭建第一个Angular项目</description><pubDate>Sat, 04 May 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;2024 年 5月 5日&lt;/h2&gt;
+&lt;p&gt;练完车，回来了, 明天又要上班了。工作是没有什么能给人内心带来充实的。只有学点东西能带来一点。&lt;/p&gt;
+&lt;h2&gt;为什么要学Angular&lt;/h2&gt;
+&lt;p&gt;身边太多Angular爱好者了，感觉不稍微学点融不进圈子，让人有很大的落差感。&lt;/p&gt;
+&lt;p&gt;我认为想熟悉一个前端框架，必须要从他的生态入手，脚手架是官方提供的一个工具，我也需要从脚手架开始这样才能一步一步慢慢理解&lt;/p&gt;
+&lt;h2&gt;Angular官网&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;https://angular.dev/overview
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;安装Angular官方的CLI工具&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;npm install -g @angular/cli
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;使用 NG 指令搭建一个新项目&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;ng new &amp;lt;项目名&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-05-angulardevInit/01.png&quot; alt=&quot;切1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;安装成功后 ， 使用指令 &lt;strong&gt;pnpm run start&lt;/strong&gt;进行启动。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-05-angulardevInit/02.png&quot; alt=&quot;切2&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;虽然使用cli安装项目成功跑起来了,语法也很熟悉，还需要想办法熟下，挖个坑&lt;strong&gt;后续使用Angular做我的图床程序&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://angular.dev/guide/templates/interpolation&quot;&gt;Anglar官网&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>使用Nestjs + prisma 构建 REST API</title><link>https://blog.loli.wang/blog/2024-05-03-prismanestapi/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-05-03-prismanestapi/doc/</guid><description>使用nestjs + prisma构建REST API</description><pubDate>Fri, 03 May 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;2024 年 5月 3日&lt;/h2&gt;
+&lt;p&gt;难得的51假期,5天假期，本应该是好好去玩的一天，可惜没有什么地方可以去，并且还报了驾校正在练车，正好今天没有安排，正好熟悉下nestjs吧。&lt;/p&gt;
+&lt;h3&gt;使用nest cli 安装nest空项目&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 创建空的 nest 项目
+npx @nestjs/cli new &amp;lt;项目名&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/01.png&quot; alt=&quot;切01&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;启动正常&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/02.png&quot; alt=&quot;切03&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;安装prisma, 并初始化&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 安装prisma
+pnpm install -D prisma
+
+# 初始化prisma
+npx prisma init
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;会增加一个prisma 的文件夹， 里面的schenma.prisma 是我们的数据库配置文件&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/03.png&quot; alt=&quot;切03&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/04.png&quot; alt=&quot;切04&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;本地安装mysql&lt;/h3&gt;
+&lt;p&gt;比较常规，每个人情况不一样，我在这里使用的mysql&lt;/p&gt;
+&lt;h3&gt;配置env环境变量&lt;/h3&gt;
+&lt;p&gt;在初始化prisma的时候，会生成一个env的配置文件，使用env文件配置环境变量,如果你是用的其他的数据库参考文档
+https://www.prisma.io/docs/orm/reference/connection-urls&lt;/p&gt;
+&lt;p&gt;我这里使用的是mysql，先修改指定数据库然后修改env配置&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// prisma/schema.prisma
+datasource db {
+  provider = &quot;mysql&quot;
+  url      = env(&quot;DATABASE_URL&quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;DATABASE_URL=&quot;DATABASE_URL=&quot;mysql://prisma:123456@localhost:3306/prisma&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;增加数据模型&lt;/h3&gt;
+&lt;p&gt;此处是定义了一个 Article的表 内有相关字段，以及字段代表的类型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// prisma/schema.prisma
+
+model Article {
+  id          Int      @id @default(autoincrement())
+  title       String   @unique
+  description String?
+  body        String
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;第一次执行&lt;/h3&gt;
+&lt;p&gt;当你定义好数据模型后 我们需要执行一次指令 让数据库和prisma同步, 你也可以记录到package.json中的script指令中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 指令
+npx prisma migrate dev --name &quot;init&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/05.png&quot; alt=&quot;切05&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/06.png&quot; alt=&quot;切06&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;执行成功后，这里可以看到我们的数据库内自动生成了，我们刚刚设置的模型。每次修改我们的数据库模型都要去生成一遍。&lt;/p&gt;
+&lt;h3&gt;增加默认数据填充数据库&lt;/h3&gt;
+&lt;p&gt;创建一个为 &lt;strong&gt;prisma/seed.ts&lt;/strong&gt; 的文件，&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+// prisma/seed.ts
+
+import { PrismaClient } from &apos;@prisma/client&apos;;
+
+// initialize Prisma Client
+const prisma = new PrismaClient();
+
+async function main() {
+  // create two dummy articles
+  const post1 = await prisma.article.upsert({
+    where: { title: &apos;Prisma Adds Support for MongoDB&apos; },
+    update: {},
+    create: {
+      title: &apos;Prisma Adds Support for MongoDB&apos;,
+      body: &apos;Support for MongoDB has been one of the most requested features since the initial release of...&apos;,
+      description:
+        &quot;We are excited to share that today&apos;s Prisma ORM release adds stable support for MongoDB!&quot;,
+      published: false,
+    },
+  });
+
+  const post2 = await prisma.article.upsert({
+    where: { title: &quot;What&apos;s new in Prisma? (Q1/22)&quot; },
+    update: {},
+    create: {
+      title: &quot;What&apos;s new in Prisma? (Q1/22)&quot;,
+      body: &apos;Our engineers have been working hard, issuing new releases with many improvements...&apos;,
+      description:
+        &apos;Learn about everything in the Prisma ecosystem and community from January to March 2022.&apos;,
+      published: true,
+    },
+  });
+
+  console.log({ post1, post2 });
+}
+
+// execute the main function
+main()
+  .catch((e) =&amp;gt; {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () =&amp;gt; {
+    // close Prisma Client at the end
+    await prisma.$disconnect();
+  });
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在package.json中添加, 该命令使用 npx prisma db seed 的时候会自动执行，这样数据库内就会自动增加2条数据&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx prisma db seed
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt; &quot;prisma&quot;: {
+    &quot;seed&quot;: &quot;ts-node prisma/seed.ts&quot;
+ }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/07.png&quot; alt=&quot;切06&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/08.png&quot; alt=&quot;切08&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;创建 Prisma 服务&lt;/h3&gt;
+&lt;p&gt;nest提供了一个直接使用cli生成模块和服务的指令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx nest generate module prisma
+npx nest generate service prisma
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;设置 swagger&lt;/h3&gt;
+&lt;p&gt;Swagger是一个使用 API 规范记录 API 的工具。 Nest 有一个专门用于 Swagger 的模块。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 安装@nestjs/swagger 和  swagger-ui-express
+pnpm install --save @nestjs/swagger swagger-ui-express
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在 &lt;strong&gt;main.ts&lt;/strong&gt;中初始化 swagger&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { NestFactory } from &apos;@nestjs/core&apos;;
+import { AppModule } from &apos;./app.module&apos;;
+import { SwaggerModule, DocumentBuilder } from &apos;@nestjs/swagger&apos;;
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  const config = new DocumentBuilder()
+    .setTitle(&apos;Median&apos;)
+    .setDescription(&apos;The Median API description&apos;)
+    .setVersion(&apos;0.1&apos;)
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup(&apos;api&apos;, app, document);
+
+  await app.listen(3000);
+}
+bootstrap();
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;我们启动一下,可以看到 &lt;strong&gt;/api&lt;/strong&gt; 加上路径后，swagger访问正常&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/09.png&quot; alt=&quot;切08&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;生成 REST 资源&lt;/h3&gt;
+&lt;p&gt;可以看到swagger虽然正常了 但是我们目前还没有任何的接口去供我们查阅api。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 快速生成REST资源
+npx nest generate resource
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;使用指令可以快速帮我们生成&lt;strong&gt;REST&lt;/strong&gt;资源，供我们修改使用，重新启动一下。可以看到出现了我们需要的REST接口资源&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/10.png&quot; alt=&quot;切10&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;连接prisma 进行CURD&lt;/h3&gt;
+&lt;p&gt;可以看到我们的api资源对应的，都是 &lt;strong&gt;@Body(),@Query()&lt;/strong&gt; 等装饰器来生成这个API。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/11.png&quot; alt=&quot;切11&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;但是要让 &lt;strong&gt;Swagger&lt;/strong&gt; 访问到我们的&lt;strong&gt;prsima&lt;/strong&gt; 进行&lt;strong&gt;CURD&lt;/strong&gt;操作还需要一定的步骤,进入到我们的articles.module.ts文件，引入Prisma的模型.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// src/articles/articles.module.ts
+
+import { Module } from &apos;@nestjs/common&apos;;
+import { ArticlesService } from &apos;./articles.service&apos;;
+import { ArticlesController } from &apos;./articles.controller&apos;;
+import { PrismaModule } from &apos;src/prisma/prisma.module&apos;;
+
+@Module({
+  controllers: [ArticlesController],
+  providers: [ArticlesService],
+  imports: [PrismaModule],
+})
+export class ArticlesModule {}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;将 &lt;strong&gt;PrismaService&lt;/strong&gt;注入到&lt;strong&gt;ArticlesService&lt;/strong&gt; 中, 并且使用他来访问数据库，需要增加一个构造函数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// src/articles/articles.service.ts
+import { Injectable } from &apos;@nestjs/common&apos;;
+import { CreateArticleDto } from &apos;./dto/create-article.dto&apos;;
+import { UpdateArticleDto } from &apos;./dto/update-article.dto&apos;;
+import { PrismaService } from &apos;src/prisma/prisma.service&apos;;
+
+@Injectable()
+export class ArticlesService {
+  constructor(private prisma: PrismaService) {}
+    //   ...CURD
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;更改一个测试接口用来测试&lt;/h3&gt;
+&lt;p&gt;我只需要简单写一个接口，查询出表&lt;strong&gt;article&lt;/strong&gt;所有数据。看看是否成功 。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// src/articles/articles.service.ts
+
+import { Injectable } from &apos;@nestjs/common&apos;;
+import { CreateArticleDto } from &apos;./dto/create-article.dto&apos;;
+import { UpdateArticleDto } from &apos;./dto/update-article.dto&apos;;
+import { PrismaService } from &apos;src/prisma/prisma.service&apos;;
+
+@Injectable()
+export class ArticlesService {
+  constructor(private prisma: PrismaService) {}
+  create(createArticleDto: CreateArticleDto) {
+    return &apos;This action adds a new article&apos;;
+  }
+
+  findAll() {
+    return this.prisma.article.findMany({});
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} article`;
+  }
+
+  update(id: number, updateArticleDto: UpdateArticleDto) {
+    return `This action updates a #${id} article`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} article`;
+  }
+}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/12.png&quot; alt=&quot;切12&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/13.png&quot; alt=&quot;切13&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-05-03-prismaNestApi/14.png&quot; alt=&quot;切14&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;相关文章&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.prisma.io/blog/nestjs-prisma-rest-api-7D056s1BmOL0#introduction&quot;&gt;Prsima 官网&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/itmowang/prisma-nest-mysql-demo&quot;&gt;Github编写的示例DEMO&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>关于帮网友解决linux安装Nginx，并配置SSL这回事</title><link>https://blog.loli.wang/blog/2024-04-30-linuxnginx/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-04-30-linuxnginx/doc/</guid><description>关于帮网友解决linux安装Nginx这回事</description><pubDate>Tue, 30 Apr 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;忙碌的一天&lt;/h2&gt;
+&lt;p&gt;前天非常忙碌，客户那边问题挺多的，忙了一天解决了大部分事情。5:30分的时候，一网友问出了奇怪的问题。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-04-30-linuxnginx/01.png&quot; alt=&quot;切01&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;浅想一下
+&lt;code&gt;他或许是想问这个Nginx配置前端来配置好，还是后端配置好。&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-04-30-linuxnginx/02.png&quot; alt=&quot;切01&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;哦。。原来是NGINX让他来配置了，而他这边有点问题&lt;/p&gt;
+&lt;p&gt;远程帮忙看了下，用的 &lt;strong&gt;腾讯云&lt;/strong&gt; , 并且自带Nginx，尝试直接配置反向代理。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+#user  nobody;
+worker_processes  1;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+   server {
+    listen 443 ssl;
+    server_name your-domain.com;
+ 
+    ssl_certificate ./ssl/nxesp.cn_bundle.crt; # SSL证书文件路径
+    ssl_certificate_key ./ssl/nxesp.cn_bundle.key; # SSL证书密钥文件路径
+ 
+    # SSL配置
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:SSL:50m;
+    ssl_session_tickets off;
+ 
+    # 指定加密套件（Suites）
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers &apos;ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384&apos;;
+    ssl_prefer_server_ciphers on;
+ 
+    location / {
+        proxy_pass https://your-backend-server; # 后端服务器地址
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;看上去 配置没有问题，但是腾讯云上自带的nginx没有ssl套件，所以需要手动安装。我觉着太麻烦了。。直接重装吧&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;卸载nginx&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;
+killall nginx
+
+yum remove nginx
+
+rm -rf /usr/local/nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;安装nginx&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;yum install nginx
+
+#测试启动
+systemctl start nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;访问相应端口 安装成功&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;配置SSL&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;SSL文件放入到 /etc/nginx/conf/ssl/ (我个人喜欢新建一个ssl文件夹存放ssl文件，这样方便直接./去调用),将我们的原有配置复制到新的配置文件中&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; server {
+    listen 443 ssl;
+    server_name your-domain.com;
+ 
+    ssl_certificate ./ssl/nxesp.cn_bundle.crt; # SSL证书文件路径
+    ssl_certificate_key ./ssl/nxesp.cn_bundle.key; # SSL证书密钥文件路径
+ }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;检测 Nginx 配置文件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;cd /etc/nginx/
+
+# 检查配置文件语法是否正确
+nginx -t
+
+# 重启Nginx
+systemctl restart nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;正常后，会显示类似下面的信息：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; nginx success .... （具体不记得）
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-04-30-linuxnginx/03.png&quot; alt=&quot;切03&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;嗯 看上去没问题了~&lt;/p&gt;
+&lt;h4&gt;Centos 常用NGinx命令&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;
+# 启动nginx
+systemctl start nginx
+
+# 停止nginx
+systemctl stop nginx
+
+# 重启nginx
+systemctl restart nginx
+
+# 查看nginx状态
+systemctl status nginx
+
+# 配置nginx开机自启动
+systemctl enable nginx
+
+# 配置nginx开机不启动
+systemctl disable nginx
+
+# 查看nginx日志
+cat /var/log/nginx/error.log
+
+# 查看nginx进程
+ps -ef | grep nginx
+
+# 查看nginx配置文件
+cat /etc/nginx/nginx.conf
+
+# 检查配置文件语法是否正确
+nginx -t
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>记一次配置小主机装Ubuntu</title><link>https://blog.loli.wang/blog/2024-04-15-linuxserver/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-04-15-linuxserver/doc/</guid><description>记一次配置小主机装Ubuntu</description><pubDate>Mon, 15 Apr 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;因为 Switch 送人了，而在 PC 上玩模拟不痛快，就想着整个小主机装个 ubuntu 然后装模拟器给电视机用&lt;/h2&gt;
+&lt;h1&gt;&lt;strong&gt;预算定为 500 块&lt;/strong&gt;&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;选购小主机&lt;/p&gt;
+&lt;p&gt;在选择小主机的时候，我观察了很多，如果买现成的 ，网上大部分 cpu 大部分都是 N100 的处理器，性能偏弱，价格也在 1000 块钱左右，并且硬盘很少，内存也就给 8g，并不能满足日常生活需要，所以考虑选择自己配，看了许多配置后，选定如下配置。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;CPU：酷睿 i5-8500T 散片 (淘宝:357 RMB)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;RAM：海力士 ddr4 3200mhz *2 (咸鱼: 160 RMB)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;硬盘：金士顿 m2 500G SSD (咸鱼: 210 RMB)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;主机: 准系统 DELL 戴尔 7060MFF (咸鱼:330 RMB)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;合计 : 1057 RMB&lt;/p&gt;
+&lt;p&gt;以上配置，个人感觉还是能够接受的，虽然超预算了。。。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/01.jpg&quot; alt=&quot;切图01&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/02.png&quot; alt=&quot;切图02&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;装配小主机&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;准系统的小主机装配很简单，把内存 cpu 硬盘安装好，插上电源直接用就行。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/03.jpg&quot; alt=&quot;切图03&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/04.jpg&quot; alt=&quot;切图04&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/05.jpg&quot; alt=&quot;切图05&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/06.jpg&quot; alt=&quot;切图06&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/07.jpg&quot; alt=&quot;切图07&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/08.jpg&quot; alt=&quot;切图08&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;点亮小主机&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;顺利点亮小主机，二手收的硬盘里装有一个自带的windows 11，发现上一任硬盘装的各种资料。。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/09.jpg&quot; alt=&quot;切图09&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/10.jpg&quot; alt=&quot;切图10&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/11.jpg&quot; alt=&quot;切图11&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/12.jpg&quot; alt=&quot;切图12&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/13.jpg&quot; alt=&quot;切图13&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;嗯。。。 虽然离谱。给他格式化吧。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;给小主机装ubuntu系统&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;小主机装配完毕了，是时候安装linux系统了，我自己的想法是先安装图形化界面的，后面再看着办，&lt;/p&gt;
+&lt;p&gt;原本的想法&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;分配10G的硬盘，10G的硬盘里装ios镜像，然后安装ubuntu&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因为u盘忘记放哪儿了，就准备采取上面的方案。但是试了很多次，总是出现错误。一会说不能插入网卡，等各种问题，好不容易进了安装界面，一会说不能找不到U盘。 (毕竟我也只有一块硬盘)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/14.jpg&quot; alt=&quot;切图14&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/15.jpg&quot; alt=&quot;切图15&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;连夜买了个u盘&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;因为这问题纠结太久了，夜晚比较浮躁，美团买了个u盘，用了优惠券 16g 20RMB，&lt;/p&gt;
+&lt;p&gt;使用 &lt;strong&gt;Etcher&lt;/strong&gt; 工具少烧录了，直接uefi模式启动，顺利安装 unbuntu&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-04-15-linuxServer/17.jpg&quot; alt=&quot;切图16&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;最终结果。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;我最后还是失败了。在安装模拟器的过程中，发现到生态多烂多不完善，各种工具安装不上，安装好模拟器模拟器还乱码。和服务器语言有关，切换后正常了，下载模拟器游戏也各种不方便，最后还是放弃。。。 （或许过几天我还是会继续尝试下），但是感觉除了做服务器环境，用linux的话，还是不怎么好用的。。。&lt;/p&gt;
+</content:encoded></item><item><title>(使用一年React后的回顾) React 常用 Hooks</title><link>https://blog.loli.wang/blog/2024-03-29-react-2/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-03-29-react-2/doc/</guid><description>React 常用Hooks</description><pubDate>Mon, 01 Apr 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;useState&lt;/h1&gt;
+&lt;p&gt;&lt;strong&gt;useState&lt;/strong&gt; 是一个 React 的 hook ，它的作用是让你向组件添加一个状态变量。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const [state, setState] = useState(initialState);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;useState 有两个参数&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;useState 返回的第一个参数，为我们需要展示或者使用的最新的值&lt;/li&gt;
+&lt;li&gt;useState 的第二个参数，这个函数是一个 set 函数，可以传入任意变量，让其 state 返回新的值。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;function App() {
+    const [num, setNum] = useState(1);
+    return (
+        &amp;lt;div className=&quot;App&quot;&amp;gt;
+            &amp;lt;button onClick={() =&amp;gt; setNum(num + 1)}&amp;gt;{num}&amp;lt;/button&amp;gt;
+        &amp;lt;/div&amp;gt;
+    );
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;useEffect&lt;/h1&gt;
+&lt;p&gt;useEffect ，是副作用，副作用是指在组件在渲染期间发生的操作，如数据获取，订阅事件，手动操作 dom 等，在函数组件中，由于没有生命周期方法，我们无法再特定的时间执行这些操作，useEffect 正好解决了这个问题&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;async function getData() {
+    return await new Promise((resolve, reject) =&amp;gt; {
+        setTimeout(() =&amp;gt; {
+            resolve(666);
+        }, 3000);
+    });
+}
+
+function App() {
+    const [num, setNum] = useState(1);
+
+    useEffect(() =&amp;gt; {
+        getData().then((data: any) =&amp;gt; {
+            setNum(data);
+        });
+    }, []);
+
+    return (
+        &amp;lt;div className=&quot;App&quot;&amp;gt;
+            &amp;lt;button onClick={() =&amp;gt; setNum((prevNum) =&amp;gt; prevNum + 1)}&amp;gt;
+                {num}
+            &amp;lt;/button&amp;gt;
+        &amp;lt;/div&amp;gt;
+    );
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;useLayoutEffect&lt;/h1&gt;
+&lt;p&gt;在 react 中 useLayoutEffect 和 useEffect 是差不都的，在绝大多数情况下，但是事实上是有一定的区别&lt;/p&gt;
+&lt;p&gt;useEffect 会在渲染内容更新到 dom 上后执行，不会阻塞 dom 的更新
+useLayoutEffect 会在渲染更新到 dom 之前就执行，会阻塞 dom 的更新&lt;/p&gt;
+&lt;h1&gt;useReducer&lt;/h1&gt;
+&lt;p&gt;用 useState 是直接修改值，如果想在修改值之前，执行一些操作，可以使用 useReducer&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function App() {
+
+  interface Data {
+    result: number,
+  }
+
+  interface Action {
+    type: &apos;add&apos; | &apos;minus&apos;,
+    num: number
+  }
+
+  function reducer(state: Data, action: Action) {
+    switch (action.type) {
+      case &apos;add&apos;:
+        return {
+          result: state.result + action.num
+        }
+      case &apos;minus&apos;:
+        return {
+          result: state.result - action.num
+        }
+    }
+    return state
+  }
+
+  const [res, dispatch] = useReducer&amp;lt;Reducer&amp;lt;Data,Action&amp;gt;&amp;gt;(reducer, { result: 0 })
+
+  return (
+    &amp;lt;div className=&quot;App&quot;&amp;gt;
+      &amp;lt;button onClick={() =&amp;gt; {
+        dispatch({ type: &apos;add&apos;, num: 1 })
+      }}&amp;gt;{res.result }&amp;lt;/button&amp;gt;
+    &amp;lt;/div&amp;gt;
+  );
+}
+
+export default App;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;useRef&lt;/h1&gt;
+&lt;p&gt;useRef 用来获取 dom 节点，或者获取组件的实例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;function App() {
+    const inputRef = useRef &amp;lt; HTMLInputElement &amp;gt; null;
+
+    useEffect(() =&amp;gt; {
+        inputRef.current?.focus();
+    }, []);
+
+    return (
+        &amp;lt;div className=&quot;App&quot;&amp;gt;
+            &amp;lt;input type=&quot;text&quot; ref={inputRef} /&amp;gt;
+        &amp;lt;/div&amp;gt;
+    );
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1&gt;forwardRef + useImperativeHandle&lt;/h1&gt;
+&lt;p&gt;如果想把子组件的 ref 传递给父组件使用，可以使用 forwardRef 和 useImperativeHandle&lt;/p&gt;
+&lt;p&gt;比如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import React, { useRef } from &quot;react&quot;;
+import &quot;./App.css&quot;;
+
+const childrenComponent: React.ForwardRefRenderFunction&amp;lt;HTMLInputElement&amp;gt; = (
+    props,
+    ref
+) =&amp;gt; {
+    return (
+        &amp;lt;div&amp;gt;
+            &amp;lt;input ref={ref}&amp;gt;&amp;lt;/input&amp;gt;
+        &amp;lt;/div&amp;gt;
+    );
+};
+
+const Wraped = React.forwardRef(childrenComponent);
+
+function App() {
+    const ref = useRef &amp;lt; HTMLInputElement &amp;gt; null;
+
+    return (
+        &amp;lt;div&amp;gt;
+            &amp;lt;Wraped ref={ref} /&amp;gt;
+        &amp;lt;/div&amp;gt;
+    );
+}
+
+export default App;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-29-react-2/01.png&quot; alt=&quot;切图01&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;useContext&lt;/h1&gt;
+&lt;p&gt;跨任意组件传递数据，一般都会使用useContext来完成&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import React, { createContext, useContext } from &apos;react&apos;;
+import &apos;./App.css&apos;;
+
+const Context = createContext(&quot;test&quot;)
+
+const Components:React.FC = () =&amp;gt; {
+  const value = useContext(Context)
+ return &amp;lt;div&amp;gt;Context的值是 {value}&amp;lt;/div&amp;gt;
+}
+
+function App() {
+  return &amp;lt;Context.Provider value=&apos;222&apos;&amp;gt;
+    &amp;lt;div&amp;gt;&amp;lt;Components/&amp;gt;&amp;lt;/div&amp;gt;
+  &amp;lt;/Context.Provider&amp;gt; 
+}
+
+export default App;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-29-react-2/02.png&quot; alt=&quot;切图02&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-29-react-2/03.png&quot; alt=&quot;切图03&quot; /&gt;&lt;/p&gt;
+&lt;h1&gt;memo + useMemo + useCallback&lt;/h1&gt;
+&lt;p&gt;memo : 只有组件的props发生变化的时候，才会触发组件的重新渲染，否则总是返回缓存中的结果&lt;/p&gt;
+&lt;p&gt;useMemo : 一般通过减少不必要的复杂计算来优化性能,类似于计算属性&lt;/p&gt;
+&lt;p&gt;useCallback : 一般用于给子组件传递回调函数时，减少子组件的渲染次数，从而优化性能。&lt;/p&gt;
+</content:encoded></item><item><title>Windows情况下，Vite配置https证书</title><link>https://blog.loli.wang/blog/2024-03-25-vite-https/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-03-25-vite-https/doc/</guid><description>Windows情况下，Vite配置https证书</description><pubDate>Mon, 25 Mar 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;出现问题&lt;/h1&gt;
+&lt;p&gt;和往常一样，工作日工作没做完，默默地的周六来公司加班修改项目代码，周末写没人打扰写代码真的是太爽了！，感觉一切顺顺利利没什么问题。下班走的时候还心里想像 &lt;strong&gt;我写的代码就是诗&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;直到周一，同事问我开发环境有BUG，我还在想我写的代码怎么可能会有Bug，迅速查看问题，发现问题&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;crypto.randomUUID()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;我只是生成个UUID，有什么问题？？？&lt;/p&gt;
+&lt;p&gt;本地开发环境下看上去也没问题啊，我对我同事产生了质疑，我以为是他浏览器的问题，但是我发现开发环境没问题，发现localhost环境地址上确实没问题，内网地址上确实这个问题，&lt;/p&gt;
+&lt;p&gt;打开MDN 翻看API兼容程度，以及正常的使用操作&lt;/p&gt;
+&lt;p&gt;tips
+&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;我明白了问题所在，但是又不想使用第三方库，考虑在本地配置下Https&lt;/p&gt;
+&lt;h2&gt;vite 修改&lt;/h2&gt;
+&lt;p&gt;Vite 默认使用的是http 需要修改下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# vite.config.ts
+server: {
+    https:true
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;# package.json
+&quot;scripts&quot;:{
+    &quot;dev&quot;: &quot;vite --host&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;mkcert&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;mkcert&lt;/strong&gt; 是一个创建自签名证书的工具&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 全局安装mkcert
+npm install -g mkcert
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写相应的sh脚本,方便初始化证书&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+DIR=&quot;./cert&quot;
+
+echo &quot;开始执行portmax cert脚本&quot;
+
+if [ ! -e $DIR ]
+then 
+     mkdir -p $DIR
+fi
+
+cd $DIR
+
+mkcert create-ca 
+
+mkcert create-cert --domains localhost 127.0.0.1 192.168.0.61
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/03.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;windows 安装证书&lt;/h2&gt;
+&lt;p&gt;打开 cert文件夹 ，双击ca.crt 和 cert.crt , 点开后选择 &lt;strong&gt;&quot;安装证书&quot;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/04.png&quot; alt=&quot;切图4&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/05.png&quot; alt=&quot;切图5&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;但是看我们生成的证书 windows 还是不受信任的，我们需要将此证书启用信任&lt;/p&gt;
+&lt;h3&gt;windows 将CA证书启用信任&lt;/h3&gt;
+&lt;p&gt;使用 &quot; win+R &quot; 打开运行对话框。输入 &quot;mmc&quot; 然后回车&lt;/p&gt;
+&lt;p&gt;选择 左上角 &quot;文件&quot;，选择管理或删除管理单元&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/06.png&quot; alt=&quot;切图6&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在 &lt;strong&gt;&quot;管理或删除管理单元&quot;&lt;/strong&gt; 选择证书，并&lt;strong&gt;添加证书&lt;/strong&gt;，回到&lt;strong&gt;mmc&lt;/strong&gt;控制台&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/07.png&quot; alt=&quot;切图7&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/08.png&quot; alt=&quot;切图8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;选择 &lt;strong&gt;受信任的根证书颁发机构&lt;/strong&gt;，然后选择&lt;strong&gt;证书&lt;/strong&gt;, 右键选择&lt;strong&gt;任务&lt;/strong&gt;， 导入我们项目文件里的证书&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/09.png&quot; alt=&quot;切图9&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/10.png&quot; alt=&quot;切图10&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;接下来就重回上面的步骤 双击ca.crt 和 cert.crt ，然后点击安装证书，可以看到当前证书是受信任的了，导入选择 &lt;strong&gt;本地计算机&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/11.png&quot; alt=&quot;切图11&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;vite中验证证书是否生效&lt;/h3&gt;
+&lt;p&gt;修改 vite.config.ts&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;server: { 
+ https: {
+   cert: fs.readFileSync(path.join(__dirname, &apos;keys/cert.crt&apos;)),
+   key: fs.readFileSync(path.join(__dirname, &apos;keys/cert.key&apos;)),
+ },
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/12.png&quot; alt=&quot;切图12&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;验证成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/13.png&quot; alt=&quot;切图13&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-03-25-vite-https/14.png&quot; alt=&quot;切图14&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;后续。&lt;/h3&gt;
+&lt;p&gt;虽然可以本地可以https了，但是去同事那边访问，也要去他那边导入证书 这样会显得很麻烦，因为是开发环境，做不了什么很好的操作，所以还是不用浏览器的生成 UUID的API了 。&lt;/p&gt;
+&lt;p&gt;还有，如果是为了本地测试，并且是Vite的话，完全没必要使用 &lt;strong&gt;mkcert&lt;/strong&gt; , 有相关的Vite插件。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/vitejs/vite-plugin-basic-ssl&quot;&gt;vite-plugin-basic-ssl&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;相关资料&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/vitejs/vite-plugin-basic-ssl&quot;&gt;vite-plugin-basic-ssl&lt;/a&gt;
+&lt;a href=&quot;https://www.npmjs.com/package/mkcert#create-a-certificate&quot;&gt;mkcert&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>tailwindcss中iconify的使用</title><link>https://blog.loli.wang/blog/2024-02-04-iconifycss/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-02-04-iconifycss/doc/</guid><description>iconify的使用</description><pubDate>Sun, 04 Feb 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;起因&lt;/h2&gt;
+&lt;p&gt;最近正在业余时间编写 Vue 的组件库, 设计完按钮组件后正准备设计 Icon 组件，看大佬 antfu 巨佬的支持过的 iconify 组件库，发现 iconify 的使用方法和我之前使用的 iconfont、font-awesome 等图标库的使用方法完全一致，于是决定使用 iconify 来替换 iconfont、font-awesome 等图标库。&lt;/p&gt;
+&lt;h2&gt;iconify 的介绍&lt;/h2&gt;
+&lt;p&gt;iconify 是基于 SVG 的图标库，可以使用 iconify 来替换 iconfont、font-awesome 等图标库。拥有市面上所有的流行图标库。&lt;/p&gt;
+&lt;h2&gt;个人使用场景&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;tailwindcss&lt;/code&gt; 和 &lt;code&gt;vue3&lt;/code&gt;&lt;/p&gt;
+&lt;h2&gt;使用&lt;/h2&gt;
+&lt;p&gt;安装&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pnpm add @iconify-json/mdi-light --D
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;安装 tailwind 插件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pnpm add @iconify/tailwind -D
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;tailwindcss 中使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { addDynamicIconSelectors } from &apos;@iconify/tailwind&apos;
+
+{
+    &quot;plugins&quot;: [
+        addDynamicIconSelectors()
+    ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;代码中使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+ &amp;lt;span class=&quot;icon-[mdi-light--home]&quot; /&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;成功演示&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-02-04-iconifycss/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;如果你不喜欢 tailwindcss 的插件，也可以使用原生的代码或者vue代码使用&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;// vue代码
+import { Icon } from &apos;@iconify/vue&apos;
+
+&amp;lt;Icon icon=&quot;mdi-light:home&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;相关资料&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://iconify.design/&quot;&gt;iconify 官方文档&lt;/a&gt;
+&lt;a href=&quot;https://github.com/iconify/iconify/tree/main/plugins/tailwind&quot;&gt;tailwindcss 如何使用 入口文档&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Vue3 打包组件库出错 Cannot read properties of null (reading &apos;isCE&apos;)</title><link>https://blog.loli.wang/blog/2024-01-24-vuecomponentserrorisce/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-01-24-vuecomponentserrorisce/doc/</guid><description>Vue3 打包组件库出错 Cannot read properties of null (reading &apos;isCE&apos;)</description><pubDate>Wed, 24 Jan 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;写了套 React 的组件库后，觉着无法满足自己的需求，又删了重写了。。 从搭建 Monorepo，到编写组件测试的时候就发现了问题。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-24-vueComponentsErrorIsCe/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;原因&lt;/p&gt;
+&lt;p&gt;造成这个问题是因为又 2 个不同的 vue 版本，因为我打包的组件库内有个 vue 的版本，而靶场用例上也有个 vue 版本，2 个 vue 版本产生冲突，导致这个错误&lt;/p&gt;
+&lt;p&gt;解决方案&lt;/p&gt;
+&lt;p&gt;组件库内部屏蔽 vue 导出,修改 vite.config.ts&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# vite.config.ts
+
+rollupOptions: {
+    external: [&apos;vue&apos;],
+    output: {
+      globals: {
+        vue: &apos;Vue&apos;,
+      },
+    },
+ },
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;成功解决&lt;/p&gt;
+</content:encoded></item><item><title>TS 中 keyof 和 typeof</title><link>https://blog.loli.wang/blog/2024-01-20-typeofkeyof/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-01-20-typeofkeyof/doc/</guid><description>TS 中 keyof 和 typeof</description><pubDate>Sun, 21 Jan 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;keyof&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;keyof&lt;/code&gt; 是一个类型操作符, 用于获取一个类型所有的键值(属性名的)联合类型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Todo {
+  name:string,
+  age:number,
+  address:string
+}
+
+// 通过keyof 获取类型的key
+type todoKeys = keyof Todo
+
+// 获得类型的key
+const todoKeys:todoKeys = &apos;name&apos;
+
+// todoKeys的类型为 &apos;naem&apos; | &apos;age&apos; | &apos;address&apos;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;typeof&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;typeof&lt;/code&gt; 是一个是一个类型查询操作符,用于获取一个值,或者表达式,用于获取已有数据的数据类型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const todo = {
+  title: &apos;Todo&apos;,
+  dataIndex: &apos;todo&apos;,
+  key: &apos;todo&apos;,
+}
+
+// 等于复制了 todo 的类型
+type TodoType = typeof todo
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-20-typeofkeyof/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>TS 中的常用类型 (经常需要使用的)</title><link>https://blog.loli.wang/blog/2024-01-20-typescriptuitls/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-01-20-typescriptuitls/doc/</guid><description>TS 中的常用类型 (经常需要使用的)</description><pubDate>Sat, 20 Jan 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;前言&lt;/h3&gt;
+&lt;p&gt;本篇介绍的是 Typescript 中经常使用的一些类型,这些类型一般都是做一个项目中经常需要用上的.&lt;/p&gt;
+&lt;h3&gt;Required&amp;lt;Type&amp;gt;&lt;/h3&gt;
+&lt;p&gt;将类型&lt;code&gt;非必填&lt;/code&gt;改为&lt;code&gt;必填&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Todo {
+    username?: string;
+    age?: number;
+    address?: string;
+}
+
+// 正常使用情况
+const todo: Todo = {};
+
+// 整个类型都必须填写
+const todoa: Required&amp;lt;Todo&amp;gt; = {};
+
+// 配合Pick(选取) 选取单个属性必须填写
+const todob: Required&amp;lt;Pick&amp;lt;Todo, &quot;username&quot;&amp;gt;&amp;gt; = {};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-20-typescriptUitls/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Readonly&amp;lt;Type&amp;gt;&lt;/h3&gt;
+&lt;p&gt;将类型改为&lt;code&gt;只读&lt;/code&gt;,类型中所有属性都无法被重新分配&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;interface Todo {
+    title: string;
+}
+// todo 改为了只读属性
+const todo: Readonly&amp;lt;Todo&amp;gt; = {
+    title: &quot;魔王Blog - 一个前端程序员的个人博客&quot;,
+};
+
+// 如果重新分配将会报错
+todo.title = &quot;魔王Blog - 一个前端程序员的个人博客&quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-20-typescriptUitls/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Record&amp;lt;Keys, Type&amp;gt;&lt;/h3&gt;
+&lt;p&gt;构建一个&lt;code&gt;对象类型&lt;/code&gt; ,属性键名为&lt;code&gt;Keys&lt;/code&gt;,属性值为&lt;code&gt;Type&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 简单实用 对象结构为 key value 并且类型都为string
+const value: Record&amp;lt;string, string&amp;gt; = {
+    name: &quot;魔王&quot;,
+    age: &quot;18&quot;,
+    address: &quot;地狱&quot;,
+};
+
+interface Info {
+    name: string;
+    age: number;
+    address: string;
+}
+
+type CityName = &quot;北京&quot; | &quot;上海&quot; | &quot;广州&quot; | &quot;深圳&quot;;
+
+// 复杂实用 对象结构为 key value 并且类型都为Info 且key只能为CityName
+const info: Record&amp;lt;CityName, Info&amp;gt; = {
+    北京: {
+        name: &quot;魔王&quot;,
+        age: 18,
+        address: &quot;地狱&quot;,
+    },
+    上海: {
+        name: &quot;魔王&quot;,
+        age: 18,
+        address: &quot;地狱&quot;,
+    },
+    广州: {
+        name: &quot;魔王&quot;,
+        age: 18,
+        address: &quot;地狱&quot;,
+    },
+    深圳: {
+        name: &quot;魔王&quot;,
+        age: 18,
+        address: &quot;地狱&quot;,
+    },
+};
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-20-typescriptUitls/03.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Pick(选取,选择) 看上一篇文章&lt;/h3&gt;
+&lt;p&gt;https://blog.loli.wang/blog/2024-01-18-tspickomit/doc/index.html&lt;/p&gt;
+&lt;h3&gt;Omit(排除) 上一篇文章&lt;/h3&gt;
+&lt;p&gt;https://blog.loli.wang/blog/2024-01-18-tspickomit/doc/index.html&lt;/p&gt;
+&lt;h3&gt;Exclude&amp;lt;UnionType, ExcludedMembers&amp;gt; (排除联合类型中指定类型)&lt;/h3&gt;
+&lt;p&gt;Exclude 是一个工具类型,用于&lt;code&gt;排除&lt;/code&gt; &lt;code&gt;联合类型&lt;/code&gt;指定的类型,得到新的类型&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 原始联合类型
+type CityName = &quot;北京&quot; | &quot;上海&quot; | &quot;广州&quot; | &quot;深圳&quot;;
+
+// 通过Exclude排除类型 &apos;北京&apos; | &apos;上海&apos;  得到新的联合类型
+type City = Exclude&amp;lt;CityName, &quot;北京&quot; | &quot;上海&quot;&amp;gt;;
+
+// 如果实用原有的联合类型已排除过的 会报错
+const city: City = &quot;北京&quot;;
+
+// 如果使用未排除的联合类型 会正常
+const cityName: CityName = &quot;北京&quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-20-typescriptUitls/04.png&quot; alt=&quot;切图4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;如果联合类型比较复杂 是对象类型的,也同样&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;type Shape =
+  | { kind: &quot;circle&quot;; radius: number }
+  | { kind: &quot;square&quot;; x: number }
+  | { kind: &quot;triangle&quot;; x: number; y: number };
+ 
+type T3 = Exclude&amp;lt;Shape, { kind: &quot;circle&quot; }&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;ReturnType&amp;lt;Type&amp;gt;&lt;/h3&gt;
+&lt;p&gt;构造一个由 &lt;code&gt;function&lt;/code&gt; 的返回的数据组成的&lt;code&gt;类型&lt;/code&gt;, 用来指定函数返回的数据类型为什么格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 指定返回值类型为 string
+type Fun = ReturnType&amp;lt;() =&amp;gt; string&amp;gt;
+
+// 正常写法
+function fn(): Fun {
+  return &quot;123&quot;
+}
+
+// 错误写法
+function fn2(): Fun {
+  return 123
+}
+
+// 指定返回值类型为对象
+type Fun2 = ReturnType&amp;lt;()=&amp;gt;{
+  name:string,
+  age:number
+}&amp;gt;
+
+// 正常写法
+function fn3(): Fun2 {
+  return {
+    name:&quot;123&quot;,
+    age:123
+  }
+}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-20-typescriptUitls/05.png&quot; alt=&quot;切图5&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;字符串操作类型&lt;/h3&gt;
+&lt;h4&gt;Uppercase&amp;lt;StringType&amp;gt;&lt;/h4&gt;
+&lt;p&gt;用于将字符串类型的所有字符转换为大写。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;type UppercaseString = Uppercase&amp;lt;&apos;hello&apos;&amp;gt;; // 类型为 &apos;HELLO&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Lowercase&amp;lt;StringType&amp;gt;&lt;/h4&gt;
+&lt;p&gt;用于将字符串类型的所有字符转换为小写。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;type LowercaseString = Lowercase&amp;lt;&apos;WORLD&apos;&amp;gt;; // 类型为 &apos;world&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Capitalize&amp;lt;StringType&amp;gt;&lt;/h4&gt;
+&lt;p&gt;用于将字符串类型的首字母转换为大写。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;type CapitalizedString = Capitalize&amp;lt;&apos;typescript&apos;&amp;gt;; // 类型为 &apos;Typescript&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Uncapitalize&amp;lt;StringType&amp;gt;&lt;/h4&gt;
+&lt;p&gt;用于将字符串类型的首字母转换为小写。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;type UncapitalizedString = Uncapitalize&amp;lt;&apos;JavaScript&apos;&amp;gt;; // 类型为 &apos;javaScript&apos;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;相关参考文档&lt;/h4&gt;
+&lt;h3&gt;相关文档&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys&quot;&gt;typescriptlang&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>TS 中的 Pick 和 Omit</title><link>https://blog.loli.wang/blog/2024-01-18-tspickomit/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-01-18-tspickomit/doc/</guid><description>TS 中的 Pick 和 Omit</description><pubDate>Thu, 18 Jan 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;Pick （选取）&lt;/h3&gt;
+&lt;p&gt;官方介绍 : &lt;code&gt;通过从 interface 中选取属性集 Keys  来构造类型指定的Type。&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;示例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 原接口
+interface Todo {
+  title: string,
+  description: string,
+  date: string
+}
+
+// 构建的新接口 只选取目标接口中的title 和 date
+type TodoNewPreView = Pick&amp;lt;Todo, &quot;title&quot; | &quot;date&quot;&amp;gt;
+
+const Todo: TodoNewPreView = {
+  title: &quot;魔王のBlog&quot;,
+  date: &quot;2023-01-01&quot;,
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;证明我们从 Todo 这个接口中选取了 &lt;code&gt;title&lt;/code&gt; 和 &lt;code&gt;date&lt;/code&gt; 这两个属性,形成了新的类型接口&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-18-tspickomit/01.png&quot; alt=&quot;切图1&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-01-18-tspickomit/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Omit （排除,省略）&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;Omit&lt;/code&gt; 和 &lt;code&gt;Pick&lt;/code&gt; 是相反的,是这个接口中使用的过程中,有不想使用的参数,可以进行屏蔽掉&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-18-tspickomit/03.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;可以看到,我们这里Todo这个类型接口,有个必须接收的&lt;code&gt;username&lt;/code&gt;这个参数,如果我们需要用到这个类型,并且不想改变原有的使用类型的话,就需要使用Omit&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-18-tspickomit/04.png&quot; alt=&quot;切图4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;总结,&lt;code&gt;Pick&lt;/code&gt; 和 &lt;code&gt;Omit&lt;/code&gt; 都是比较Ts中比较实用的工具,使用和利用好会给自己带来更大的收获&lt;/p&gt;
+&lt;h3&gt;相关文档&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.typescriptlang.org/docs/handbook/utility-types.html#omittype-keys&quot;&gt;typescriptlang&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>dart-sass 和 node-sass 的区别以及使用</title><link>https://blog.loli.wang/blog/2024-01-08-draksass/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-01-08-draksass/doc/</guid><description>dart-sass 和 node-sass 的区别以及使用</description><pubDate>Mon, 08 Jan 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;序&lt;/h3&gt;
+&lt;p&gt;在我们开发场景中，如果在&lt;code&gt;node&lt;/code&gt;环境中使用&lt;code&gt;node-sass&lt;/code&gt;，经常会有&lt;code&gt;python&lt;/code&gt;版本安装问题，也有和&lt;code&gt;node版本&lt;/code&gt;是否和&lt;code&gt;node-sass&lt;/code&gt;版本有关联关系，还强制安装NET Framework版本，总而言之会出现各种问题，尤其是老项目居多...&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-01-08-draksass/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;什么是Dart Sass&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;Dart Sass&lt;/code&gt; 是官方力推的 &lt;code&gt;sass&lt;/code&gt; 继任者。官网主推项目，用来替代&lt;code&gt;node-sass&lt;/code&gt;，由&lt;code&gt;dart&lt;/code&gt;开发，对css新特性支持的更加全面，最大的好处是没有&lt;code&gt;node版本之间的依赖关系&lt;/code&gt;。&lt;/p&gt;
+&lt;h3&gt;node-sass 和 dart-sass的区别&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;node-sass
+node-sass 是顺应前端工程化而出现的node包，是使用c++实现的libSass的封装，因为使用c++编译，所以速度比较快，前期支撑住了前端工程化的潮流。前端工程化项目的大功臣，遗留缺点有很多，比如硬性要求对应node版本之类的奇怪的错误&lt;/li&gt;
+&lt;li&gt;dart-sass
+dart-sass 是基于dart开发的，他的速度更快， 更易于安装，并且可以编译成纯JavaScript，并且对css新特性获得了更好的支持&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;总结&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;后面使用预处理器，直接使用dart-sass啦。毕竟要适应新的时代
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>简单使用 tsup 进行打包</title><link>https://blog.loli.wang/blog/2023-12-30-tsup/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-12-30-tsup/doc/</guid><description>简单使用 tsup 进行打包</description><pubDate>Sat, 30 Dec 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;起因。&lt;/h3&gt;
+&lt;p&gt;最近在编写自己的组件库，使用&lt;code&gt;monorepo&lt;/code&gt;模式进行开发,&lt;code&gt;monorepo&lt;/code&gt;开发将utils单独作为工具库，原本打算使用tsc编译出去的，无意中发现了打包工具。&lt;/p&gt;
+&lt;h3&gt;介绍&lt;/h3&gt;
+&lt;p&gt;tsup 是一个基于 ESBuild 实现在零配置的情况下快速打包 Typescript 模块的库，支持 .ts、.tsx的转换。它基于esbuild，但是同时也选择融合其他的构建工具共同参与，弥补了esbuild的不足。&lt;/p&gt;
+&lt;h3&gt;安装使用&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# pnpm 安装 同样也可以npm yarn 等
+pnpm add tsup -D
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;packages.json 文件中声明&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &quot;build&quot;:&quot;tsup&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;简单使用可以在命令后面加输出路径等 也可以添加配置文件去使用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &quot;build&quot;:&quot;tsup src/index.ts src/cli.ts&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;也可以使用配置文件，根目录下面新建一个 &lt;code&gt;tsup.config.ts&lt;/code&gt; 文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+import { defineConfig } from &apos;tsup&apos;
+
+export default defineConfig({
+  entry: [&apos;./src/index.ts&apos;], // 打包入口
+  splitting: false,
+  sourcemap: true,
+  clean: true,
+})
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&quot;scripts&quot;: {
+    &quot;build&quot;: &quot;tsup --format esm,cjs,iife --config tsup.config.ts&quot;
+},
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里也可以定义打包目录之类的，详情查看官网。配置信息比较完全
+https://tsup.egoist.dev/#what-can-it-bundle&lt;/p&gt;
+</content:encoded></item><item><title>UNI-APP 离线打包配置</title><link>https://blog.loli.wang/blog/2023-12-28-uniapppackage/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-12-28-uniapppackage/doc/</guid><description>UNI-APP 离线打包配置</description><pubDate>Thu, 28 Dec 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;起因&lt;/h3&gt;
+&lt;p&gt;公司有2款不同的PDA设备&lt;code&gt;霍尼韦尔&lt;/code&gt;，&lt;code&gt;SUNMI&lt;/code&gt; 这2款pda设备，在有一次项目升级后，发现&lt;code&gt;SUNMI&lt;/code&gt;这种设备型号的PDA设备热更新失败，准确的说不是热更新是失败 是热更新下来的APK 安装时无法兼容&lt;/p&gt;
+&lt;p&gt;如图&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/01.jpg&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;引发原因&lt;/h3&gt;
+&lt;p&gt;项目一直是用的离线打包，&lt;code&gt;Hbuilder X&lt;/code&gt; 这款开发工具，之前使用云打包的时候会自动调用本地的离线打包，可是有次开发工具更新后，云打包不触发离线打包了。本来并不在意这件事情，毕竟就是打包个安卓包而已，并不在意，打完包就发布了。。&lt;/p&gt;
+&lt;p&gt;后续就出现问题了，&lt;code&gt;霍尼韦尔&lt;/code&gt;设备正常，&lt;code&gt;SUNMI&lt;/code&gt;设备异常，前者设备安卓版本9.0, 后者安卓设备版本7.0，版本不兼容了。低版本的无法安装。&lt;/p&gt;
+&lt;p&gt;本地模拟器同样的也是这个问题，低版本的无法安装，安装上也是白屏。&lt;/p&gt;
+&lt;p&gt;经过排查，使用离线打包的就没有问题。&lt;/p&gt;
+&lt;h3&gt;如何配置离线打包&lt;/h3&gt;
+&lt;p&gt;开始准备&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.java.com/zh-CN/download/&quot;&gt;安装 jdk 8&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://developer.android.google.cn/studio?hl=zh-cn&quot;&gt;安装 Android Studio&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://nativesupport.dcloud.net.cn/AppDocs/download/android.html&quot;&gt;下载 UNIAPP 离线 SDK&lt;/a&gt; (注意，下载的SDK版本必须和HubilderX版本对应上)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://dev.dcloud.net.cn/pages/app/list&quot;&gt;UNIAPP 开发者中心账号&lt;/a&gt; (注意，提前实名认证啥破玩意都整完)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;获取配置信息&lt;/h4&gt;
+&lt;p&gt;在UNIAPP项目中有个 &lt;code&gt;mainifest.json&lt;/code&gt; 文件 ，里面会看到一些基础配置信息，其中有个&lt;code&gt;UNIAPP 引用标识&lt;/code&gt;, 这个也同样是APPID, 也关系到开发中心对应的项目编号。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;生成本地打包资源&lt;/h4&gt;
+&lt;p&gt;生成本地打包资源备用 后续放置到 Android Studio 内使用&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/03.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/04.png&quot; alt=&quot;切图4&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;将本地资源文件夹移动至离线SDK中&lt;/h4&gt;
+&lt;p&gt;将本地资源包复制到该目录下&lt;/p&gt;
+&lt;p&gt;HBuilder-Integrate-AS\simpleDemo\src\main\assets\apps&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/05.png&quot; alt=&quot;切图4&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;Android Studio 导入SDK的示例项目&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/06.png&quot; alt=&quot;切图4&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;修改dcloud_control.xml 中的 appid&lt;/h4&gt;
+&lt;p&gt;在新打开的编辑器中 , 找到 simpleDemo/src/main/assets/data/dcloud_control.xml&lt;/p&gt;
+&lt;p&gt;进行修改&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/07.png&quot; alt=&quot;切图7&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;修改为之前 &lt;code&gt;mainifest.json&lt;/code&gt; 定义的APPID，还有当前准备发布的 &lt;code&gt;版本号&lt;/code&gt;&lt;/p&gt;
+&lt;h4&gt;生成安卓签名&lt;/h4&gt;
+&lt;p&gt;安卓打正式包必须要的，参考官方文档&lt;/p&gt;
+&lt;p&gt;https://ask.dcloud.net.cn/article/35777&lt;/p&gt;
+&lt;h4&gt;前往开发者中心生成AppKey&lt;/h4&gt;
+&lt;p&gt;在我们使用 HbuilderX 后获取Appid后，登录账号,会在后台系统生成相应的应用，进入UNIAPP的开发者中心,选择相应的应用，获取离线的APPKEY&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/08.png&quot; alt=&quot;切图8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/09.png&quot; alt=&quot;切图9&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;修改包名 配置appKey&lt;/h4&gt;
+&lt;p&gt;在 AndroidManifest.xml 中修改包名，在&lt;code&gt;开发者中心&lt;/code&gt;可以看到相关的包名，一般都是uni.xxx 开头的&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/10.png&quot; alt=&quot;切图10&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;在下方找到&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; &amp;lt;meta-data
+            android:name=&quot;dcloud_appkey&quot;
+            android:value=&quot;239898****************b2d9dbcbf2bc&quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;android:value 修改成自己的离线 appKey 即可&lt;/p&gt;
+&lt;h4&gt;修改原有的默认APP图标还有打包出来的应用名&lt;/h4&gt;
+&lt;p&gt;修改应用名 /simpleDemo/src/main/res/values/strings.xml&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;resources&amp;gt;
+    &amp;lt;string name=&quot;app_name&quot;&amp;gt;修改自己的应用名&amp;lt;/string&amp;gt;
+&amp;lt;/resources&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;icon 启动图替换 /simpleDemo/src/main/res/drawable 中的 icon.png push.png splash.png 图片进行替换就好&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/11.png&quot; alt=&quot;切图10&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;最后尝试构建&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/12.png&quot; alt=&quot;切图12&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/13.png&quot; alt=&quot;切图13&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/14.png&quot; alt=&quot;切图14&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/15.png&quot; alt=&quot;切图15&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-12-28-uniappPackage/16.png&quot; alt=&quot;切图16&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;完成 ，，，总而言之，写UNIAPP的坑很多，如果不是赶时间的话，建议去使用Flutter 等框架，（--）
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>现代化 CSS 框架</title><link>https://blog.loli.wang/blog/2023-12-27-newcss/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-12-27-newcss/doc/</guid><description>新生代 CSS 框架</description><pubDate>Wed, 27 Dec 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;什么是原子化 css&lt;/h3&gt;
+&lt;p&gt;原子 CSS 是一种 CSS 架构方法，它有利于小型、单一用途的类，其名称基于视觉功能。&lt;/p&gt;
+&lt;p&gt;原子化 CSS 是一种 CSS 的架构方式，它倾向于小巧且用途单一的 class，并且会以视觉效果进行命名。&lt;/p&gt;
+&lt;p&gt;例如 &lt;code&gt;.mt-10&lt;/code&gt; 代表 &lt;code&gt;margin-top: 10px&lt;/code&gt;，&lt;code&gt;.bg-red&lt;/code&gt; 代表 &lt;code&gt;background-color: red&lt;/code&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.mt-10 {
+  margin-top: 10px;
+}
+.bg-red {
+  background-color: red;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;为什么要使用原子化 css&lt;/h3&gt;
+&lt;p&gt;原子化 CSS 有助于减少 CSS 的大小，因为它只使用了少量的 class，而不是大量的 class 和大量的 style 引入。优化了 CSS 的大小，也就优化了 CSS 的加载速度。&lt;/p&gt;
+&lt;h3&gt;常用的 css 框架选择&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://tailwindcss.com/&quot;&gt;Tailwind CSS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://unocss.dev/&quot;&gt;UnoCSS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://tachyons.io/&quot;&gt;Tachyons&lt;/a&gt;
+....&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;参考&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;[重新构想原子化 CSS-antfu] https://antfu.me/posts/reimagine-atomic-css-zh&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>Tailwind + Antd Css冲突解决方案(按钮颜色透明)</title><link>https://blog.loli.wang/blog/2023-12-14-tailwindbuttionope/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-12-14-tailwindbuttionope/doc/</guid><description>Tailwind + Antd Css冲突解决方案(按钮颜色透明)</description><pubDate>Thu, 14 Dec 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;问题引发&lt;/h2&gt;
+&lt;p&gt;公司开展新项目，准备使用React，用React的主流框架肯定是Antd啦，为了防止公司样式污染以及结合了一些老项目的痛点，决心使用Tailwind来弥补这些问题，然后引发了按钮没有颜色的Bug 在原有Css中 Tailwind的优先级比Antd要高所以引发了这个问题&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-14-tailwindButtionOpe/02.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;解决方案&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;tailwind.config.js 配置文件修改&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;将 preflight: false 修改为 false&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  /** @type {import(&apos;tailwindcss&apos;).Config} */
+export default {
+  content: [&apos;./src/**/*.{js,jsx,ts,tsx}&apos;],
+  theme: {
+    extend: { 
+    }
+  }
+  // plugins: [],
+  // corePlugins: {
+  //   preflight: false
+  // }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;修改 tailwind @layer样式&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* @layer base { 
+  button, [type=&apos;button&apos;], [type=&apos;reset&apos;], [type=&apos;submit&apos;]
+  { background-color: #3b82f6; 
+  }
+} */
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;全局修改 antd 全局样式&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;将自己的全局Css样式中处理这个这个引入&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// global.css
+:global(.ant-btn-primary) {
+  background-color: #1677ff !important;
+}
+// 或者
+.ant-btn-primary{
+     background-color: #1677ff !important;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>Directadmin 2222 开启 SSL </title><link>https://blog.loli.wang/blog/2023-12-05-directadmin2222ssl/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-12-05-directadmin2222ssl/doc/</guid><description>Directadmin 2222 开启 SSL</description><pubDate>Tue, 05 Dec 2023 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;太久没管理IDC.LA 网站了，这次上去，发现所有服务器面板的SSL都挂了。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;真不是个合格的网站管理者
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;先启动LetsEncrypt&lt;/h4&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;在directadmin.conf中启用letsencrypt = 1选项，顺便先把ssl=0改为 ssl=1 ，使DA 2222使用SSL协议&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;重启、build 相关组件&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;echo “action=directadmin&amp;amp;value=restart” &amp;gt;&amp;gt; /usr/local/directadmin/data/task.queue; /usr/local/directadmin/dataskq d2000
+
+cd /usr/local/directadmin/custombuild
+./build rewrite_confs
+
+cd /usr/local/directadmin/custombuild
+./build update
+./build letsencrypt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;为DA开启&lt;/h4&gt;
+&lt;p&gt;先获得域名证书，设定跳转，使其生效。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/usr/local/directadmin/scripts/letsencrypt.sh request_single us1.yunloli.com 4096
+
+/usr/local/directadmin/directadmin set ssl_redirect_host us1.yunloli.com
+service directadmin restart
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;相关资料&lt;/h3&gt;
+&lt;p&gt;https://help.directadmin.com/item.php?id=15&lt;/p&gt;
+&lt;p&gt;https://help.directadmin.com/item.php?id=648&lt;/p&gt;
+&lt;p&gt;https://help.directadmin.com/item.php?id=629&lt;/p&gt;
+</content:encoded></item><item><title>ViteSSG 搭建博客 01 (ssg项目项目搭建)</title><link>https://blog.loli.wang/blog/2023-12-13-ssgblog01/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-12-13-ssgblog01/doc/</guid><description>ViteSSG 搭建博客 01 (ssg项目项目搭建)</description><pubDate>Tue, 05 Dec 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;项目准备&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 强烈建议使用 pnpm
+npm i -g pnpm 
+
+# 安装主要项目依赖
+pnpm add vue typescript less vue-router
+
+pnpm add @unhead/vue @vitejs/plugin-vue vite vite-plugin-pages vite-ssg -D
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;开始&lt;/h3&gt;
+&lt;p&gt;Node 版本需要高于 14 以上&lt;/p&gt;
+&lt;p&gt;示例以多页应用为例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// package.json
+{
+    &quot;script&quot;:{
+        &quot;dev&quot;:&quot;vite&quot;,
+        &quot;build&quot;:&quot;vite-ssg build&quot;
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// main.ts
+import { ViteSSG } from &quot;vite-ssg&quot;;
+import App from &quot;./App.vue&quot;;
+import routes from &quot;~pages&quot;;
+
+export const createApp = ViteSSG(
+  App,
+  { routes },
+  ({ app, router, routes, isClient, initialState }) =&amp;gt; {}
+);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;// vite.config.ts
+import { defineConfig } from &quot;vite&quot;;
+import vue from &quot;@vitejs/plugin-vue&quot;;
+import Pages from &quot;vite-plugin-pages&quot;;
+
+export default defineConfig({
+  plugins: [vue(), Pages({ extensions: [&quot;vue&quot;, &quot;md&quot;] })],
+  ssgOptions: {
+    script: &quot;async&quot;,
+    formatting: &quot;prettify&quot;,
+  },
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;编写页面,在 pages 目录下新建文件夹 index 然后建立目录 index.vue&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// src/pages/index/index.vue
+&amp;lt;template&amp;gt;
+  &amp;lt;div class=&quot;Index&quot;&amp;gt;
+    &amp;lt;div&amp;gt;Index&amp;lt;/div&amp;gt;
+    &amp;lt;div&amp;gt;{{ index }}&amp;lt;/div&amp;gt;
+    &amp;lt;div&amp;gt;{{ index2 }}&amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+&amp;lt;script lang=&quot;tsx&quot; setup&amp;gt;
+import { ref } from &quot;vue&quot;;
+
+const index = ref(&quot;idx&quot;);
+const index2 = ref(&quot;Leo&quot;);
+&amp;lt;/script&amp;gt;
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;最后执行 &lt;code&gt;pnpm build&lt;/code&gt; 即可生成静态构建的文件&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-12-13-ssgblog01/01.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Node版本管理Volta的使用</title><link>https://blog.loli.wang/blog/2023-11-27-volatsetup/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-11-27-volatsetup/doc/</guid><description>Node版本管理Volta的使用</description><pubDate>Mon, 27 Nov 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;为什么要有Volta&lt;/h2&gt;
+&lt;p&gt;一个项目组有多个前端现象，使用的Node版本都不一样，并且有前端工程师一个人管理多个不同node版本的前端项目需要频繁的切换Node版本&lt;/p&gt;
+&lt;h2&gt;使用 Volta&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;官网：https://volta.sh/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;# 安装volta 
+curl https://get.volta.sh | bash
+
+# 安装node
+volta install node
+
+# 指定node版本安装
+volta install node@14.15.5
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在前端项目中配置进行自动切换&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// package.json
+
+&quot;volta&quot;: {
+  &quot;node&quot;: &quot;12.20.2&quot;,
+  &quot;yarn&quot;: &quot;1.19.2&quot;
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;通过volta 安装好指定的node版本后可以做到打开当前的项目的命令行，自动切换node版本&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-11-27-volatSetup/02.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-11-27-volatSetup/03.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>简单虚拟列表 + 无限滚动</title><link>https://blog.loli.wang/blog/2023-11-17-vuevirtuallist/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-11-17-vuevirtuallist/doc/</guid><description>简单虚拟列表 + 无限滚动</description><pubDate>Fri, 17 Nov 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;为什么要有虚拟列表这个东西&lt;/h2&gt;
+&lt;p&gt;很多时候前端被迫被逼着接收上百条，上千条，上万条数据（因为需求的缘故），没有相关经验的前端会直接直接赋值渲染上去。
+但是这样子操作是有很大的弊端的。轻则让浏览器卡顿，重则浏览器崩溃。更严重的老板直接过来骂人。&lt;/p&gt;
+&lt;p&gt;也就是说，我们不能一股脑的直接赋值，要有合理的方案。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;后端给出分页 (是最好的处理方式 有什么东西是不能让后端给前端压力的呢)&lt;/li&gt;
+&lt;li&gt;前端将数据切成小块 进行分页 (但是可能业务被迫需要更加直观的展示不让使用分页)&lt;/li&gt;
+&lt;li&gt;前端通过搜索去过滤数据再渲染 (可以存入到缓存里,读取缓存内的数据,但是会有过滤后还是有大量数据的问题，和缓存有大小问题等限制，是不合理的方案)&lt;/li&gt;
+&lt;li&gt;虚拟列表 (通过滚动条只渲染可见部分，随着滚动加载最新的数据，非常合理的方式)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;通过以上解释，虚拟列表是最佳合理的方案，实例：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;template&amp;gt;
+  &amp;lt;div id=&quot;app&quot;&amp;gt;
+    &amp;lt;div
+      class=&quot;virtual-list-container&quot;
+      ref=&quot;listContainerRef&quot;
+      @scroll=&quot;handleScroll&quot;
+    &amp;gt;
+      &amp;lt;div class=&quot;list-phantom&quot;&amp;gt;
+        &amp;lt;div
+          class=&quot;list-item&quot;
+          v-for=&quot;(item, index) in state.visibleItem&quot;
+          :key=&quot;index&quot;
+        &amp;gt;
+          虚拟化列表数据 {{ item.name }}
+        &amp;lt;/div&amp;gt;
+      &amp;lt;/div&amp;gt;
+    &amp;lt;/div&amp;gt;
+  &amp;lt;/div&amp;gt;
+&amp;lt;/template&amp;gt;
+
+&amp;lt;script lang=&quot;tsx&quot; setup&amp;gt;
+import { ref, reactive, onMounted } from &quot;vue&quot;;
+
+let state = reactive({
+  visibleItem: [] as any,
+  visibleItemCount: 20, // 可见区域显示多少条
+  count: 800000, // 需要生成的数据总条数
+});
+
+// 数据生成函数
+const genertteItems = (count: number): any[] =&amp;gt; {
+  const items: any = [];
+  Array.from({ length: count }).forEach((item, index: number) =&amp;gt; {
+    items.push({ id: index, name: `${index}名称` });
+  });
+  return items;
+};
+
+// 关键代码
+// 通过ref获取带有滚动条的dom
+const listContainerRef = ref&amp;lt;any&amp;gt;(null);
+
+// 滚动事件
+const handleScroll = () =&amp;gt; {
+  // 滚动容器
+  const container = listContainerRef.value;
+  // 获取容器当前至容器顶部距离多远
+  const scrollTop = container?.scrollTop || 0;
+  // 获取容器可视区域总高度
+  const scrollHeight = container?.scrollHeight || 0;
+  // 获取容器的总高度
+  const containerHeight = container?.clientHeight || 0;
+  // 如果滚动距离加上可是高度大于总高度 说明到了容器底部
+  if (scrollTop + containerHeight &amp;gt;= scrollHeight) {
+    // 滚动到底部加载更多数据
+    loadMoreData();
+  }
+};
+
+// 加载更多函数
+const loadMoreData = () =&amp;gt; {
+  const startIndex = state.visibleItem.length;
+  const endIndex = startIndex + state.visibleItemCount;
+  const newItems = genertteItems(state.count).slice(startIndex, endIndex);
+  state.visibleItem = [...state.visibleItem, ...newItems];
+};
+
+onMounted(() =&amp;gt; {
+  handleScroll(); // 确保组件挂载后初始化一次数据\
+});
+&amp;lt;/script&amp;gt;
+
+&amp;lt;style lang=&quot;less&quot;&amp;gt;
+.list-item {
+  height: 80px;
+  border: 1px solid red;
+}
+.virtual-list-container {
+  overflow-y: auto;
+  height: 400px; /* 容器高度 */
+  position: relative;
+}
+.list-phantom {
+  position: absolute;
+  width: 100%;
+  pointer-events: none;
+}
+&amp;lt;/style&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;实现效果&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-11-17-vuevirtualList/1.gif&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>dependencies 和 devDependencies 的区别(回忆录1)</title><link>https://blog.loli.wang/blog/2023-11-11-dependenciesanddevdependencies/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-11-11-dependenciesanddevdependencies/doc/</guid><description>dependencies 和devDependencies 的区别</description><pubDate>Sat, 11 Nov 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;回忆录1: 一次给别人解决BUG引发的问题&lt;/h2&gt;
+&lt;p&gt;事情是这样的，一个小伙伴问我一个问题。项目写了个插件，导出到NPM中了，但是通过npm install 下来无法使用，仔细检查，发现依赖都是装载在 &lt;strong&gt;devDependencies&lt;/strong&gt; 中&lt;/p&gt;
+&lt;h3&gt;理解&lt;/h3&gt;
+&lt;p&gt;区别:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;dependencies 用于生产环境
+devDependencies 用于开发环境，打包成npm插件后无法获取内容
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;拓展:&lt;/p&gt;
+&lt;p&gt;npm install xxx -g 表示全局安装，通常用于安装脚手架 yarn pnpm webpack 等工具&lt;/p&gt;
+&lt;p&gt;npm install xxx –save(-S) 表示本地安装，会被加至dependencies部分&lt;/p&gt;
+&lt;p&gt;npm install xxx –save-dev(-D) 表示本地安装，会被加至
+devDependencies部分&lt;/p&gt;
+&lt;p&gt;npm install会默认下载dependencies和devDependencies中的所有依赖包&lt;/p&gt;
+&lt;p&gt;1.如webpack、html-webpack-plugin等工具包就安装在devDependencies开发环境下，&lt;/p&gt;
+&lt;p&gt;项目部署到开发环境所必须的依赖包则安装在dependencies生产环境下。
+在项目编译时dependencies、devDependencies里的依赖其实没有影响，最重要的区别体现在:&lt;/p&gt;
+&lt;p&gt;npm包发布的时候，其他的开发者可以从你发布的npm包中下载dependencies里的依赖包，而不能下载devDependencies里的内容。&lt;/p&gt;
+</content:encoded></item><item><title>类型“ImportMeta”上不存在属性“glob” </title><link>https://blog.loli.wang/blog/2023-11-11-viteerrorglob/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-11-11-viteerrorglob/doc/</guid><description>类型“ImportMeta”上不存在属性“glob”</description><pubDate>Sat, 11 Nov 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;类型“ImportMeta”上不存在属性“glob”&lt;/h2&gt;
+&lt;p&gt;如果直接使用import.meta.glob，vscode会报类型ImportMeta上不存在属性“glob”的错误，需要在tsconfig文件下添加类型定义vite/client&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;compilerOptions&quot;: {
+    &quot;types&quot;: [&quot;vite/client&quot;]
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>rust的编程概念</title><link>https://blog.loli.wang/blog/2023-11-08-rust003/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-11-08-rust003/doc/</guid><description>rust的编程概念</description><pubDate>Wed, 08 Nov 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;变量&lt;/h2&gt;
+&lt;p&gt;声明变量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 普通变量
+let x = 5;  // 无法修改 类似常量
+
+let mut x = 5; // 增加mut 变为可修改
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;数据类型&lt;/p&gt;
+&lt;p&gt;长度 有符号类型 无符号类型
+8 位 i8 u8
+16 位 i16 u16
+32 位 i32 u32
+64 位 i64 u64
+128 位 i128 u128
+arch isize usize&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 整型
+let guess=22222;
+// 浮点型
+let x: f64 = 2.0;
+// 布尔型
+let t = true;
+// 字符串类型
+let c = &apos;z&apos;;
+// 元组类型
+let tup = (500, 6.4, 1);
+let (x, y, z) = tup;
+// 数组类型
+let a = [1, 2, 3, 4, 5];
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;函数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 函数
+fn another_function() {
+    println!(&quot;Another function.&quot;);
+}
+// 带参函数
+fn another_function(x: i32) {
+    println!(&quot;The value of x is: {}&quot;, x);
+}
+// 带返回值的函数
+fn main() {
+    let x = plus_one(5);
+
+    println!(&quot;The value of x is: {}&quot;, x);
+}
+
+fn plus_one(x: i32) -&amp;gt; i32 {
+    x + 1
+    //  也可以  return x+1
+
+}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;循环&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 循环
+loop {
+        println!(&quot;again!&quot;);
+}
+// 条件循环
+let mut number = 3
+while number != 0 {
+    println!(&quot;{}!&quot;, number); 
+    number -= 1;
+}
+// for 循环
+let a = [10, 20, 30, 40, 50];
+
+for element in a {
+    println!(&quot;the value is: {}&quot;, element);
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>使用rust建立一个简单的web服务器</title><link>https://blog.loli.wang/blog/2023-11-07-rust002/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-11-07-rust002/doc/</guid><description>rust开发环境安装</description><pubDate>Tue, 07 Nov 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;// main.rs
+
+use std::io::prelude::*;
+use std::net::TcpListener;
+use std::net::TcpStream;
+use std::fs;
+
+fn handle_client(mut stream: TcpStream) {
+    let mut buffer = [0; 1024];
+    stream.read(&amp;amp;mut buffer).unwrap();
+
+    let response = &quot;HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n&quot;;
+    let contents = fs::read_to_string(&quot;html/index.html&quot;).unwrap();
+    let response = format!(&quot;{}{}&quot;, response, contents);
+
+    stream.write(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
+}
+
+fn main() {
+    let listener = TcpListener::bind(&quot;127.0.0.1:3030&quot;).unwrap();
+    println!(&quot;Server is listening on port 3030&quot;);
+
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+        handle_client(stream);
+    }
+}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-11-07-rust002/001.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>给表妹的 Astro Blog 搭建流程</title><link>https://blog.loli.wang/blog/2023-11-6-astrosetup/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-11-6-astrosetup/doc/</guid><description>给表妹的 Astro Blog 搭建流程</description><pubDate>Mon, 06 Nov 2023 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;表妹上大学了，理工类的学科，看来以后绝对优秀人才呢。因此需要一个blog来记录学习过程。&lt;/p&gt;
+&lt;h3&gt;为什么使用 Astro&lt;/h3&gt;
+&lt;p&gt;当然和我是前端工程师是分不开的关系，本来也是推荐使用一些PHP的blog程序，但是需要一些服务器相关的知识，也并非省时省力。顺带还需要给她传授一点 Git 相关的知识，所以对于正在使用astro 的我当然首选 &lt;strong&gt;Astro&lt;/strong&gt; 啦 , 也可以讲下web相关的知识。&lt;/p&gt;
+&lt;h3&gt;在此之前&lt;/h3&gt;
+&lt;p&gt;安装好nodejs:&lt;/p&gt;
+&lt;p&gt;https://nodejs.org/en&lt;/p&gt;
+&lt;p&gt;熟悉md的编写:&lt;/p&gt;
+&lt;p&gt;https://www.math.pku.edu.cn/teachers/lidf/docs/Rbook/html/_Rbook/markdown.html&lt;/p&gt;
+&lt;h3&gt;在 github 克隆一个 astro 项目&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;
+# 首推自己的个人github项目
+
+https://github.com/itmowang/sxq-astro
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-11-6-astrosetup/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;github推出的新功能 &lt;strong&gt;repository templates&lt;/strong&gt;  方便快速使用该代码库。使用后会在自己的本地仓库看到该项目&lt;/p&gt;
+&lt;h3&gt;编写文章&lt;/h3&gt;
+&lt;p&gt;克隆到自己的私人仓库后 通过 git 工具拉取自己仓库的代码代码。&lt;/p&gt;
+&lt;p&gt;「文章」存放于&lt;code&gt;src/content/blog&lt;/code&gt;路径内，可自行清空后新建；&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-11-6-astrosetup/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;文章内固定格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;---
+title: &quot;文章标题&quot;   # 文章标题
+pubDate: 2021-03-27 09:45:11  # 发布日期
+description: &quot;文章描述。&quot;  # 文章描述
+heroImage: &quot;http://img.blog.loli.wang/2023-8-21-cfworkerProxy/01.png&quot; # 主页预览图
+---
+    # mdx
+    文章内容
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;发布&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt; # 通过npm发布至线上
+ # 强烈要求 Node 版本在 18x + 
+    npm i -g pnpm
+
+    pnpm install
+    
+    pnpm build
+
+    然后将docs目录内的文件部署到服务器上，同样的也可以直接使用 github 的 pages 根据自己的喜好来。
+
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>rust开发环境安装以及Cargo</title><link>https://blog.loli.wang/blog/2023-11-6-rust001/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-11-6-rust001/doc/</guid><description>rust开发环境安装</description><pubDate>Mon, 06 Nov 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;我正在学习准备rust&lt;/h2&gt;
+&lt;p&gt;学习资源：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    官方文档 
+    https://doc.rust-lang.org/book/
+    第三方中文文档
+    https://rustwiki.org/zh-CN/book/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+&lt;p&gt;根据官网提供的exe 安装进行下一步就好&lt;/p&gt;
+&lt;h3&gt;hello world!&lt;/h3&gt;
+&lt;p&gt;建立一个 &lt;strong&gt;project&lt;/strong&gt; 文件夹 创建文件 main.rs 文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# main.rs
+
+fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;保存文件 在命令行中输入命令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+rustc main.rs
+
+# 会自动生成 main.exe main.pdb 文件 exe 是主要可执行文件 pdb是调试信息文件 方便调试
+
+./main.exe
+
+# Hello, world!
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;Rust 是预编译语言&lt;/h3&gt;
+&lt;p&gt;Rust 是一门预编译(ahead-of-time compiled)语言，这意味着你可以编译一个程序，将编译后的可执行文件给别人，即使他们没有安装 Rust 也可以运行程序。&lt;/p&gt;
+&lt;h3&gt;Cargo&lt;/h3&gt;
+&lt;p&gt;使用 Cargo 创建一个新项目&lt;/p&gt;
+&lt;p&gt;查看cargo的版本&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cargo --version
+# cargo 1.73.0 (9c4383fb5 2023-08-26)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建项目&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;cargo new hello_cargo
+# Created binary (application) `hello_cargo` package
+cd hello_cargo
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;目录结构&lt;/p&gt;
+&lt;p&gt;src 目录内有个 main.rs 作为主入口&lt;/p&gt;
+&lt;p&gt;Cargo.toml 为 Cargo的配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# Cargo.toml
+[package]
+name = &quot;hello_cargo&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+[dependencies]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;构建并运行 Cargo 项目&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;cargo build # 构建项目
+cargo run # 一步构建并运行项目
+cargo check # 检查项目是否可以编译通过
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;看来可以开始Rust之旅了&lt;/p&gt;
+</content:encoded></item><item><title>docker 配置 nginx 环境</title><link>https://blog.loli.wang/blog/2023-10-13-dockerdevops/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-10-13-dockerdevops/doc/</guid><description>docker 配置 nginx 环境</description><pubDate>Fri, 13 Oct 2023 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;如果是windows环境下，记得安装上 ubuntu ，然后安装好docker Desktop&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-13-dockerDevops/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;搜索nginx镜像&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+打开ubuntu的命令行。
+
+ docker search nginx # 搜索nginx镜像
+ 
+ NAME: 镜像仓库源的名称
+ DESCRIPTION: 镜像的描述
+ OFFICIAL: 是否为 docker 官方发布
+ stars: 类似 Github 里面的 star
+ AUTOMATED: 自动构建。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-13-dockerDevops/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;拉取最新NGINX Docker镜像&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+docker pull nginx:latest # latest 代表最新版本的意思 同样也可以在这里制定版本
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-13-dockerDevops/03.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;查看镜像&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt; docker images # 查看所有已经拉取和自己的镜像
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-13-dockerDevops/04.png&quot; alt=&quot;切图4&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;使用执行镜像创建一个新的容器&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+docker run -it nginx
+
+语法：docker run [OPTIONS] IMAGE [COMMAND] [ARG…]
+
+OPTIONS说明：
+-a stdin: 指定标准输入输出内容类型，可选 STDIN/STDOUT/STDERR 三项；
+-d: 后台运行容器，并返回容器ID；
+-i: 以交互模式运行容器，通常与 -t 同时使用；
+-P: 随机端口映射，容器内部端口随机映射到主机的端口
+-p: 指定端口映射，格式为：主机(宿主)端口:容器端口
+-t: 为容器重新分配一个伪输入终端，通常与 -i 同时使用；
+–name=&quot;nginx-lb&quot;: 为容器指定一个名称；
+–dns 8.8.8.8: 指定容器使用的DNS服务器，默认和宿主一致；
+–dns-search example.com: 指定容器DNS搜索域名，默认和宿主一致；
+-h “mars”: 指定容器的hostname；
+-e username=“ritchie”: 设置环境变量；
+–env-file=[]: 从指定文件读入环境变量；
+–cpuset=&quot;0-2”&quot; or --cpuset=&quot;0,1,2&quot;: 绑定容器到指定CPU运行；
+-m :设置容器使用内存最大值；
+–net=&quot;bridge&quot;: 指定容器的网络连接类型，支持 bridge/host/none/container: 四种类型；
+–link=[]: 添加链接到另一个容器；
+–expose=[]: 开放一个端口或一组端口；
+–volume , -v: 绑定一个卷
+
+
+# 使用指令
+
+docker run -it --name=&quot;testNgx&quot; nginx
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-13-dockerDevops/05.png&quot; alt=&quot;切图5&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;可以看到我们这里有了新的我们创建的容器。可以对容器启动关闭销毁等快捷的操作。&lt;/p&gt;
+&lt;p&gt;当然 我们是nginx 要配置个ip和端口，方便本地测试&lt;/p&gt;
+&lt;h2&gt;实践测试&lt;/h2&gt;
+&lt;p&gt;写上第二个测试 ，可以看到我们正常创建了个新的容器，并8080端口映射了80端口&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 指令
+docker run --name nginx-test -p 8080:80 -d nginx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-13-dockerDevops/06.png&quot; alt=&quot;切图6&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-13-dockerDevops/07.png&quot; alt=&quot;切图7&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-13-dockerDevops/08.png&quot; alt=&quot;切图8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;改变docker nginx的conf配置改为自己的配置就可以啦&lt;/p&gt;
+</content:encoded></item><item><title>记一次折腾 Surge (github pages替代品) </title><link>https://blog.loli.wang/blog/2023-10-08-surge/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-10-08-surge/doc/</guid><description>记一次折腾 Surge (github pages替代品)</description><pubDate>Sun, 08 Oct 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;起因&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-08-surge/05.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;看到老师发这玩意，不管是什么，总得折腾一番 😁&lt;/p&gt;
+&lt;h2&gt;如何使用 Surge.sh 免费部署静态网站&lt;/h2&gt;
+&lt;p&gt;Surge.sh 是一个免费的静态网站主机，您可以通过命令行与之交互。它可以快速轻松地在线获取新站点和应用程序，无论是手动还是作为 CI 构建过程的一部分。以下是如何开始使用该服务。类似github 的pages功能&lt;/p&gt;
+&lt;h2&gt;第一次运行&lt;/h2&gt;
+&lt;p&gt;我们假设您已经有了要部署到 Web 的文件目录。如果还没有，请创建一个新文件夹，添加一个 index.html 和一些简单的入门内容。&lt;/p&gt;
+&lt;p&gt;Surge 是通过Npm发布的JavaScript的引用程序 ，在这之前必须安装Node.js ，再然后使用npm安装Surge&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm install --global surge
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;安装完成后执行指令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+surge
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行后会要求你注册/登录一个相关的账号，填写完后，会要求让你填写需要发布的目录，填写完成后自动发布&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-08-surge/02.png&quot; alt=&quot;切图2&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-10-08-surge/03.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;补充，如何绑定域名&lt;/h2&gt;
+&lt;p&gt;只需要在需要发布的 Web 文件目录，建立一个CNAME文件，内部填写需要绑定的域名即可&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-08-surge/07.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;发布成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-10-08-surge/06.png&quot; alt=&quot;切图4&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>问答：DPlayer关键帧预览图生成思路 </title><link>https://blog.loli.wang/blog/2023-9-dplayer-thumbnails/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-9-dplayer-thumbnails/doc/</guid><description>问答：DPlayer关键帧预览图生成思路</description><pubDate>Tue, 26 Sep 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;起因&lt;/h2&gt;
+&lt;p&gt;网友学习java工作了，公司领导给了个需求，要播放视频同事鼠标悬停到进度条位置有预览效果&lt;/p&gt;
+&lt;p&gt;类似
+&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;网友深思熟虑的考虑播放器使用 &lt;strong&gt;DPlayer&lt;/strong&gt; ，但是把官网上的Demo复制下来，放上自己的视频后，发现预览图都是白屏。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;我看了下 &lt;strong&gt;DPlayer&lt;/strong&gt; 文档后，发现是有个属性 &lt;strong&gt;thumbnails&lt;/strong&gt; 专门存放时间帧的预览图。给出的建议是自己去通过视频工具去切时间帧的图片。&lt;/p&gt;
+&lt;h3&gt;重新理解需求&lt;/h3&gt;
+&lt;p&gt;发现他的需求并没有描述清楚，常常因为需求没有描述清楚而导致做一些多余的事情&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/03.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;嗯.... 他是java工程师，在工作中前端的活也要干。。但是居然想着前端切图，，，前端一个弱语言单线程，就算依赖Web Workers 也很不好吧。应用层并不适合处理视频这种场景。&lt;/p&gt;
+&lt;h3&gt;进一步建议和最后的方案&lt;/h3&gt;
+&lt;p&gt;看见 &lt;strong&gt;DPlayer&lt;/strong&gt; 作者有个库&lt;strong&gt;DPlayer-thumbnails&lt;/strong&gt;，专门处理视频预览图片的，是基于&quot;fluent-ffmpeg&quot;这个库来写的，可惜是Node的，他是java不太适用。但是ffmpeg 连 Node都有相关的库，java这么好的生态会没有? 毕竟不是java 慢慢引导下吧。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/04.png&quot; alt=&quot;切图4&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/05.png&quot; alt=&quot;切图5&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/06.png&quot; alt=&quot;切图6&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/07.png&quot; alt=&quot;切图7&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/08.png&quot; alt=&quot;切图8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;最终结束。。。虽然没帮到什么实际上的，至少思路给引导了下。我想应该足够了&lt;/p&gt;
+&lt;h3&gt;后续&lt;/h3&gt;
+&lt;p&gt;后一天问了下网友情况，如何生成 ，他打算的方案是循环生成图片再去拼接，我看官方写的插件Node版本的也是这样的，后来发现他的能力并不能做到相关的操作&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;ffmpeg -y -i &quot;test.mp4&quot; -frames 1 -vf &quot;thumbnail=n=100,scale=-1:320,tile=4X6:padding=10:color=white&quot; thumbnail.png
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-dplayer-thumbnails/09.png&quot; alt=&quot;切图9&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>原型链的理解</title><link>https://blog.loli.wang/blog/2023-9-23-prototype/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-9-23-prototype/doc/</guid><description>原型链的理解</description><pubDate>Sat, 23 Sep 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;起因&lt;/h2&gt;
+&lt;p&gt;程序媛妹妹问我面试题，怎么好好的解释原型链(或许她问的什么是原型链)，嘛！毕竟写vue都要理解这玩意捏。&lt;/p&gt;
+&lt;h2&gt;理解&lt;/h2&gt;
+&lt;p&gt;每一个对象都有自己的原型链，有自己的内置对象，有自己的prototype 和 proto 。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;prototype&lt;/strong&gt; 显式原型，指向一个构造函数
+** &lt;strong&gt;proto&lt;/strong&gt; ** 隐式原型，是对象的属性&lt;/p&gt;
+&lt;p&gt;如果想从对象中查找某个值，如果没有找到他们就会从原型实例，向上查找，直到找到Object.prototype 为止。&lt;/p&gt;
+&lt;p&gt;示例解释&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+ Object.prototype.abc = 222;
+
+ // 建立构造函数1
+ function Test1Fun() {}
+
+ // 构造函数中写入原型
+ Test1Fun.prototype.test = &quot;111&quot;;
+
+ // 建立构造函数2
+ function Test2Fun() {}
+  
+ // 将Test2Fun的原型对象指向一个Test1Fun的实例，实现原型链继承
+ Test2Fun.prototype = new Test1Fun();
+
+// 创建一个Test2Fun的实例对象testObj
+ var testObj = new Test2Fun();
+
+//  从原型链中查找 test 
+ console.log(testObj.test);
+//  从原型链中查找 abc
+ console.log(testObj.abc);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;是否发现vue中 Vue是一个构造函数，我们经常在上面挂载原型，在所有地方都能方便使用&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-23-prototype/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>vite 多页面应用配置</title><link>https://blog.loli.wang/blog/2023-9-22-multappliction/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-9-22-multappliction/doc/</guid><description>vite 多页面应用配置</description><pubDate>Fri, 22 Sep 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;起因&lt;/h2&gt;
+&lt;p&gt;一个程序媛妹妹问我vite如何配置多应用，我仔细想了想，什么是多应用？？，后来经过gpt搜索，百度资料，哦~ 原来叫做 &lt;strong&gt;多页面应用&lt;/strong&gt; ，然后这就去研究。&lt;/p&gt;
+&lt;p&gt;想打包出来的目录结构是这样的:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-22-multAppliction/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;妹子是使用rollup配置的，看了下代码， 写的一个插件，导入到vite插件里面。看上去并不合理，也并不友善，同样的查看了vite文档 有相关的处理方案&lt;/p&gt;
+&lt;h2&gt;自己动手&lt;/h2&gt;
+&lt;p&gt;看文档，只需要根目录定义好相应的目录结构，在rollupOptions中配置好相应的入口，就可以成功&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-22-multAppliction/03.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;但是我们需要动态的读取目录，更好的读取应用, 所以需要使用fs去读取下文件夹内文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import fs from &quot;fs&quot;;
+
+//...
+
+  // 加载所有子目录
+  const appliction = fs.readdirSync(&quot;./appliction&quot;);
+  // 合并成input入口数组
+  const input = Object.fromEntries(
+    appliction.map((item) =&amp;gt; [
+      item,
+      path.resolve(`${__dirname}/appliction/${item}/index.html`),
+    ])
+  );
+
+//...
+
+// 获取出来的目录结构
+// {
+//     app1:&apos;xxx/xxx/appliction/app1/index.html&apos;
+// }
+
+
+//...
+  return {
+    base: &quot;./&quot;,
+    outDir: &quot;dist&quot;,
+    plugins: [vue()],
+    build: {
+      target: &quot;es2015&quot;,
+      cssCodeSplit: true,
+      assetsDir: &quot;appliction&quot;,
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, &quot;index.html&quot;),
+          ...input,
+        }, 
+      },
+  },
+//...
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这时候我们就打包出来了相应的目录，结构&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-22-multAppliction/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;不过有个缺点，目录结构都在assets内，想将打包出来的js文件css文件放到他们自己的文件结构内，例如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+    - dist
+        - page1
+            - static
+            - index.html    
+        - page2
+            - static
+            - index.html 
+    index.html
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;所以需要配置下rollup的输出格式&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+ return {
+    base: &quot;./&quot;,
+    outDir: &quot;dist&quot;,
+    plugins: [vue()],
+    build: {
+      target: &quot;es2015&quot;,
+      cssCodeSplit: true,
+      assetsDir: &quot;appliction&quot;,
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, &quot;index.html&quot;),
+          ...input,
+        },
+        output: {
+          entryFileNames: &quot;appliction/[name]/static/[name].[hash].js&quot;,
+          chunkFileNames: &quot;appliction/[name]/static/[name].[hash].js&quot;,
+          assetFileNames: &quot;appliction/[name]/static/[name].[hash].[ext]&quot;,
+        },
+      },
+    },
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这样就打包出了我们所需要的目录结构&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-22-multAppliction/01.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;参考文档：
+&lt;a href=&quot;https://github.com/itmowang/mw-cli/tree/master/packages/mw-create/template/multi-application-template&quot;&gt; 我的github仓库 &lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[vite官方] (https://vitejs.dev/guide/build.html#multi-page-app)&lt;/p&gt;
+</content:encoded></item><item><title>package.json 中 exports 的理解</title><link>https://blog.loli.wang/blog/2023-9-18-exportswhy/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-9-18-exportswhy/doc/</guid><description>package.json 中 exports 的理解</description><pubDate>Mon, 18 Sep 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;起因&lt;/h3&gt;
+&lt;p&gt;学习某低代码平台代码，看&lt;strong&gt;packages&lt;/strong&gt;中有个exports，指向了不同的js文件，疑惑为什么这么做&lt;/p&gt;
+&lt;h3&gt;解惑&lt;/h3&gt;
+&lt;p&gt;在通常情况下，我们会使用 main:&quot;index.js&quot; 指向单独指向一个所抛出的 &lt;strong&gt;exports&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;但是使用过 exports 后，会生成一个对应关系，抛出不同的模块，并消除替换了 &lt;strong&gt;mian&lt;/strong&gt; 字段的默认行为 例如&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; {
+  &quot;exports&quot;: {
+    &quot;.&quot;: &quot;./main.js&quot;,
+    &quot;./core/test&quot;: &quot;./test.js&quot;,
+  }
+}
+
+// 使用时可以使用如此的对应关系 分模块去使用
+
+// &quot;.&quot;: &quot;./main.js&quot;,
+import test from &apos;package&apos;
+
+// &quot;./core/test&quot;: &quot;./test.js&quot;,
+import test from &apos;package/core/test&apos;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;根据模块语法 引用不同的文件&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;&quot;exports&quot;: {
+    &quot;.&quot;: {
+      &quot;import&quot;: &quot;./lib/esm/index.mjs&quot;,
+      &quot;require&quot;: &quot;./main.js&quot;
+    },
+    &quot;./core/test&quot;: &quot;./test.js&quot;
+  }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;后续疑问&lt;/h3&gt;
+&lt;p&gt;exports 为抛出不同的模块,那么ts中的tsconfig 的paths 和 vite的  resolve.alias 区别是什么？&lt;/p&gt;
+</content:encoded></item><item><title>什么是swc</title><link>https://blog.loli.wang/blog/2023-9-13-why-swc/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-9-13-why-swc/doc/</guid><description>什么是swc</description><pubDate>Sun, 10 Sep 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;什么是 swc&lt;/h2&gt;
+&lt;p&gt;在swc没出现之前，一直是使用 &lt;strong&gt;babel&lt;/strong&gt; 来处理转换旧版本 &lt;strong&gt;JavaScript&lt;/strong&gt; 的工具，也可以给&lt;strong&gt;typescript&lt;/strong&gt;使用，ast解析树，压缩等等.. 是前端工程换不可缺少的一环。&lt;/p&gt;
+&lt;p&gt;而 &lt;strong&gt;Babel&lt;/strong&gt; 是JavaScript编写的，是JavaScript的编译器，SWC 同样也是JavaScript的编译器，不过是用Rust重写的，比Javascript快的多。性能得到了大幅度提升，目前很多常用的工具库都正在用rust重写。所以还不学Rust？&lt;/p&gt;
+&lt;h2&gt;swc 的使用&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# 命令
+
+pnpm init
+
+pnpm add @swc/core @swc/cli
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;# async.js
+
+const fetch = require(&quot;node-fetch&quot;);
+
+async function getData() {
+    let res = await fetch(&quot;https://jsonplaceholder.typicode.com/todos/1&quot;);
+    let json = await res.json();
+    console.log(&apos;data&apos;, json);
+}
+
+getData();
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;配置spack&lt;/h3&gt;
+&lt;p&gt;在根目录创建 spack.config.js 文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const { config } = require(&quot;@swc/core/spack&quot;);
+
+
+module.exports = config({
+ // 入口
+ entry: __dirname + &quot;/index.js&quot;,
+ // 输出到哪儿
+ output: {
+   path: __dirname + &quot;/dist&quot;,
+ },
+ module:{}
+ // swc编译配置
+//   options: {
+//     // 编译规则
+//     jsc: {
+//         parser: {}, // 解析配置
+//         target: &quot;es5&quot;, // 转义目标
+//         // ... 等可以去官网看具体配置 https://swc.rs/docs/configuration/swcrc
+//     },
+//     // 输出文件配置
+//     module: {
+//       type: &quot;commonjs&quot;,
+//       strict: false,
+//       strictMode: true,
+//       lazy: false,
+//       noInterop: false,
+//       ignoreDynamic: false,
+//     },
+//   },
+});
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;更改执行脚本&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# package.json
+
+ &quot;scripts&quot;: {
+   &quot;build&quot;: &quot;spack&quot;
+ }
+
+# 执行
+pnpm build
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-13-why-swc/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-13-why-swc/03.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;参考文档：&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://swc.rs/docs/usage/bundling&quot;&gt;SWC - 官方文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;或许准备些一个自己的swc插件后面持续记录&lt;/p&gt;
+</content:encoded></item><item><title>mini-webpack - 学习 - 废弃已经学习了概念后续补充</title><link>https://blog.loli.wang/blog/2023-9-9-mini-webpack/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-9-9-mini-webpack/doc/</guid><description>mini-webpack - 学习</description><pubDate>Sat, 09 Sep 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;准备&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;    fs # 操作文件
+    @babel/parser # 就是babel 只不过是一个api的使用方式 babel是一个编译工具 将新的es语言转换为老的es语言
+    @babel/traverse # babel的插件 用来遍历文件树 
+    ejs # 模板生成器 可以将模块里的东西
+    babel-preset-env 
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>个人Astro主题 - SXQ</title><link>https://blog.loli.wang/blog/2023-9-04-astroxxq/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-9-04-astroxxq/doc/</guid><description>个人Astro主题 - SXQ</description><pubDate>Tue, 05 Sep 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;个人Astro主题 - SXQ&lt;/h2&gt;
+&lt;p&gt;一款 Astro 的二次元风格捏，应该会有人喜欢的，正在慢慢完善中，欢迎指出问题提出意见。&lt;/p&gt;
+&lt;p&gt;Github 项目地址 ：&lt;a href=&quot;https://github.com/itmowang&quot;&gt;https://github.com/itmowang/sxq-astro&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;使用方式&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;    # 强烈要求 Node 版本在 18x + 
+    npm i -g pnpm
+
+    pnpm install
+    
+    pnpm build
+
+    然后将docs目录内的文件部署到服务器上，同样的也可以直接使用 github 的 pages 根据自己的喜好来。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;预览图&lt;/h3&gt;
+&lt;p&gt;包含移动端 PC端 平板端的不同样式&lt;/p&gt;
+&lt;p&gt;预览地址: https://blog2.loli.wang&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-04-astroxxq/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-04-astroxxq/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-04-astroxxq/03.jpg&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-04-astroxxq/04.jpg&quot; alt=&quot;切图4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-04-astroxxq/05.png&quot; alt=&quot;切图5&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-04-astroxxq/06.jpg&quot; alt=&quot;切图6&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-04-astroxxq/07.jpg&quot; alt=&quot;切图6&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>JS之多线程Web Worker API</title><link>https://blog.loli.wang/blog/2023-8-23-webworker/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-23-webworker/doc/</guid><description>JS之多线程Web Worker API</description><pubDate>Thu, 31 Aug 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;为什么需要 Web Worker&lt;/h2&gt;
+&lt;p&gt;由于 JavaScript 语言用的是单线程，同一时刻只能做一件事， 如果又多个同步任务执行完之前，下方代码不会执行。造成了堵塞，页面无响应。&lt;/p&gt;
+&lt;p&gt;但如果把这段代码放到 Web Worker 中执行，这段逻辑在执行中依然可以执行下面的代码，用户的操作也就可以正常响应了&lt;/p&gt;
+&lt;h2&gt;什么是 Web Worker&lt;/h2&gt;
+&lt;p&gt;Web Worker 为 Web 内容在后台线程中运行脚本提供了一种简单的方法。线程可以执行任务而不干扰用户界面。但是他不可以操作 dom&lt;/p&gt;
+&lt;h2&gt;Web Worker 的使用限制&lt;/h2&gt;
+&lt;h3&gt;同源限制&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;分配给 Worker 线程运行的脚本文件，必须与主线程的脚本文件同源。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;文件限制&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;Worker 无法读取本地文件(&apos;file://&apos;) 他加载的协议必须要来自网络
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;通信限制&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;Worker 线程所仔的全局对象，与主线程不一样，区别是
+1. 无法读取主线程所在的网页 DOM 对象
+2. 无法使用 document 、window 、parent 这些对象
+
+Worker 线程和主线程不在同一个环境，他们不能直接通信，必须通过消息完成 `postMessage` 和 `onMessage`
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;脚本限制&lt;/h3&gt;
+&lt;p&gt;Worker 线程不能使用 alert() 和 confirm() 方法 ，但是可以使用 ajax 和定时器 setTimeout 等 API&lt;/p&gt;
+&lt;h2&gt;基本使用&lt;/h2&gt;
+&lt;p&gt;创建线程&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const worker = new Worker(aURL, options);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;worker.postMessage&lt;/code&gt; 向 worker 内部作用域发送一共消息，消息可以由JavaScript任何对象组成&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;worker.terminate&lt;/code&gt;  立刻终止worker。该方法并不会等待woker去完成剩余的操作，会立马停止&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;worker.onmessage&lt;/code&gt; 接收到消息会立马触发message消息&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;worker.onerror&lt;/code&gt; 当worker出现运行中错误时。会被调用&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+worker.addEventListener(&apos;error&apos;, function (e) {
+    console.log(e.message) // 可读性良好的错误消息
+    console.log(e.filename) // 发生错误的脚本文件名
+    console.log(e.lineno) // 发生错误时所在脚本文件的行号
+})
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;多数使用场景&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;    - 打包压缩 另外开辟线程去处理
+    - 导出图片太大 另外开辟线程去处理
+    - 压缩图片等等
+    ....
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;相关文档&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/API/Web_Workers_API/Using_web_workers&quot;&gt;MDN - Web Workers API&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>css新单位dvh，svh 解释</title><link>https://blog.loli.wang/blog/2023-08-30-csssvhdvh/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-08-30-csssvhdvh/doc/</guid><description>css新单位dvh，svh 解释</description><pubDate>Wed, 30 Aug 2023 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;什么是vh，vw&lt;/h2&gt;
+&lt;p&gt;在css中 &lt;code&gt;vh&lt;/code&gt; 表示窗口视图的高度百分比,  &lt;code&gt;vw&lt;/code&gt; 表示窗口视图的宽度度百分比 , &lt;code&gt;1vh&lt;/code&gt; 等于窗口视图高度 &lt;code&gt;1%&lt;/code&gt;，而&lt;code&gt;1vw&lt;/code&gt; 代表视图宽度的&lt;code&gt;1%&lt;/code&gt; ，一般我们使用 &lt;code&gt;100vh&lt;/code&gt; 来自定义我们的视图大小的高度，固定为100%，他对响应式是非常适用，因为他会根据窗口的大小自动适应尺寸。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-08-30-cssSvhDvh/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;遇见问题&lt;/h3&gt;
+&lt;p&gt;发现新项目模板平板上会出现白屏溢出出现滚动条！！！&lt;strong&gt;不止是高度，宽度也是这样 会出现一定的问题&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-08-30-cssSvhDvh/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;解决方案&lt;/h3&gt;
+&lt;p&gt;为了解决这个方案出现了新的单位 &lt;code&gt;dvh&lt;/code&gt; &lt;code&gt;svh&lt;/code&gt;, 他们在移动端兼容上面会经常用到。也会对移动端进行一定的兼容&lt;/p&gt;
+&lt;p&gt;参考:
+&lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/101&quot;&gt;MDN - CSS&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>编写一个自己的 Cli 脚手架工具</title><link>https://blog.loli.wang/blog/2023-8-28-nodeclitools/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-28-nodeclitools/doc/</guid><description>编写一个自己的 Cli 脚手架工具</description><pubDate>Mon, 28 Aug 2023 13:22:24 GMT</pubDate><content:encoded>&lt;p&gt;具体完整代码可以去查看我的github项目，&lt;a href=&quot;https://github.com/itmowang/mw-cli&quot;&gt;mw-cli - 一个Nodejs脚手架工具&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;战斗准备&lt;/h2&gt;
+&lt;p&gt;建立一个项目文件 &lt;strong&gt;打开命令窗口&lt;/strong&gt; 我们所使用的一切为pnpm&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm install pnpm -g
+
+# 初始化项目指令
+pnpm init
+
+# 安装我们所需要会用到的依赖 作用去查去查阅下吧！
+pnpm add typescript  // Typescript 支持 💕 个人习惯
+pnpm add commander  
+pnpm add copy-dir
+pnpm add cross-spawn
+pnpm add fs
+pnpm add kolorist
+pnpm add minimist
+pnpm add ora
+pnpm add ts-node
+
+# 生成ts配置文件 tsconfig.json
+tsc --init
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;启动文件&lt;/h2&gt;
+&lt;p&gt;创建&lt;strong&gt;bin&lt;/strong&gt;目录作为启动路径，创建index.ts文件，注意 &lt;strong&gt;#!/usr/bin/env&lt;/strong&gt; 是一个常见的约定，用于告诉操作系统在运行脚本时使用指定的解释器。在这种情况下，/usr/bin/env 是一个可执行文件，它会在环境变量中查找指定的解释器（在这里是 node），并使用它来执行脚本。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# /bin/index.ts
+
+#!/usr/bin/env node
+
+// 引用cross-spawn
+const spawn = require(&quot;cross-spawn&quot;);
+
+// 调用pkgjson
+const pkg = require(&quot;../../package.json&quot;);
+
+// 引用commander
+const program = require(&quot;commander&quot;);
+
+// 引用创建项目逻辑
+const createProject = require(&quot;../src/core/create&quot;);
+
+//版本号 -v --version 选项
+program.version(pkg.version, &apos;-v,--version&apos;)
+
+// 创建项目
+program.command(&quot;create &amp;lt;projectName&amp;gt;&quot;).description(&quot;创建项目&quot;).action((projectName: string) =&amp;gt; {
+    createProject(projectName);
+});
+
+program.parse(process.argv);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;创建项目配置文件&lt;/h2&gt;
+&lt;p&gt;建立&lt;strong&gt;src&lt;/strong&gt;目录,创建&lt;strong&gt;config&lt;/strong&gt;目录和&lt;strong&gt;core&lt;/strong&gt;目录，config 文件夹我们用于存放配置文件，core 文件夹用于存放核心逻辑文件。&lt;/p&gt;
+&lt;p&gt;config 文件夹内建立 repo.config.ts , 用于存放我们项目模板地址，原本有考虑是用github的项目地址的，但是个人认为并不适合。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# /src/config/repo.config.ts
+
+const path = require(&quot;path&quot;);
+
+// 模板地址
+const repoUrl =  path.resolve(__dirname, &quot;../../template&quot;);
+
+module.exports = repoUrl;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;并且创建 &lt;strong&gt;template&lt;/strong&gt; 目录,存放我们项目模板&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-28-nodeCliTools/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;创建模板逻辑&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# /src/core/create.ts 
+
+// 读取vue模版
+const vueCommand = require(&quot;./vueCreate&quot;);
+// 读取node模版
+const nodeCommand = require(&quot;./nodeCreate&quot;);
+
+const createCommand = async (projectName = &quot;&quot;) =&amp;gt; {
+  const {
+    blue,
+    cyan,
+    green,
+    lightBlue,
+    lightGreen,
+    lightRed,
+  } = require(&quot;kolorist&quot;);
+
+  const prompts = require(&quot;prompts&quot;);
+
+  const questions = [
+    {
+      type: &quot;text&quot;,
+      name: &quot;projectName&quot;,
+      message: &quot;请输入你需要创建的项目名称&quot;,
+      initial: projectName,
+    },
+    {
+      type: &quot;text&quot;,
+      name: &quot;projectVersion&quot;,
+      message: &quot;请输入你需要创建的项目版本号&quot;,
+      initial: &quot;1.0.0&quot;,
+    },
+    {
+      type: &quot;select&quot;,
+      name: &quot;projectTemplate&quot;,
+      message: &quot;请选择你需要创建的项目模板&quot;,
+      choices: [
+        {
+          title: &quot;Vue&quot;,
+          value: &quot;vue&quot;,
+          description: blue(&quot;vue类型的一些项目模版&quot;),
+        },
+        {
+          title: &quot;React&quot;,
+          value: &quot;react&quot;,
+          description: blue(&quot;react类型的一些项目模版&quot;),
+        },
+        {
+          title: &quot;Node&quot;,
+          value: &quot;node&quot;,
+          description: blue(&quot;node类型的一些项目模,例如配置好mysql或者orm框架&quot;),
+        },
+      ],
+    },
+  ];
+
+  (async () =&amp;gt; {
+    const response = await prompts(questions);
+    const { projectName, projectVersion, projectTemplate } = response;
+    if (projectTemplate === &quot;vue&quot;) {
+      vueCommand(response);
+    } else if (projectTemplate === &quot;node&quot;) {
+      nodeCommand(response);
+    } else {
+      console.log(lightRed(&quot;暂时只支持vue模版&quot;));
+    }
+  })();
+};
+
+module.exports = createCommand;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;创建vue模板逻辑&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# /src/core/vueCreate.ts 
+
+interface Create {
+  projectName: string; // 项目名称
+  projectVersion: string; // 项目版本号
+  projectTemplate: string; // 项目模版
+}
+
+// 读取vue模版
+const vueCreate = async (create: Create) =&amp;gt; {
+  const prompts = require(&quot;prompts&quot;);
+  const config = require(&quot;../config/repo.config&quot;);
+  const {
+    blue,
+    cyan,
+    green,
+    lightBlue,
+    lightGreen,
+    lightRed,
+  } = require(&quot;kolorist&quot;);
+
+  const questions = [
+    {
+      type: &quot;select&quot;,
+      name: &quot;vueTemplate&quot;,
+      message: &quot;请选择你需要创建的项目模板&quot;,
+      choices: [
+        {
+          title: &quot;template-vue3-ts-vite&quot;,
+          value: &quot;template-vue3-ts-vite&quot;,
+          description: green(&quot;vue3 + ts + vite 项目模版&quot;),
+        },
+        {
+          title: &quot;template-vue3-webpack-ts&quot;,
+          value: &quot;template-vue3-webpack-ts&quot;,
+          description: green(&quot;vue3 + ts + webpack 项目模版&quot;),
+        },
+      ],
+    },
+  ];
+
+  (async () =&amp;gt; {
+    const response = await prompts(questions);
+    const { vueTemplate } = response;
+    // 走copy-dir 不走github了 没意义
+    const copydir = require(&quot;copy-dir&quot;);
+    // 进度
+    const ora = require(&quot;ora&quot;);
+    const spinner = ora(blue(&quot;下载模版中...&quot;));
+
+    copydir.sync(
+      `${config}/${vueTemplate}`,
+      `./${create.projectName}`,
+      {
+        utimes: true, // keep add time and modify time
+        mode: true, // keep file mode
+        cover: true, // cover file when exists, default is true
+        filter: function (stat: string, filepath: any, filename: string) {
+          return true; // remind to return a true value when file check passed.
+        },
+      },
+      function (err: Error) {
+        if (err) throw err;
+        spinner.fail(lightRed(`项目模版创建失败`));
+      }
+    );
+
+    spinner.succeed(lightGreen(&quot;项目模版创建成功&quot;));
+  })();
+};
+
+module.exports = vueCreate;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;从这里整体逻辑就已经编写完了 但是我们还需要在package.json中配置一下,并且修改下tsconfig.json&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# tsconfig.json
+# ...
+ &quot;outDir&quot;: &quot;lib&quot;
+# ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改输出目录为lib , 这样我们使用tsc命令编译后的文件就会输出到lib目录下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;name&quot;: &quot;mw-create&quot;,
+  &quot;version&quot;: &quot;1.0.14&quot;,
+  &quot;description&quot;: &quot;&quot;,
+  &quot;main&quot;: &quot;./lib/bin/index.js&quot;,
+  &quot;bin&quot;: {
+    &quot;mwcli&quot;: &quot;./lib/bin/index.js&quot;
+  },
+  &quot;scripts&quot;: {
+    &quot;test&quot;: &quot;ts-node ./bin/index&quot;,
+    &quot;build&quot;: &quot;node ./bin/copyDir.ts &amp;amp;&amp;amp; tsc&quot;,
+    &quot;minor&quot;: &quot;npm version minor&quot;,
+    &quot;major&quot;: &quot;npm version major&quot;,
+    &quot;patch&quot;: &quot;npm version patch&quot;
+  },
+  &quot;publishConfig&quot;: {
+    &quot;access&quot;: &quot;public&quot;
+  },
+  &quot;repository&quot;: {
+    &quot;type&quot;: &quot;git&quot;,
+    &quot;url&quot;: &quot;git+https://github.com/itmowang/mw-cli.git&quot;
+  },
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;MIT&quot;,
+  &quot;devDependencies&quot;: {
+    &quot;@types/node&quot;: &quot;^20.4.9&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;commander&quot;: &quot;^11.0.0&quot;,
+    &quot;copy-dir&quot;: &quot;^1.3.0&quot;,
+    &quot;cross-spawn&quot;: &quot;^7.0.3&quot;,
+    &quot;download-git-repo&quot;: &quot;^3.0.2&quot;,
+    &quot;fs&quot;: &quot;0.0.1-security&quot;,
+    &quot;kolorist&quot;: &quot;^1.8.0&quot;,
+    &quot;minimist&quot;: &quot;^1.2.8&quot;,
+    &quot;ora&quot;: &quot;5.4.1&quot;,
+    &quot;prompts&quot;: &quot;^2.4.2&quot;,
+    &quot;ts-node&quot;: &quot;^10.9.1&quot;
+  }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这里我们需要注意的是  &quot;main&quot;: &quot;./lib/bin/index.js&quot;, main字段指定了程序的主入口文件，bin字段指定了程序的命令名，npm会在全局环境下建立一个软链接，指向我们的主入口文件，这样我们就可以在命令行中使用mwcli命令了。&lt;/p&gt;
+&lt;h2&gt;测试一下&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;
+npm link
+
+mwcli create test
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-28-nodeCliTools/02.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;一切大功告成&lt;/p&gt;
+&lt;p&gt;具体代码参考github仓库 https://github.com/itmowang/mw-cli&lt;/p&gt;
+</content:encoded></item><item><title>JavaScript-内置对象-Reflect</title><link>https://blog.loli.wang/blog/2023-8-27-reflect/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-27-reflect/doc/</guid><description>JavaScript-内置对象-Reflect</description><pubDate>Thu, 24 Aug 2023 14:31:24 GMT</pubDate><content:encoded>&lt;h2&gt;Reflect&lt;/h2&gt;
+&lt;p&gt;Reflect 是一个&lt;strong&gt;内置的对象&lt;/strong&gt;，他提供了一些方法来 &lt;strong&gt;操作对象&lt;/strong&gt; 的属性和方法， 并且它还提供 &lt;strong&gt;拦截 JavaScript 操作&lt;/strong&gt; 的方法。这些方法与 proxy handler (en-US) 的方法相同。Reflect 不是一个函数对象，因此它是不可构造的。&lt;/p&gt;
+&lt;h4&gt;Reflect.get(target, propertyKey[, receiver]) 获取对象的属性值&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;
+    const obj = {name:&apos;Mowang&apos;,age:20}
+
+    console.log(Reflect.get(obj,&apos;name&apos;)) // 输出 Mowang
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Reflect.set(target, propertyKey, value[, receiver]) 设置对象的属性值&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;    const obj = {name:&apos;Mowang&apos;,age:20}
+    
+    Reflect.set(obj,&apos;age&apos;,22)
+
+    console.log(obj[&apos;age&apos;]) // 输出 22
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Reflect.has(target, propertyKey) 判断对象是否具有指定的属性&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;    const obj = {name:&apos;Mowang&apos;,age:20}
+    
+    const hasName = Reflect.has(obj,&apos;name&apos;)
+
+    console.log(hasName) // 输出 true
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Reflect.deleteProperty(target, propertyKey) 删除对象的属性&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;    const obj = {name:&apos;Mowang&apos;,age:20}
+    
+    Reflect.deleteProperty(obj,&apos;age&apos;)
+
+    console.log(obj) // 输出 { name:&apos;Mowang&apos; }
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;Reflect.construct(target, argumentsList[, newTarget]) 使用给定的参数列表创建一个对象实例&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;    class Person {
+        constructor(name,age){
+            this.name = name;
+            this.age = age
+        }
+    }
+
+    const args = [&apos;Mowang&apos;,20];
+    const person = Reflect.construct(Person,args)
+    
+    console.log(person) // 输出 {name:&apos;Mowang&apos;,age:20}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这只是他的常用方法，他还有一些其他的函数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    - Reflect.apply(target, thisArgument, argumentsList)  # 通过指定的参数列表发起对目标 (target) 函数的调用
+    - Reflect.get(target, propertyKey[, receiver]) # 从已有的对象种读取去属性值
+    - Reflect.has(target, propertyKey) # 判断目标对象中是否存在这个属性
+    - Reflect.set(target, propertyKey, value[, receiver]) # 修改或者设置一个属性
+    - Reflect.isExtensible(target) # 判断这个对象是否可拓展 如果可以拓展我们就可以增加新属性 ，比如 Reflect || Object.preventExtensions(target) 设置过的属性就是不可拓展的
+    - Reflect.ownKeys(target) # 返回一个以目标属性键值的数组 比如 const obj = {name:&apos;Mowang&apos;, age:20 }  Reflect.ownKeys(obj) 返回结果为 [&apos;name&apos;,&apos;age&apos;]
+    ...
+    // 举几个常用的 , 剩下的阅读MDN https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Reflect 是一个内置的 JS 对象，它提供了一系列方法，可以让开发者通过调用这些方法，访问一些 JS 底层功能。也就是说，&lt;strong&gt;从 Reflect 对象上可以拿到语言内部的方法&lt;/strong&gt;&lt;/p&gt;
+&lt;h4&gt;配合 proxy 使用&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;let p = {
+    a: &apos;a&apos;
+};
+
+let handler = {
+  set(target, key, value, receiver) {
+    console.log(&apos;set&apos;);
+    Reflect.set(target, key, value, receiver)
+  },
+  defineProperty(target, key, attribute) {
+    console.log(&apos;defineProperty&apos;);
+    Reflect.defineProperty(target, key, attribute);
+  }
+};
+
+let obj = new Proxy(p, handler);
+obj.a = &apos;A&apos;;
+// set
+// defineProperty
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果 Proxy 对象和 Reflect 对象联合使用，前者&lt;strong&gt;拦截赋值&lt;/strong&gt;操作，后者完成&lt;strong&gt;赋值的默认行为&lt;/strong&gt;，而且传入了 &lt;strong&gt;receiver&lt;/strong&gt;，那么 &lt;strong&gt;Reflect.set 会触发 Proxy.defineProperty 拦截&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;参考文档  &lt;a href=&quot;https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Reflect&quot;&gt;MDN - Reflect&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>本站主题 - 待更新</title><link>https://blog.loli.wang/blog/2023-9-01-astro/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-9-01-astro/doc/</guid><description>css新单位dvh，svh 解释</description><pubDate>Sun, 30 Jul 2023 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-01-AsTro/02.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-01-AsTro/03.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-9-01-AsTro/04.png&quot; alt=&quot;切图3&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>[工具] 代码文本比对神器 Beyond Compare</title><link>https://blog.loli.wang/blog/2023-8-23-beyondcompare/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-23-beyondcompare/doc/</guid><description>[工具] 代码文本比对神器 Beyond Compare </description><pubDate>Thu, 20 Jul 2023 16:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;起因&lt;/h3&gt;
+&lt;p&gt;沉冰A梦写了个新的主题，也就是本博客的主题，在使用中发生了很多功能缺失的问题，往往从一个 &lt;strong&gt;demo&lt;/strong&gt; 改为一个真正可用完整的东西的时候，少不了折腾，而我和沉冰不是用的一个代码仓库导致无法代码直接合并查看差异 ，而我又需要使用新功能，因此沉冰A梦推荐了一个工具 《Beyond Compare》&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-23-BeyondCompare/03.png&quot; alt=&quot;BeyondCompare&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;效果体验极佳&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-23-BeyondCompare/01.png&quot; alt=&quot;切图1&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2023-8-23-BeyondCompare/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;下载地址&lt;/h3&gt;
+&lt;p&gt;https://www.scootersoftware.com/home  （这个应该是官方下载，中文站貌似是代理的）&lt;/p&gt;
+</content:encoded></item><item><title>JS 微任务和宏任务 </title><link>https://blog.loli.wang/blog/2023-8-22-eventloop/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-22-eventloop/doc/</guid><description>JS 微任务和宏任务</description><pubDate>Sat, 01 Jul 2023 16:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;JS 是单线程&lt;/h3&gt;
+&lt;p&gt;js 特性单线程，js 是主要和用户互动，和操作 DOM，决定了他只能是个单线程，否则会出现很复杂的同步问题 。 单线程就意味着，所有任务必须要排队执行，只有执行完前面的，后面的才会执行， 如果前一个任务消耗时间很长， &lt;strong&gt;后面的任务就必须等待前面的任务等着&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3&gt;JS 中的同步异步&lt;/h3&gt;
+&lt;p&gt;同步&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;必须要从上至下执行完毕，后一个任务必须要等待上一个任务执行完毕
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;异步&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;前一个任务没有执行完， 没有关系 ， 他也会执行下一个任务，直到执行结束
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;微任务和宏任务&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;对同步异步有一定的划分后， 已经知道同步任务是按顺序执行，从上至下。
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;那么异步任务也有他的执行顺序的， 他也是从上至下， 但是在异步任务里，还有进一层的划分，就是微任务和宏任务，&lt;strong&gt;[微任务比宏任务优先执行]&lt;/strong&gt;&lt;/p&gt;
+&lt;h4&gt;微任务代表&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;process.nextTick、 Promise、 MutationObserver 等
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;宏任务代表&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;setTimeout、 setInterval、 setImmediate、 IO操作等
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;注意： Promise有个特殊性，&lt;strong&gt;Promise构造函数中函数体的代码都是立即执行的&lt;/strong&gt;，而Promise.then() 和 Promise.catch() 属于微任务， 也就是resolve() 和reject()&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-22-EventLoop/01.awebp&quot; alt=&quot;掘金补图&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;参考资料&lt;/h4&gt;
+&lt;p&gt;掘金-辉夜真是太可爱了  https://juejin.cn/post/6886602875225833480&lt;/p&gt;
+</content:encoded></item><item><title>React之路 - 第一篇</title><link>https://blog.loli.wang/blog/2023-8-24-reactexperience/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-24-reactexperience/doc/</guid><description>React之路 - 知识累计篇</description><pubDate>Sat, 01 Jul 2023 16:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;常用的 React 库&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;- react   // 不必多说
+- react-dom  // React的官方渲染库，用于将React组件渲染到浏览器中
+- react-router-dom // React 官方路由库
+- react-redux // React 官方状态管理库
+- react-query // 用于管理和处理数据的React库
+- @tanstack/react-query 是 react-query 的一个扩展库，由 TanStack 维护 有一些react-query 没有的功能
+- redux-persist 用于持久化存储Redux状态的库，会将Redux的状态缓存到loaclStorage sessionStorage中 能够使页面刷新保留状态
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;函数式组件写法&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;// 参数1父组件传递进来的参数接收
+// 参数2用于访问组件实例的方法和属性，或者直接操作 DOM 元素 React.forwardRef(MyComponent)
+
+const 组件名(props,ref){
+    const {name} = props;
+    return &amp;lt;div&amp;gt; {name} &amp;lt;/div&amp;gt;
+}
+
+export default 组件名
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;类组件写法&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;import React from &apos;react&apos;
+
+class 组件名 extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+            count: 0
+        }
+    }
+    
+    // 组件生命周期方法
+    componentDidMount() {
+        // 组件挂载后执行的操作
+    }
+
+    render(){
+        return (
+            &amp;lt;div&amp;gt; {this.state.count} &amp;lt;/div&amp;gt;
+        )
+    }
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;常用的Hook&lt;/h3&gt;
+&lt;h5&gt;1. useState&lt;/h5&gt;
+&lt;p&gt;用来存储状态变量变量 [something, setSomething] 用解构方式取值
+something 为状态变量，setSomething 为改变状态变量的方法&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 示例
+import React, { useState } from &quot;react&quot;;
+
+const [something, setSomething] = useState(0); 
+const [something1, setSomething1] = useState({
+    test:222
+});
+const [something2, setSomething2] = useState(&quot;222&quot;);
+
+# 修改状态变量something的方法
+setSomething(1);
+
+# 修改状态变量something1的方法
+setSomething1({
+    something1， // 这里的something1 为上面的状态变量   
+    test:333
+});
+
+# 修改状态变量something2的方法
+setSomething2(&quot;333&quot;);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;2. useEffect&lt;/h5&gt;
+&lt;p&gt;用来处理副作用，比如异步请求，定时器等&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 示例
+import React, { useState, useEffect } from &quot;react&quot;;
+
+const [something, setSomething] = useState(0);
+
+useEffect(() =&amp;gt; {
+    // ....用来处理需要的副作用的处理
+}, [something]); // something 为依赖项，当something发生变化时，useEffect会重新执行
+
+#如果依赖项为空数组，他只会执行一次，相当于componentDidMount
+useEffect(() =&amp;gt; {
+    // ....用来处理需要的副作用的处理
+}, []);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;3. useContext&lt;/h5&gt;
+&lt;p&gt;用来处理跨组件传值，类似于vue中的provide/inject ,方便数据各种组件之间的传递，也可以叫做上下文传递&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 示例
+import React, { useState, useContext } from &quot;react&quot;;
+
+const [something, setSomething] = useState(0);
+
+const Context = React.createContext(null);
+
+# 组件声明
+
+&amp;lt;Context.Provider value={context}&amp;gt;
+    &amp;lt;组件名 /&amp;gt;
+&amp;lt;/Context.Provider&amp;gt;
+
+# 组件接收
+
+const context = useContext(Context);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;4. useRef&lt;/h5&gt;
+&lt;p&gt;用来获取DOM元素或者保存变量&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+# 示例
+import React, { useState, useRef } from &quot;react&quot;;
+
+const [something, setSomething] = useState(0);
+
+const ref = useRef(null);
+
+# 获取DOM元素
+&amp;lt;div ref={ref}&amp;gt;&amp;lt;/div&amp;gt;
+
+# 获取变量
+ref.current
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5&gt;5. useReducer&lt;/h5&gt;
+&lt;p&gt;useReducer 是 useState 的替代方案,用来进行性能优化，用于处理复杂的状态逻辑,他不会改变原有的状态，而是返回一个新的状态。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 示例
+
+import React, { useReducer } from &quot;react&quot;;
+
+// 初始化状态
+const initState = { name: &apos;123&apos; }
+
+// reducer 函数
+const reducer = (state: any, action: any) =&amp;gt; {
+    return action.type === &apos;add&apos; ? { name: &apos;456&apos; } : { name: &apos;789&apos; }
+}
+
+// useReducer 接收两个参数，第一个参数为reducer函数，第二个参数为初始化状态
+const [state, dispatch] = useReducer(reducer, initState);
+
+# 修改状态
+dispatch({ type: &apos;add&apos; })
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-24-ReactExperience/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;下一次写脚手架的时候再去填充。。。。&lt;/p&gt;
+&lt;p&gt;参考文档 &lt;a href=&quot;https://www.ruanyifeng.com/blog/2019/09/react-hooks.html&quot;&gt;阮一峰博客&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>Vue3源码学习 - 1.搭建项目雏形</title><link>https://blog.loli.wang/blog/2023-8-25-vuemini1/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-25-vuemini1/doc/</guid><description>Vue3源码学习</description><pubDate>Sat, 01 Jul 2023 16:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Vue3 源码准备&lt;/h1&gt;
+&lt;p&gt;项目项目源码地址：&lt;a href=&quot;https://github.com/itmowang/mini-vue&quot;&gt;itmowang/mini-vue&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;项目所用包管理工具请一切使用 PNPM&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;npm install pnpm -g
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;项目目录结构&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;packages/ 
+┣ compiler-core/  # 编译器核心模块
+┃ ┣ src/
+┃ ┃ ┗ index.ts
+┃ ┗ README.md
+┣ compoler-dom/  # 浏览器部分编译模块
+┃ ┣ src/
+┃ ┃ ┗ index.ts
+┃ ┗ README.md
+┣ reactivity/    # 响应性模块
+┃ ┣ src/
+┃ ┃ ┗ index.ts
+┃ ┗ README.md
+┣ runtime-core/  # 运行时核心模块
+┃ ┣ src/
+┃ ┃ ┗ index.ts
+┃ ┗ README.md
+┣ runtime-dom/   # 浏览器部分运行时模块
+┃ ┣ src/
+┃ ┃ ┗ index.ts
+┃ ┗ README.md
+┣ shared/        # 共享公共方法模块
+┃ ┣ src/
+┃ ┃ ┗ index.ts
+┃ ┗ README.md
+┗ vue/           # 打包测试项目整体入口模块
+  ┣ src/
+┃ ┃ ┗ index.ts
+  ┗ README.md
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;安装Typescript&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;
+ pnpm install typescript
+
+ tsc --init # 生成配置文件
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;{
+  // 编辑器配置
+  &quot;compilerOptions&quot;: {
+    // 根目录
+    &quot;rootDir&quot;: &quot;.&quot;,
+    // 严格模式标志
+    &quot;strict&quot;: true,
+    // 指定类型脚本如何从给定的模块说明符查找文件。
+    &quot;moduleResolution&quot;: &quot;node&quot;,
+    // https://www.typescriptlang.org/tsconfig#esModuleInterop
+    &quot;esModuleInterop&quot;: true,
+    // JS 语言版本
+    &quot;target&quot;: &quot;es5&quot;,
+    // 允许未读取局部变量
+    &quot;noUnusedLocals&quot;: false,
+    // 允许未读取的参数
+    &quot;noUnusedParameters&quot;: false,
+    // 允许解析 json
+    &quot;resolveJsonModule&quot;: true,
+    // 支持语法迭代：https://www.typescriptlang.org/tsconfig#downlevelIteration
+    &quot;downlevelIteration&quot;: true,
+    // 允许使用隐式的 any 类型（这样有助于我们简化 ts 的复杂度，从而更加专注于逻辑本身）
+    &quot;noImplicitAny&quot;: false,
+    // 模块化
+    &quot;module&quot;: &quot;esnext&quot;,
+    // 转换为 JavaScript 时从 TypeScript 文件中删除所有注释。
+    &quot;removeComments&quot;: false,
+    // 禁用 sourceMap
+    &quot;sourceMap&quot;: false,
+    // https://www.typescriptlang.org/tsconfig#lib
+    &quot;lib&quot;: [&quot;esnext&quot;, &quot;dom&quot;],
+  },
+  // 入口
+  &quot;include&quot;: [&quot;packages/*/src&quot;]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;安装rollup 打包工具&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;pnpm install rollup
+
+pnpm install @rollup/plugin-node-resolve # 模块导入路径补全
+
+pnpm install @rollup/plugin-commonjs # 将代码引用转换为 es2015
+
+pnpm install @rollup/plugin-typescript # ts 支持
+
+pnpm install tslib 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+import resolve from &apos;@rollup/plugin-node-resolve&apos;
+import commonjs from &apos;@rollup/plugin-commonjs&apos;
+import typescript from &apos;@rollup/plugin-typescript&apos;
+
+// rollup的配置文件
+export default [
+  {
+    // 入口文件
+    input: &apos;packages/vue/src/index.ts&apos;,
+    // 打包的输出文件
+    output: [
+      {
+        // 开启sourcemap
+        sourcemap: true,
+        file: &apos;packages/vue/dist/vue.js&apos;,
+        format: &apos;iife&apos;,
+        name: &apos;Vue&apos;
+      }
+    ],
+    plugins: [
+      // ts 支持
+      typescript({
+        sourceMap: true
+      }),
+      // 模块导入路径补全
+      resolve(),
+      // commonjs 模块转换成 es2015
+      commonjs()
+    ]
+  }
+]
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在package.json文件中新加一个scripts&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;    &quot;build&quot;:&quot;rollup -c -w&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;如果出现以下这样证明成功了&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-25-vuemini1/02.png&quot; alt=&quot;rollup打包成功&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;项目的雏形，一个标准的monorepo项目。&lt;/p&gt;
+</content:encoded></item><item><title>Vue3源码学习 - 2.编写中</title><link>https://blog.loli.wang/blog/2023-8-26-vuemini2/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-26-vuemini2/doc/</guid><description>Vue3源码学习</description><pubDate>Sat, 01 Jul 2023 16:00:00 GMT</pubDate><content:encoded/></item><item><title>React之路 - 第二篇 </title><link>https://blog.loli.wang/blog/2023-8-29-reactexperience2/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-29-reactexperience2/doc/</guid><description>React之路 - 知识累计篇</description><pubDate>Sat, 01 Jul 2023 16:00:00 GMT</pubDate><content:encoded>&lt;p&gt;也算是用React写过几个项目了，不管是实际业务上面感觉都有一定的把握。特此准备写一个脚手架项目模板。&lt;/p&gt;
+&lt;h2&gt;项目准备&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;建立 react-admin 文件夹
+
+pnpm init 
+
+# 安装依赖 
+pnpm add typescript
+pnpm add vite 
+pnpm add react 
+pnpm add react-router-dom
+pnpm add @vitejs/plugin-react-swc
+
+# 生成ts配置文件 
+tsc --init
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;创建 &lt;strong&gt;vite.config.ts&lt;/strong&gt; 文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+import { defineConfig, PluginOption } from &quot;vite&quot;;
+import react from &quot;@vitejs/plugin-react-swc&quot;;
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      &quot;@&quot;: &quot;/src&quot;,
+    },
+  },
+  plugins: [react()] as PluginOption[],
+  server: {
+    port: 8081,
+  },
+  preview: {
+    port: 3000,
+  },
+});
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;.......可能介绍不完了 原本打算边写边做记录的 发现代码量和细节太多了&lt;/p&gt;
+&lt;h3&gt;React Admin&lt;/h3&gt;
+&lt;p&gt;源自于想后续去写一些小的项目，提前给自己写一套模板，利用了空闲时间抽出来了基础部分，方便后续DIY。( 不适应用于开发，参考学习！ )&lt;/p&gt;
+&lt;p&gt;依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;  - react (react18)
+  - react-router (6x版本)
+  - redux
+  - antd
+  - axios
+  - react-query
+  - less
+  - redux-persist
+  - rematch
+  - rematch/persist 
+  - typescript
+  - mock
+  - vite
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;预览&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-29-reactexperience2/01.png&quot; alt=&quot;切图1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-29-reactexperience2/02.png&quot; alt=&quot;切图2&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>.nojekyll 文件是什么</title><link>https://blog.loli.wang/blog/2023-8-20-nojekyll-why/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-20-nojekyll-why/doc/</guid><description>.nojekyll 文件是什么 </description><pubDate>Fri, 01 Jul 2022 16:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;.nojekyll 文件是什么&lt;/h2&gt;
+&lt;p&gt;使用 Nuxt 的过程中，发现在 generate 生成的 dist 文件夹下会有一个名为 .nojekyll 的空白文件，它是干什么用的呢？&lt;/p&gt;
+&lt;p&gt;Github Pages 默认是基于 Jekyll 构建，Jekyll 是一个将纯文本转换为静态网站的工具，它构建的网站下各种目录都是特定的以下划线开头命名的文件夹，例如 _layouts、_posts ，它会忽略掉其它的以下划线开头的文件夹和文件。&lt;/p&gt;
+&lt;p&gt;.nojekyll 就是告诉 Github Pages 当前网站不是基于 Jekyll 构建的，不要忽略掉下划线开头的文件和文件夹。&lt;/p&gt;
+&lt;p&gt;可见 .nojekyll 主要就是用于 Github Pages 这种有默认规则的网站部署平台，如果是部署在自己的服务器上，可以把它删掉。&lt;/p&gt;
+&lt;p&gt;反之，如果你的网站不是 Jekyll 构建的，要部署到 Github Pages ，并且包含下划线开头的文件或文件夹，那么你就需要在根目录添加一个 .nojekyll 空文件。&lt;/p&gt;
+&lt;p&gt;参考：
+Jekyll 官网 &lt;a href=&quot;http://jekyllcn.com/&quot;&gt;http://jekyllcn.com/&lt;/a&gt;
+Bypassing Jekyll on GitHub Pages [https://github.blog/2009-12-29-bypassing-jekyll-on-github-pages/]&lt;/p&gt;
+</content:encoded></item><item><title>使用 BroadcastChannel 跨页面通信</title><link>https://blog.loli.wang/blog/2023-8-21-broadcastchannel/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-21-broadcastchannel/doc/</guid><description>使用 BroadcastChannel 跨页面通信</description><pubDate>Fri, 01 Jul 2022 16:00:00 GMT</pubDate><content:encoded>&lt;h3&gt;为什么会有需要用到跨浏览器通信的需求&lt;/h3&gt;
+&lt;p&gt;因公司老项目一次线上出现bug，发现一个用户开了多个浏览器窗口， 发现登录不同用户不同存在浏览器缓存的token已经更换， 但是用户已经更改，页面没有登出，原本的页面还是可以提交最新的数据， 但是因为token变化了， 后端拿取提交人出错， 出现不可描述的问题 。&lt;/p&gt;
+&lt;h3&gt;使用&lt;/h3&gt;
+&lt;p&gt;因为是vue项目 我为了在所有地方都可以访问，选择全局挂载&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+// 构建全局广播
+
+const channel = new BroadcastChannel(&quot;channel-name&quot;);
+
+Vue.prototype.$channel = channel;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;点击退出登录， 发送广播&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;logout(){
+    // 发送通知
+    this.$channel.postMessage(`logout`);
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;在全局地方编写接收广播的逻辑， 例如Vue的App.vue内&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;created() {
+    // 通知其他浏览器窗口是否有退出登录
+    this.$channel.onmessage = function(e) {
+      if (e.data == &quot;logout&quot;) {
+        location.href = &quot;/&quot;;
+      }
+};
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;因为本质上退出登录会走接口， 也清理了Store中的数据， 我们只需要通知其他窗口退出即可&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-21-BroadcastChannel/02.png&quot; alt=&quot;结果&quot; /&gt;&lt;/p&gt;
+&lt;h4&gt;参考资料&lt;/h4&gt;
+&lt;p&gt;MDN - BroadcastChannel https://developer.mozilla.org/zh-CN/docs/Web/API/BroadcastChannel&lt;/p&gt;
+</content:encoded></item><item><title>CloudFlare Worker 反向代理 github 给静态博客做图床</title><link>https://blog.loli.wang/blog/2023-8-21-cfworkerproxy/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2023-8-21-cfworkerproxy/doc/</guid><description>CloudFlare Worker 反向代理 github 给静态博客做图床 </description><pubDate>Fri, 01 Jul 2022 16:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;CloudFlare Worker 反向代理 github 博客做图床&lt;/h2&gt;
+&lt;p&gt;目前老师写了一个新的 BLOG 主题，支持纯静态部署的，想到了 github pages 功能，部署静态博客后,发现图片不知道怎么处理，一般来说一个正常的系统图片都会上传到自己的服务器上面，或者私有图床，但是这种纯静态网站是无法做到这种功能的。如果用图床又怕哪天图片挂了或者其他问题，所以决定采取老师的方案，使用 CloudFlare 的 worker 功能做图床功能&lt;/p&gt;
+&lt;h4&gt;实现&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;
+addEventListener(&quot;fetch&quot;, event =&amp;gt; {
+  event.respondWith(handleRequest(event.request))
+})
+
+async function handleRequest(request) {
+  // Cloudflare Workers 分配的域名
+  // 同时绑定自己的域名
+  const cf_worker_host = new RegExp(&quot;imgcdn.loli5.workers.dev|img.blog.loli.wang&quot;,&quot;g&quot;);
+  // GitHub 仓库文件地址
+  const github_host = &quot;raw.githubusercontent.com/itmowang/blog-astro/main/src/content/blog/&quot;;
+  // 替换
+  const url = request.url.replace(cf_worker_host, github_host);
+  return fetch(url);
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-21-cfworkerProxy/02.png&quot; alt=&quot;如何配置&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-21-cfworkerProxy/03.png&quot; alt=&quot;md中如何使用&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2023-8-21-cfworkerProxy/04.png&quot; alt=&quot;一切就绪&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这样一切就大功告成了！&lt;/p&gt;
+</content:encoded></item></channel></rss>

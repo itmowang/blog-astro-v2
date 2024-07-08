@@ -10,12 +10,12 @@ import { getCollection } from "astro:content";
 export async function getStaticPaths() {
   const { sortPosts } = config_fun;
   const allPost = (await getCollection("blog")).sort(sortPosts);
-  const tags = [...new Set(allPost.map((post) => post.data.tags).flat())];
+  const tags = [...new Set(allPost.map((post:any) => post.data.tags).flat())];
   return tags.map((tag) => {
     return {
-      params: { tag },
+      params: { tag: String(tag) },
       props: {
-        posts: allPost.filter((post) => post.data.tags.includes(tag)),
+        posts: allPost.filter((post:any) => post?.data?.tags?.includes(tag)),
       },
     };
   });
