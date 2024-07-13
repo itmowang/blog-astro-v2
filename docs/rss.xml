@@ -1,4 +1,230 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>最简单运行TypeScript 的方法 esno 和 tsx</title><link>https://blog.loli.wang/blog/2024-07-13-esnoandtsx/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-13-esnoandtsx/doc/</guid><description>最简单运行TypeScript 的方法esno 和 tsx </description><pubDate>Sat, 13 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;在现在很多项目中都使用ts来做为编程语言，而如果&lt;strong&gt;没有编译器的支持下&lt;/strong&gt;执行ts会需要&lt;strong&gt;tsc&lt;/strong&gt;或者&lt;strong&gt;ts-node&lt;/strong&gt;这个库来进行编译，然后&lt;strong&gt;nodejs&lt;/strong&gt;去执行我们的ts文件，会影响工作效率和带来心智负担，困扰的我无意中发现了个项目 &lt;strong&gt;tsx&lt;/strong&gt;&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>重写自己脚手架工具之旅</title><link>https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/</guid><description>重写自己脚手架工具之旅</description><pubDate>Sun, 14 Jul 2024 15:27:25 GMT</pubDate><content:encoded>&lt;p&gt;回首往昔，无趣的过往。没有任何精彩的事情发生，只有空的躯壳像NPC一样再运作。上一次写我的脚手架工具已经是一年前了，当时很多不成熟的思维也慢慢得到了改正，所以决定重新写一份了，毕竟每年都要好好的检查下自己嘛&lt;/p&gt;
+&lt;h2&gt;必备项目依赖&lt;/h2&gt;
+&lt;p&gt;-- kolorist 控制台命令行操控颜色的脚本库
+-- minimist 参数解析器 类似 mw create --template 这种
+-- prompts 一个提示用户选择的库
+-- unbuild 构建工具&lt;/p&gt;
+&lt;h2&gt;开始编写&lt;/h2&gt;
+&lt;p&gt;安装我们所需要使用到的依赖&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;pnpm add kolorist minimist prompts unbuild typescript -D
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;初始化&lt;strong&gt;tsconfig.json&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES2022&quot;,
+    &quot;module&quot;: &quot;ES2020&quot;,
+    &quot;outDir&quot;: &quot;lib&quot;,
+    &quot;moduleResolution&quot;: &quot;bundler&quot;,
+    &quot;strict&quot;: true,
+    &quot;skipLibCheck&quot;: true,
+    &quot;declaration&quot;: false,
+    &quot;sourceMap&quot;: false,
+    &quot;noUnusedLocals&quot;: true,
+    &quot;esModuleInterop&quot;: true
+  },
+  &quot;exclude&quot;: [&quot;template&quot;, &quot;lib&quot;]
+}
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;整理合理的项目目录
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-13-cliCreate2/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;编写 unbuild 的配置文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// build.config.ts
+
+import { defineBuildConfig } from &apos;unbuild&apos;
+
+export default defineBuildConfig({
+  entries: [
+    &quot;./src/index&quot;,
+  ],
+  outDir: &quot;lib&quot;,
+  declaration: true,
+});
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改package.json 修改Bin软链接指令，编写unbuild的本地打包测试指令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;name&quot;: &quot;create-mw&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;type&quot;: &quot;module&quot;,
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;npx  unbuild --stub&quot;
+  },
+  &quot;bin&quot;: {
+    &quot;cre&quot;:&quot;index.js&quot;
+  },
+  &quot;keywords&quot;: [],
+  &quot;author&quot;: &quot;&quot;,
+  &quot;license&quot;: &quot;MIT&quot;,
+  &quot;engines&quot;: {
+    &quot;node&quot;: &quot;^18.0.0 || &amp;gt;=20.0.0&quot;
+  },
+  &quot;devDependencies&quot;: {
+    &quot;@types/minimist&quot;: &quot;^1.2.5&quot;,
+    &quot;@types/node&quot;: &quot;^20.14.10&quot;,
+    &quot;kolorist&quot;: &quot;^1.8.0&quot;,
+    &quot;minimist&quot;: &quot;^1.2.8&quot;,
+    &quot;prompts&quot;: &quot;^2.4.2&quot;,
+    &quot;tsx&quot;: &quot;^4.16.2&quot;,
+    &quot;typescript&quot;: &quot;^5.5.3&quot;,
+    &quot;unbuild&quot;: &quot;^2.0.0&quot;
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改&lt;strong&gt;index.js&lt;/strong&gt; 入口文件代码让他指向我们打包出来的js文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#!/usr/bin/env node
+
+import &apos;./lib/index.mjs&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;打包后，&lt;strong&gt;npm link&lt;/strong&gt; 后测试下是否正常，执行命令cre 看看是否正常&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-13-cliCreate2/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;然后我们使用&lt;strong&gt;minimist&lt;/strong&gt; 来进行一个参数解析。 解析后让他成为能够获取 cre --template 获取这种在命令里的参数&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 参数解析器
+const argv = minimist(process.argv.slice(2), {})
+
+console.log(argv);
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-13-cliCreate2/04.png&quot; alt=&quot;2&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-13-cliCreate2/03.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import minimist from &quot;minimist&quot;;
+import prompts from &quot;prompts&quot;;
+import {
+  blue,
+  cyan,
+  green,
+  lightBlue,
+  lightGreen,
+  lightRed,
+  magenta,
+  red,
+  reset,
+  yellow,
+} from &quot;kolorist&quot;;
+
+// 参数解析器 方便解析我们需要的
+const argv = minimist(process.argv.slice(2), {});
+
+console.log(argv);
+
+//  获取项目路径
+const cwd = process.cwd();
+
+console.log(cwd);
+
+// prettier-ignore
+const helpMessage = `\
+Usage: create-vite [OPTION]... [DIRECTORY]
+
+Create a new Vite project in JavaScript or TypeScript.
+With no arguments, start the CLI in interactive mode.
+
+Options:
+  -t, --template NAME        use a specific template
+
+Available templates:
+${yellow   (&apos;vanilla-ts     vanilla&apos;  )}
+${green    (&apos;vue-ts         vue&apos;      )}
+${cyan     (&apos;react-ts       react&apos;    )}
+${cyan     (&apos;react-swc-ts   react-swc&apos;)}
+${magenta  (&apos;preact-ts      preact&apos;   )}
+${lightRed (&apos;lit-ts         lit&apos;      )}
+${red      (&apos;svelte-ts      svelte&apos;   )}
+${blue     (&apos;solid-ts       solid&apos;    )}
+${lightBlue(&apos;qwik-ts        qwik&apos;     )}`
+
+
+const FRAMEWORKS = [
+  {
+    name: &quot;vanilla&quot;,
+    display: &quot;Vanilla&quot;,
+    color: yellow,
+    variants: [
+      {
+        name: &quot;vanilla-ts&quot;,
+        display: &quot;TypeScript&quot;,
+        color: blue,
+      },
+      {
+        name: &quot;vanilla&quot;,
+        display: &quot;JavaScript&quot;,
+        color: yellow,
+      },
+    ],
+  },
+  {
+    name: &quot;solid&quot;,
+    display: &quot;Solid&quot;,
+    color: blue,
+    variants: [
+      {
+        name: &quot;solid-ts&quot;,
+        display: &quot;TypeScript&quot;,
+        color: blue,
+      },
+      {
+        name: &quot;solid&quot;,
+        display: &quot;JavaScript&quot;,
+        color: yellow,
+      },
+    ],
+  },
+];
+
+// 将 FRAMEWORKS 中存在的variants转换成一维数组 并转换成一维数组
+const TEMPLATES = FRAMEWORKS.map(
+  (item) =&amp;gt; (item.variants &amp;amp;&amp;amp; item.variants.map((v) =&amp;gt; v.name)) || [item.name]
+).flat(Infinity);
+
+// 默认文件名
+const defaultTargetDir = &quot;cre-Project&quot;;
+
+// 初始化函数
+const init = async () =&amp;gt; {
+  try {
+    // prompts
+    const result = await prompts([
+      {
+        type: &quot;text&quot;,
+        name: &quot;projectName&quot;,
+        message: &quot;Project name:&quot;,
+        initial: defaultTargetDir,
+      },
+      {
+        type: &quot;select&quot;,
+        name: &quot;overwrite&quot;,
+        message: &quot;Current directory&quot;,
+        initial: 0,
+        choices: [
+          {
+            title: &apos;Remove existing files and continue&apos;,
+            value: &apos;yes&apos;,
+          },
+          {
+            title: &apos;Cancel operation&apos;,
+            value: &apos;no&apos;,
+          },
+          {
+            title: &apos;Ignore files and continue&apos;,
+            value: &apos;ignore&apos;,
+          },
+        ],
+      }
+    ]);
+
+    console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+init();
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;没写完 临时有别的东西要写，下次更新。。。。&lt;/p&gt;
+</content:encoded></item><item><title>最简单运行TypeScript 的方法 esno 和 tsx</title><link>https://blog.loli.wang/blog/2024-07-13-esnoandtsx/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-13-esnoandtsx/doc/</guid><description>最简单运行TypeScript 的方法esno 和 tsx </description><pubDate>Sat, 13 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;在现在很多项目中都使用ts来做为编程语言，而如果&lt;strong&gt;没有编译器的支持下&lt;/strong&gt;执行ts会需要&lt;strong&gt;tsc&lt;/strong&gt;或者&lt;strong&gt;ts-node&lt;/strong&gt;这个库来进行编译，然后&lt;strong&gt;nodejs&lt;/strong&gt;去执行我们的ts文件，会影响工作效率和带来心智负担，困扰的我无意中发现了个项目 &lt;strong&gt;tsx&lt;/strong&gt;&lt;/p&gt;
 &lt;h2&gt;先做下对比吧&lt;/h2&gt;
 &lt;p&gt;在没有使用tsx的情况下，我们编写ts项目想执行是需要花费很大的代价的。&lt;/p&gt;
 &lt;p&gt;我们编写好相关的代码后 需要先 &lt;strong&gt;tsc&lt;/strong&gt; 进行编译，编译成js后通过node去执行js文件能够运行我们的ts项目代码&lt;/p&gt;

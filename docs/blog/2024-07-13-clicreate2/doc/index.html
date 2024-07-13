@@ -1,0 +1,229 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> --><!-- Canonical URL --><link rel="canonical" href="https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/"><!-- Primary Meta Tags --><title>重写自己脚手架工具之旅 - 魔王の博客 </title><meta name="title" content="重写自己脚手架工具之旅 - 魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/"><meta property="og:title" content="重写自己脚手架工具之旅 - 魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://blog.loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/"><meta property="twitter:title" content="重写自己脚手架工具之旅 - 魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://blog.loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/hoisted.DH1pNdf-.css">
+<link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.CGSjG33K.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://blog.loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2024 YOUR NAME HERE. | <a href="https://blog.loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail" id="lightgallery"> <h2 class="post-title">重写自己脚手架工具之旅</h2> <div class="post-date"> <time datetime="2024-07-14T15:27:25.000Z">2024-07-14 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2024-07-13-cliCreate2x/01.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2024-07-13-cliCreate2x/01.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2024-07-13-cliCreate2x/01.png');"></div> <div class="post-content">  <p>回首往昔，无趣的过往。没有任何精彩的事情发生，只有空的躯壳像NPC一样再运作。上一次写我的脚手架工具已经是一年前了，当时很多不成熟的思维也慢慢得到了改正，所以决定重新写一份了，毕竟每年都要好好的检查下自己嘛</p>
+<h2 id="必备项目依赖">必备项目依赖</h2>
+<p>— kolorist 控制台命令行操控颜色的脚本库
+— minimist 参数解析器 类似 mw create —template 这种
+— prompts 一个提示用户选择的库
+— unbuild 构建工具</p>
+<h2 id="开始编写">开始编写</h2>
+<p>安装我们所需要使用到的依赖</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">pnpm</span><span style="color:#9ECBFF"> add</span><span style="color:#9ECBFF"> kolorist</span><span style="color:#9ECBFF"> minimist</span><span style="color:#9ECBFF"> prompts</span><span style="color:#9ECBFF"> unbuild</span><span style="color:#9ECBFF"> typescript</span><span style="color:#79B8FF"> -D</span></span>
+<span class="line"></span></code></pre>
+<p>初始化<strong>tsconfig.json</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "compilerOptions"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "target"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"ES2022"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "module"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"ES2020"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "outDir"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"lib"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "moduleResolution"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"bundler"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "strict"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "skipLibCheck"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "declaration"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "sourceMap"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">false</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "noUnusedLocals"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "esModuleInterop"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">true</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "exclude"</span><span style="color:#E1E4E8">: [</span><span style="color:#9ECBFF">"template"</span><span style="color:#E1E4E8">, </span><span style="color:#9ECBFF">"lib"</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p>整理合理的项目目录
+<img src="http://img.blog.loli.wang/2024-07-13-cliCreate2/01.png" alt="1"></p>
+<p>编写 unbuild 的配置文件</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="ts"><code><span class="line"><span style="color:#6A737D">// build.config.ts</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> { defineBuildConfig } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> 'unbuild'</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> default</span><span style="color:#B392F0"> defineBuildConfig</span><span style="color:#E1E4E8">({</span></span>
+<span class="line"><span style="color:#E1E4E8">  entries: [</span></span>
+<span class="line"><span style="color:#9ECBFF">    "./src/index"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">  ],</span></span>
+<span class="line"><span style="color:#E1E4E8">  outDir: </span><span style="color:#9ECBFF">"lib"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">  declaration: </span><span style="color:#79B8FF">true</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">});</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p>修改package.json 修改Bin软链接指令，编写unbuild的本地打包测试指令</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="json"><code><span class="line"><span style="color:#E1E4E8">{</span></span>
+<span class="line"><span style="color:#79B8FF">  "name"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"create-mw"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "version"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"1.0.0"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "type"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"module"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "scripts"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "dev"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"npx  unbuild --stub"</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "bin"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "cre"</span><span style="color:#E1E4E8">:</span><span style="color:#9ECBFF">"index.js"</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "keywords"</span><span style="color:#E1E4E8">: [],</span></span>
+<span class="line"><span style="color:#79B8FF">  "author"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">""</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "license"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"MIT"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">  "engines"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^18.0.0 || >=20.0.0"</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#79B8FF">  "devDependencies"</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#79B8FF">    "@types/minimist"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^1.2.5"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "@types/node"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^20.14.10"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "kolorist"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^1.8.0"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "minimist"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^1.2.8"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "prompts"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^2.4.2"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "tsx"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^4.16.2"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "typescript"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^5.5.3"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#79B8FF">    "unbuild"</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"^2.0.0"</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<p>修改<strong>index.js</strong> 入口文件代码让他指向我们打包出来的js文件</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="jsx"><code><span class="line"><span style="color:#6A737D">#!/usr/bin/env node</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#9ECBFF"> './lib/index.mjs'</span></span>
+<span class="line"></span></code></pre>
+<p>打包后，<strong>npm link</strong> 后测试下是否正常，执行命令cre 看看是否正常</p>
+<p><img src="http://img.blog.loli.wang/2024-07-13-cliCreate2/02.png" alt="2"></p>
+<p>然后我们使用<strong>minimist</strong> 来进行一个参数解析。 解析后让他成为能够获取 cre —template 获取这种在命令里的参数</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="ts"><code><span class="line"><span style="color:#6A737D">// 参数解析器</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> argv</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> minimist</span><span style="color:#E1E4E8">(process.argv.</span><span style="color:#B392F0">slice</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">), {})</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">console.</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(argv);</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2024-07-13-cliCreate2/04.png" alt="2">
+<img src="http://img.blog.loli.wang/2024-07-13-cliCreate2/03.png" alt="2"></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="jsx"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> minimist </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "minimist"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> prompts </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "prompts"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#E1E4E8">  blue,</span></span>
+<span class="line"><span style="color:#E1E4E8">  cyan,</span></span>
+<span class="line"><span style="color:#E1E4E8">  green,</span></span>
+<span class="line"><span style="color:#E1E4E8">  lightBlue,</span></span>
+<span class="line"><span style="color:#E1E4E8">  lightGreen,</span></span>
+<span class="line"><span style="color:#E1E4E8">  lightRed,</span></span>
+<span class="line"><span style="color:#E1E4E8">  magenta,</span></span>
+<span class="line"><span style="color:#E1E4E8">  red,</span></span>
+<span class="line"><span style="color:#E1E4E8">  reset,</span></span>
+<span class="line"><span style="color:#E1E4E8">  yellow,</span></span>
+<span class="line"><span style="color:#E1E4E8">} </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "kolorist"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 参数解析器 方便解析我们需要的</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> argv</span><span style="color:#F97583"> =</span><span style="color:#B392F0"> minimist</span><span style="color:#E1E4E8">(process.argv.</span><span style="color:#B392F0">slice</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">), {});</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">console.</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(argv);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">//  获取项目路径</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> cwd</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> process.</span><span style="color:#B392F0">cwd</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">console.</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(cwd);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// prettier-ignore</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> helpMessage</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> `</span><span style="color:#79B8FF">\</span></span>
+<span class="line"><span style="color:#9ECBFF">Usage: create-vite [OPTION]... [DIRECTORY]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#9ECBFF">Create a new Vite project in JavaScript or TypeScript.</span></span>
+<span class="line"><span style="color:#9ECBFF">With no arguments, start the CLI in interactive mode.</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#9ECBFF">Options:</span></span>
+<span class="line"><span style="color:#9ECBFF">  -t, --template NAME        use a specific template</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#9ECBFF">Available templates:</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">yellow</span><span style="color:#9ECBFF">   (</span><span style="color:#9ECBFF">'vanilla-ts     vanilla'</span><span style="color:#9ECBFF">  )</span><span style="color:#9ECBFF">}</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">green</span><span style="color:#9ECBFF">    (</span><span style="color:#9ECBFF">'vue-ts         vue'</span><span style="color:#9ECBFF">      )</span><span style="color:#9ECBFF">}</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">cyan</span><span style="color:#9ECBFF">     (</span><span style="color:#9ECBFF">'react-ts       react'</span><span style="color:#9ECBFF">    )</span><span style="color:#9ECBFF">}</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">cyan</span><span style="color:#9ECBFF">     (</span><span style="color:#9ECBFF">'react-swc-ts   react-swc'</span><span style="color:#9ECBFF">)</span><span style="color:#9ECBFF">}</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">magenta</span><span style="color:#9ECBFF">  (</span><span style="color:#9ECBFF">'preact-ts      preact'</span><span style="color:#9ECBFF">   )</span><span style="color:#9ECBFF">}</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">lightRed</span><span style="color:#9ECBFF"> (</span><span style="color:#9ECBFF">'lit-ts         lit'</span><span style="color:#9ECBFF">      )</span><span style="color:#9ECBFF">}</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">red</span><span style="color:#9ECBFF">      (</span><span style="color:#9ECBFF">'svelte-ts      svelte'</span><span style="color:#9ECBFF">   )</span><span style="color:#9ECBFF">}</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">blue</span><span style="color:#9ECBFF">     (</span><span style="color:#9ECBFF">'solid-ts       solid'</span><span style="color:#9ECBFF">    )</span><span style="color:#9ECBFF">}</span></span>
+<span class="line"><span style="color:#9ECBFF">${</span><span style="color:#B392F0">lightBlue</span><span style="color:#9ECBFF">(</span><span style="color:#9ECBFF">'qwik-ts        qwik'</span><span style="color:#9ECBFF">     )</span><span style="color:#9ECBFF">}`</span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> FRAMEWORKS</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#E1E4E8">  {</span></span>
+<span class="line"><span style="color:#E1E4E8">    name: </span><span style="color:#9ECBFF">"vanilla"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    display: </span><span style="color:#9ECBFF">"Vanilla"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    color: yellow,</span></span>
+<span class="line"><span style="color:#E1E4E8">    variants: [</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#E1E4E8">        name: </span><span style="color:#9ECBFF">"vanilla-ts"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        display: </span><span style="color:#9ECBFF">"TypeScript"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        color: blue,</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#E1E4E8">        name: </span><span style="color:#9ECBFF">"vanilla"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        display: </span><span style="color:#9ECBFF">"JavaScript"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        color: yellow,</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">    ],</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">  {</span></span>
+<span class="line"><span style="color:#E1E4E8">    name: </span><span style="color:#9ECBFF">"solid"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    display: </span><span style="color:#9ECBFF">"Solid"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    color: blue,</span></span>
+<span class="line"><span style="color:#E1E4E8">    variants: [</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#E1E4E8">        name: </span><span style="color:#9ECBFF">"solid-ts"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        display: </span><span style="color:#9ECBFF">"TypeScript"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        color: blue,</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#E1E4E8">        name: </span><span style="color:#9ECBFF">"solid"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        display: </span><span style="color:#9ECBFF">"JavaScript"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        color: yellow,</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">    ],</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 将 FRAMEWORKS 中存在的variants转换成一维数组 并转换成一维数组</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> TEMPLATES</span><span style="color:#F97583"> =</span><span style="color:#79B8FF"> FRAMEWORKS</span><span style="color:#E1E4E8">.</span><span style="color:#B392F0">map</span><span style="color:#E1E4E8">(</span></span>
+<span class="line"><span style="color:#E1E4E8">  (</span><span style="color:#FFAB70">item</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> (item.variants </span><span style="color:#F97583">&#x26;&#x26;</span><span style="color:#E1E4E8"> item.variants.</span><span style="color:#B392F0">map</span><span style="color:#E1E4E8">((</span><span style="color:#FFAB70">v</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> v.name)) </span><span style="color:#F97583">||</span><span style="color:#E1E4E8"> [item.name]</span></span>
+<span class="line"><span style="color:#E1E4E8">).</span><span style="color:#B392F0">flat</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">Infinity</span><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 默认文件名</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> defaultTargetDir</span><span style="color:#F97583"> =</span><span style="color:#9ECBFF"> "cre-Project"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 初始化函数</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#B392F0"> init</span><span style="color:#F97583"> =</span><span style="color:#F97583"> async</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#F97583">  try</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#6A737D">    // prompts</span></span>
+<span class="line"><span style="color:#F97583">    const</span><span style="color:#79B8FF"> result</span><span style="color:#F97583"> =</span><span style="color:#F97583"> await</span><span style="color:#B392F0"> prompts</span><span style="color:#E1E4E8">([</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#E1E4E8">        type: </span><span style="color:#9ECBFF">"text"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        name: </span><span style="color:#9ECBFF">"projectName"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        message: </span><span style="color:#9ECBFF">"Project name:"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        initial: defaultTargetDir,</span></span>
+<span class="line"><span style="color:#E1E4E8">      },</span></span>
+<span class="line"><span style="color:#E1E4E8">      {</span></span>
+<span class="line"><span style="color:#E1E4E8">        type: </span><span style="color:#9ECBFF">"select"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        name: </span><span style="color:#9ECBFF">"overwrite"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        message: </span><span style="color:#9ECBFF">"Current directory"</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        initial: </span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">        choices: [</span></span>
+<span class="line"><span style="color:#E1E4E8">          {</span></span>
+<span class="line"><span style="color:#E1E4E8">            title: </span><span style="color:#9ECBFF">'Remove existing files and continue'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">            value: </span><span style="color:#9ECBFF">'yes'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">          },</span></span>
+<span class="line"><span style="color:#E1E4E8">          {</span></span>
+<span class="line"><span style="color:#E1E4E8">            title: </span><span style="color:#9ECBFF">'Cancel operation'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">            value: </span><span style="color:#9ECBFF">'no'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">          },</span></span>
+<span class="line"><span style="color:#E1E4E8">          {</span></span>
+<span class="line"><span style="color:#E1E4E8">            title: </span><span style="color:#9ECBFF">'Ignore files and continue'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">            value: </span><span style="color:#9ECBFF">'ignore'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">          },</span></span>
+<span class="line"><span style="color:#E1E4E8">        ],</span></span>
+<span class="line"><span style="color:#E1E4E8">      }</span></span>
+<span class="line"><span style="color:#E1E4E8">    ]);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    console.</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(result);</span></span>
+<span class="line"><span style="color:#E1E4E8">  } </span><span style="color:#F97583">catch</span><span style="color:#E1E4E8"> (error) {</span></span>
+<span class="line"><span style="color:#E1E4E8">    console.</span><span style="color:#B392F0">log</span><span style="color:#E1E4E8">(error);</span></span>
+<span class="line"><span style="color:#E1E4E8">  }</span></span>
+<span class="line"><span style="color:#E1E4E8">};</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#B392F0">init</span><span style="color:#E1E4E8">();</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p>没写完 临时有别的东西要写，下次更新。。。。</p>  </div> <div class="tag-container"> <a href="/tags/MW-create" class="tag" title="MW-create"> MW-create </a><a href="/tags/ts" class="tag" title="ts"> ts </a><a href="/tags/前端进阶" class="tag" title="前端进阶"> 前端进阶 </a> </div> </div>   </div> </div> </div>  </body></html> 
