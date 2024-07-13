@@ -1,4 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>记录一次修复 个人记录Blog 的 RSS </title><link>https://blog.loli.wang/blog/2024-07-08-jilurss/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-08-jilurss/doc/</guid><description>记录一次修复 个人记录Blog 的 RSS </description><pubDate>Mon, 08 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;为什么要使用 RSS ?&lt;/h3&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>最简单运行TypeScript 的方法 esno 和 tsx</title><link>https://blog.loli.wang/blog/2024-07-13-esnoandtsx/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-13-esnoandtsx/doc/</guid><description>最简单运行TypeScript 的方法esno 和 tsx </description><pubDate>Sat, 13 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;在现在很多项目中都使用ts来做为编程语言，而如果&lt;strong&gt;没有编译器的支持下&lt;/strong&gt;执行ts会需要&lt;strong&gt;tsc&lt;/strong&gt;或者&lt;strong&gt;ts-node&lt;/strong&gt;这个库来进行编译，然后&lt;strong&gt;nodejs&lt;/strong&gt;去执行我们的ts文件，会影响工作效率和带来心智负担，困扰的我无意中发现了个项目 &lt;strong&gt;tsx&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;先做下对比吧&lt;/h2&gt;
+&lt;p&gt;在没有使用tsx的情况下，我们编写ts项目想执行是需要花费很大的代价的。&lt;/p&gt;
+&lt;p&gt;我们编写好相关的代码后 需要先 &lt;strong&gt;tsc&lt;/strong&gt; 进行编译，编译成js后通过node去执行js文件能够运行我们的ts项目代码&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-13-esnoAndtsx/02.png&quot; alt=&quot;1&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-07-13-esnoAndtsx/03.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;如果使用Tsx&lt;/h3&gt;
+&lt;p&gt;可以看到，如果我们使用tsc进行编译后再去运行js文件，他其实就是一个很繁琐的步骤。而&lt;strong&gt;tsx&lt;/strong&gt;可以方便的帮我们解决这个问题&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 安装tsx
+pnpm add tsx
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;安装好tsx后，使用tsx命令去运行我们的ts代码，可以看到不需要任何的编译，就能直接处理我们的ts代码&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# tsx运行指令
+npx tsx test1.ts
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-07-13-esnoAndtsx/04.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;esno&lt;/h3&gt;
+&lt;p&gt;esno和tsx是一样的，不过是tsx的别名，antfu旗下的库，我看不出区别。他介绍也是这么说的&lt;/p&gt;
+&lt;h3&gt;文档&lt;/h3&gt;
+&lt;p&gt;当然还有ts-node 也是可以做到我上面同样的事情，但是esno和tsx能够更好的支持es模块，并且是基于esbuild开发的，速度也比ts-node快了一个台阶&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://tsx.is/&quot;&gt;tsx 文档&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>记录一次修复 个人记录Blog 的 RSS </title><link>https://blog.loli.wang/blog/2024-07-08-jilurss/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-08-jilurss/doc/</guid><description>记录一次修复 个人记录Blog 的 RSS </description><pubDate>Mon, 08 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h3&gt;为什么要使用 RSS ?&lt;/h3&gt;
 &lt;p&gt;RSS是一种用于发布经常更新的内容的网站的一种数据格式。通过RSS，网站可以将最新的文章、新闻、博客等内容以统一的格式提供给用户。而用户则可以通过RSS订阅这些内容，无需再次访问网站，便能够及时获取更新。&lt;/p&gt;
 &lt;p&gt;RSS的优点：
 1. 更新及时：RSS订阅可以实时获取最新的内容，用户无需手动刷新页面，从而提高了用户体验。
