@@ -10,7 +10,7 @@ import { config_fun, config_authorsPages } from "@/theme-simple/config";
 const { pageSize } = config_authorsPages;
 const { sortPosts, getPagination } = config_fun;
 
-const allPost = await getCollection("lifes");
+const allPost = await getCollection("life");
 const postLength = allPost.length;
 const homePostAlll = allPost.sort(sortPosts).splice(0, pageSize);
 const pagination = getPagination(postLength, pageSize);
