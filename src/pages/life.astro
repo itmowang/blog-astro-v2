@@ -24,7 +24,7 @@ const pagination = getPagination(postLength, pageSize);
       homePostAlll.map((post: any) => (
         <article class="post-item">
           <div class="left">
-            <a href={`/life/${post.slug}/`} title={post.data.title}>
+            <a href={`/life/${post.slug}/index.html`} title={post.data.title}>
               <h2 class="post-title">{post.data.title}</h2>
             </a>
             <div class="post-date">
@@ -37,7 +37,7 @@ const pagination = getPagination(postLength, pageSize);
           {post.data.heroImage && (
             <a
               class="right"
-              href={`/life/${post.slug}/`}
+              href={`/life/${post.slug}/index.html`}
               title={post.data.title}
             >
               <div
