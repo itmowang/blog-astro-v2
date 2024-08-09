@@ -2,7 +2,7 @@
 title: "让浏览器重新支持玩耍Flash游戏！！（Ruffle）"
 description: "让浏览器重新支持玩耍Flash游戏！！（Ruffle） "
 pubDate: "2024-08-10 23:27:24"
-heroImage: "http://img.blog.loli.wang/2024-07-18-semver/01.png"
+heroImage: "http://img.blog.loli.wang/2024-08-09-rustgametools/02.png"
 tags:
   - Rust
   - Flash游戏 
