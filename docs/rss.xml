@@ -1,4 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>(转载) 语义化版本 2.0.0</title><link>https://blog.loli.wang/blog/2024-07-18-semver/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-18-semver/doc/</guid><description>(转载) 语义化版本 2.0.0 </description><pubDate>Thu, 18 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;语义化版本 2.0.0&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>让浏览器重新支持玩耍Flash游戏！！（Ruffle）</title><link>https://blog.loli.wang/blog/2024-08-09-rustgametools/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-09-rustgametools/doc/</guid><description>让浏览器重新支持玩耍Flash游戏！！（Ruffle） </description><pubDate>Sat, 10 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;平时就有去各种平台找各种大佬博客的习惯并学习一二，一次偶然的机会看到一个博客文章很有趣，《重拾 flash 小游戏，给博客用上 Ruffle》 - J.F’s Blog  ，因为从我的记忆里&lt;strong&gt;FLASH&lt;/strong&gt;是个淘汰过时并且淘汰的东西，前些年也开始各个大的浏览器都不再支持&lt;strong&gt;FLASH&lt;/strong&gt;这个技术了，并且现在想让浏览器重新运行&lt;strong&gt;FLASH&lt;/strong&gt;的动画网页也特别费劲。0看到这个插件让我折腾的心又恢复了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-09-rustgametools/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;介绍&lt;/h3&gt;
+&lt;p&gt;著名的 Ruffle项目使用 Rust 语言将 flash 移植到了 Windows、Mac、Android 等主流操作系统，当然也包括基于 Javascript 的 web 环境。事实上，你可以直接在 web achieve 打开 flash🕹️，比如刚刚提到的拼命玩三郎的博客，因为时光机已经贴心地内嵌了 Ruffle 脚本。简单搜索会发现，目前众多资源大站都用它作为前端引擎，可见兼容性是不错的。作为最简单的方法之一，用它复活 swf 文件是再合适不过了。于是，花了点时间在博客下面增加了小游戏子页面，并且制作了简单的游戏列表，以及功能按钮，包括重载、本地上传、字体加载和全屏模式。默认 swf 是二进制时钟。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-09-rustgametools/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;使用方式&lt;/h3&gt;
+&lt;h1&gt;如何在前端项目中使用 Ruffle.rs&lt;/h1&gt;
+&lt;p&gt;Ruffle 是一个用 Rust 编写的 Flash Player 播放器，允许你在现代浏览器中运行 Flash 内容&lt;/p&gt;
+&lt;h2&gt;1. 添加 Ruffle 到项目&lt;/h2&gt;
+&lt;p&gt;你可以通过以下几种方式将 Ruffle 添加到你的前端项目中：&lt;/p&gt;
+&lt;h3&gt;使用 CDN&lt;/h3&gt;
+&lt;p&gt;你可以通过 CDN 直接加载 Ruffle 的 JavaScript 文件。将以下代码添加到你的 HTML 文件中：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;script src=&quot;https://unpkg.com/@ruffle-rs/ruffle&quot;&amp;gt;&amp;lt;/script&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;使用embed 或 object 加载资源&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;
+&amp;lt;object data=&quot;your-flash-file.swf&quot; width=&quot;800&quot; height=&quot;600&quot;&amp;gt;&amp;lt;/object&amp;gt;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;我的打算&lt;/h3&gt;
+&lt;p&gt;我尝到甜头后，因为小时候对4399游戏也特别上瘾，正好最近也给自己做了个工具站模板，看来对这个也适用，准备用来做一个同年怀旧小游戏的网站。顺便找个机会记录游戏过程&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-09-rustgametools/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;文档相关&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://ruffle.rs&quot;&gt;ruffle官方文档&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://blog.zzbd.org/&quot;&gt;J.F’s Blog&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>(转载) 语义化版本 2.0.0</title><link>https://blog.loli.wang/blog/2024-07-18-semver/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-18-semver/doc/</guid><description>(转载) 语义化版本 2.0.0 </description><pubDate>Thu, 18 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;语义化版本 2.0.0&lt;/h1&gt;
 &lt;h2&gt;摘要&lt;/h2&gt;
 &lt;p&gt;版本格式：主版本号.次版本号.修订号，版本号递增规则如下：&lt;/p&gt;
 &lt;ol&gt;
@@ -186,32 +212,6 @@
 &lt;h2&gt;许可证&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;http://creativecommons.org/licenses/by/3.0/&quot;&gt;知识共享 署名 3.0 (CC BY 3.0)&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;https://semver.org/lang/zh-CN/&quot;&gt;原文链接&lt;/a&gt;&lt;/p&gt;
-</content:encoded></item><item><title>让浏览器重新支持玩耍Flash游戏！！（Ruffle）</title><link>https://blog.loli.wang/blog/2024-08-09-rustgametools/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-09-rustgametools/doc/</guid><description>让浏览器重新支持玩耍Flash游戏！！（Ruffle） </description><pubDate>Thu, 18 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;平时就有去各种平台找各种大佬博客的习惯并学习一二，一次偶然的机会看到一个博客文章很有趣，《重拾 flash 小游戏，给博客用上 Ruffle》 - J.F’s Blog  ，因为从我的记忆里&lt;strong&gt;FLASH&lt;/strong&gt;是个淘汰过时并且淘汰的东西，前些年也开始各个大的浏览器都不再支持&lt;strong&gt;FLASH&lt;/strong&gt;这个技术了，并且现在想让浏览器重新运行&lt;strong&gt;FLASH&lt;/strong&gt;的动画网页也特别费劲。0看到这个插件让我折腾的心又恢复了。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-09-rustgametools/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
-&lt;h3&gt;介绍&lt;/h3&gt;
-&lt;p&gt;著名的 Ruffle项目使用 Rust 语言将 flash 移植到了 Windows、Mac、Android 等主流操作系统，当然也包括基于 Javascript 的 web 环境。事实上，你可以直接在 web achieve 打开 flash🕹️，比如刚刚提到的拼命玩三郎的博客，因为时光机已经贴心地内嵌了 Ruffle 脚本。简单搜索会发现，目前众多资源大站都用它作为前端引擎，可见兼容性是不错的。作为最简单的方法之一，用它复活 swf 文件是再合适不过了。于是，花了点时间在博客下面增加了小游戏子页面，并且制作了简单的游戏列表，以及功能按钮，包括重载、本地上传、字体加载和全屏模式。默认 swf 是二进制时钟。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-09-rustgametools/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
-&lt;h3&gt;使用方式&lt;/h3&gt;
-&lt;h1&gt;如何在前端项目中使用 Ruffle.rs&lt;/h1&gt;
-&lt;p&gt;Ruffle 是一个用 Rust 编写的 Flash Player 播放器，允许你在现代浏览器中运行 Flash 内容&lt;/p&gt;
-&lt;h2&gt;1. 添加 Ruffle 到项目&lt;/h2&gt;
-&lt;p&gt;你可以通过以下几种方式将 Ruffle 添加到你的前端项目中：&lt;/p&gt;
-&lt;h3&gt;使用 CDN&lt;/h3&gt;
-&lt;p&gt;你可以通过 CDN 直接加载 Ruffle 的 JavaScript 文件。将以下代码添加到你的 HTML 文件中：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;script src=&quot;https://unpkg.com/@ruffle-rs/ruffle&quot;&amp;gt;&amp;lt;/script&amp;gt;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;使用embed 或 object 加载资源&lt;/h3&gt;
-&lt;pre&gt;&lt;code&gt;
-&amp;lt;object data=&quot;your-flash-file.swf&quot; width=&quot;800&quot; height=&quot;600&quot;&amp;gt;&amp;lt;/object&amp;gt;
-
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;我的打算&lt;/h3&gt;
-&lt;p&gt;我尝到甜头后，因为小时候对4399游戏也特别上瘾，正好最近也给自己做了个工具站模板，看来对这个也适用，准备用来做一个同年怀旧小游戏的网站。顺便找个机会记录游戏过程&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-09-rustgametools/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
-&lt;h3&gt;文档相关&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;https://ruffle.rs&quot;&gt;ruffle官方文档&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://blog.zzbd.org/&quot;&gt;J.F’s Blog&lt;/a&gt;&lt;/p&gt;
 </content:encoded></item><item><title>重写自己脚手架工具之旅</title><link>https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-13-clicreate2/doc/</guid><description>重写自己脚手架工具之旅</description><pubDate>Sun, 14 Jul 2024 15:27:25 GMT</pubDate><content:encoded>&lt;p&gt;回首往昔，无趣的过往。没有任何精彩的事情发生，只有空的躯壳像NPC一样再运作。上一次写我的脚手架工具已经是一年前了，当时很多不成熟的思维也慢慢得到了改正，所以决定重新写一份了，毕竟每年都要好好的检查下自己嘛&lt;/p&gt;
 &lt;h2&gt;必备项目依赖&lt;/h2&gt;
 &lt;p&gt;-- kolorist 控制台命令行操控颜色的脚本库
