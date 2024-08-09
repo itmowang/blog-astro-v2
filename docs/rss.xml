@@ -24,6 +24,44 @@
 &lt;h3&gt;文档相关&lt;/h3&gt;
 &lt;p&gt;&lt;a href=&quot;https://ruffle.rs&quot;&gt;ruffle官方文档&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;https://blog.zzbd.org/&quot;&gt;J.F’s Blog&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>如何再Uniapp中使用Tailwindcss</title><link>https://blog.loli.wang/blog/2024-08-10-uniapptailwindcss/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-10-uniapptailwindcss/doc/</guid><description>如何再Uniapp中使用Tailwindcss </description><pubDate>Sat, 10 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;先使用npm 安装tailwindcss&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;pnpm add tailwindcss
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;命令创建 tailwind.config.js 配置文件 并修改&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;npx tailwindcss init
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+/** @type {import(&apos;tailwindcss&apos;).Config} */
+module.exports = {
+  content: [&apos;./pages/**/*.{vue,js}&apos;, &apos;./App.vue&apos;],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;根目录新建 tailwind-input.css&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;/* @tailwind base; */
+@tailwind components;
+@tailwind utilities;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;编写监听指令&lt;/h3&gt;
+&lt;p&gt;编写监听指令，每次启动项目的时候启动，会自动编译你对css所做出的更改&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx tailwindcss -o ./static/tailwind.css --watch
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;写入到启动命令中，每次输入npm run css 进行启动&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; &quot;scripts&quot;: {
+    &quot;css&quot;: &quot;npx tailwindcss -o ./static/tailwind.css --watch&quot;
+  }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-10-uniapptailwindcss/01.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;APP.vue中 全局引用我们生成的css 即可&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-10-uniapptailwindcss/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;测试&lt;/h2&gt;
+&lt;p&gt;我们给按钮让它进行向上面加上一个上边距&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-10-uniapptailwindcss/03.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;成功&lt;/p&gt;
 </content:encoded></item><item><title>(转载) 语义化版本 2.0.0</title><link>https://blog.loli.wang/blog/2024-07-18-semver/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-07-18-semver/doc/</guid><description>(转载) 语义化版本 2.0.0 </description><pubDate>Thu, 18 Jul 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;语义化版本 2.0.0&lt;/h1&gt;
 &lt;h2&gt;摘要&lt;/h2&gt;
 &lt;p&gt;版本格式：主版本号.次版本号.修订号，版本号递增规则如下：&lt;/p&gt;
