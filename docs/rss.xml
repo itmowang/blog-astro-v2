@@ -1,4 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>flutter安装到初始化搭建第一个Demo</title><link>https://blog.loli.wang/blog/2024-08-13-flutterappsetup1/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-13-flutterappsetup1/doc/</guid><description>flutter安装到初始化搭建第一个Demo</description><pubDate>Tue, 13 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;因为公司最近可能会APP开发的需求，并且手头工作已经接近尾声，身为一个前端，现在多端混合开发在国内是很常见的，首先第一时间考虑UNIAPP，但是在此之前给PDA设备开发了一套软件，性能给我的感觉极度糟糕，并且感觉问题杂乱差，文档甚至有时候还要去微信小程序开发者文档去找，给我的感觉是在写一个网页，没有写一个APP的体验， 所以我决定学习Flutter，以便用于下一个项目，作为一个充满实力的挑战者，我觉着我应该会很快就会熟悉。&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>快速更换npm镜像源的几种方法</title><link>https://blog.loli.wang/blog/2024-08-14-nrmcenter/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-14-nrmcenter/doc/</guid><description>快速更换npm镜像源的几种方法</description><pubDate>Wed, 14 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;在思考使用原生应用还是使用混合开发的时候，准备拿fullter和React Native做对比，发现官方文档有个推荐的切换镜像源的方式&lt;strong&gt;nrm&lt;/strong&gt; ，故此来记录一下。写下我一般是怎样切换镜像的 (想到什么记录什么)&lt;/p&gt;
+&lt;h2&gt;常用镜像源&lt;/h2&gt;
+&lt;p&gt;npm   https://registry.npmjs.org/       默认官方镜像
+yarn  https://registry.yarnpkg.com/       yarn官方镜像
+taobao &lt;s&gt;https://registry.npm.taobao.org/ 已废弃&lt;/s&gt;  https://registry.npmmirror.com/  taobao镜像
+tencen https://mirrors.cloud.tencent.com/npm/ tencent镜像
+cnpm  https://r.cnpmjs.org/               cnpm镜像&lt;/p&gt;
+&lt;h2&gt;nrm 命令&lt;/h2&gt;
+&lt;p&gt;nrm 命令是一个用来管理npm镜像的命令行工具，可以方便的切换镜像源，使用起来非常方便。&lt;/p&gt;
+&lt;p&gt;安装nrm&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm install -g nrm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;$ nrm ls
+
+* npm ---------- https://registry.npmjs.org/
+  yarn --------- https://registry.yarnpkg.com/
+  tencent ------ https://mirrors.cloud.tencent.com/npm/
+  cnpm --------- https://r.cnpmjs.org/
+  taobao ------- https://registry.npmmirror.com/
+  npmMirror ---- https://skimdb.npmjs.com/registry/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;切换镜像源&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ nrm use taobao # 切换为淘宝镜像
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;添加镜像源&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ nrm add newNpm https://registry.npmjs.org/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;删除镜像源&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ nrm del newNpm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;更多命令参考官方文档 &lt;a href=&quot;https://www.npmjs.com/package/nrm&quot;&gt;nrm&lt;/a&gt;&lt;/p&gt;
+&lt;h2&gt;.npmrc&lt;/h2&gt;
+&lt;p&gt;.npmrc 是一个配置文件，用来配置npm的镜像源，可以通过修改这个文件来切换镜像源。&lt;/p&gt;
+&lt;p&gt;创建一个 .npmrc 文件，并添加以下内容：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;registry=https://registry.npmmirror.com/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;修改 .npmrc 文件，将 registry 的值改为你想要的镜像源。这样就可以切换镜像源了。&lt;/p&gt;
+&lt;p&gt;或者使用指令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm config set registry https://registry.npmmirror.com/
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-14-nrmcenter/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>flutter安装到初始化搭建第一个Demo</title><link>https://blog.loli.wang/blog/2024-08-13-flutterappsetup1/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-13-flutterappsetup1/doc/</guid><description>flutter安装到初始化搭建第一个Demo</description><pubDate>Tue, 13 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;因为公司最近可能会APP开发的需求，并且手头工作已经接近尾声，身为一个前端，现在多端混合开发在国内是很常见的，首先第一时间考虑UNIAPP，但是在此之前给PDA设备开发了一套软件，性能给我的感觉极度糟糕，并且感觉问题杂乱差，文档甚至有时候还要去微信小程序开发者文档去找，给我的感觉是在写一个网页，没有写一个APP的体验， 所以我决定学习Flutter，以便用于下一个项目，作为一个充满实力的挑战者，我觉着我应该会很快就会熟悉。&lt;/p&gt;
 &lt;h3&gt;编辑器推荐&lt;/h3&gt;
 &lt;ol&gt;
 &lt;li&gt;VSCode (推荐)&lt;/li&gt;
@@ -41,7 +82,7 @@ https://docs.flutter.cn/get-started/install/windows/mobile/&lt;/p&gt;
 &lt;h2&gt;创建项目&lt;/h2&gt;
 &lt;p&gt;VScode 按下快捷键 &lt;strong&gt;Ctrl + Shift + P&lt;/strong&gt; , 打开命令面板，输入 Flutter，选择 &lt;strong&gt;Flutter: New Project&lt;/strong&gt; ，等待检查完成后会自动生成项目。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-13-flutterAPPSetup1/06.png&quot; alt=&quot;6&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;启动测试&lt;/h2&gt;
+&lt;h2&gt;启动测试成功&lt;/h2&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-13-flutterAPPSetup1/08.png&quot; alt=&quot;8&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-13-flutterAPPSetup1/07.png&quot; alt=&quot;9&quot; /&gt;&lt;/p&gt;
 </content:encoded></item><item><title>让浏览器重新支持玩耍Flash游戏！！（Ruffle）</title><link>https://blog.loli.wang/blog/2024-08-09-rustgametools/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-09-rustgametools/doc/</guid><description>让浏览器重新支持玩耍Flash游戏！！（Ruffle） </description><pubDate>Sat, 10 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;平时就有去各种平台找各种大佬博客的习惯并学习一二，一次偶然的机会看到一个博客文章很有趣，《重拾 flash 小游戏，给博客用上 Ruffle》 - J.F’s Blog  ，因为从我的记忆里&lt;strong&gt;FLASH&lt;/strong&gt;是个淘汰过时并且淘汰的东西，前些年也开始各个大的浏览器都不再支持&lt;strong&gt;FLASH&lt;/strong&gt;这个技术了，并且现在想让浏览器重新运行&lt;strong&gt;FLASH&lt;/strong&gt;的动画网页也特别费劲。0看到这个插件让我折腾的心又恢复了。&lt;/p&gt;

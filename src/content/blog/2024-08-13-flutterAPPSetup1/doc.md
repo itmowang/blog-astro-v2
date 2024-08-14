@@ -79,8 +79,9 @@ flutter doctor -v
 ![6](http://img.blog.loli.wang/2024-08-13-flutterAPPSetup1/06.png)
 
 
-## 启动测试
+## 启动测试成功
 
 ![8](http://img.blog.loli.wang/2024-08-13-flutterAPPSetup1/08.png)
 
 ![9](http://img.blog.loli.wang/2024-08-13-flutterAPPSetup1/07.png)
+
