@@ -2,7 +2,7 @@
 title: "[记录] React Native 搭建跑起第一个APP"
 description: "React Native 搭建跑起第一个Demo"
 pubDate: "2024-08-15 23:27:24"
-heroImage: "(http://img.blog.loli.wang/2024-08-14-reactNativeSetup/09.png"
+heroImage: "http://img.blog.loli.wang/2024-08-14-reactNativeSetup/09.png"
 tags:
   - React Native 搭建跑起第一个Demo
   - 前端开发 
