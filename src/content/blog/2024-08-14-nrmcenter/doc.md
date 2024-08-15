@@ -16,9 +16,13 @@ tags:
 ## 常用镜像源
 
 npm   https://registry.npmjs.org/       默认官方镜像
+
 yarn  https://registry.yarnpkg.com/       yarn官方镜像
+
 taobao ~~https://registry.npm.taobao.org/ 已废弃~~  https://registry.npmmirror.com/  taobao镜像
+
 tencen https://mirrors.cloud.tencent.com/npm/ tencent镜像
+
 cnpm  https://r.cnpmjs.org/               cnpm镜像
 
 

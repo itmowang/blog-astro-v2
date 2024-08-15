@@ -1,10 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>快速更换npm镜像源的几种方法</title><link>https://blog.loli.wang/blog/2024-08-14-nrmcenter/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-14-nrmcenter/doc/</guid><description>快速更换npm镜像源的几种方法</description><pubDate>Wed, 14 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;在思考使用原生应用还是使用混合开发的时候，准备拿fullter和React Native做对比，发现官方文档有个推荐的切换镜像源的方式&lt;strong&gt;nrm&lt;/strong&gt; ，故此来记录一下。写下我一般是怎样切换镜像的 (想到什么记录什么)&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[记录] React Native 搭建跑起第一个APP</title><link>https://blog.loli.wang/blog/2024-08-14-reactnativesetup/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-14-reactnativesetup/doc/</guid><description>React Native 搭建跑起第一个Demo</description><pubDate>Thu, 15 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;尝试了下 React Native 搭建跑起第一个Demo (第一次跑React Native是会比较花时间的，耐心去一步一步去解决就好)&lt;/p&gt;
+&lt;h3&gt;准备工作&lt;/h3&gt;
+&lt;p&gt;安装所需的工具&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.oracle.com/cn/java/technologies/downloads/#java17&quot;&gt;JDK 17&lt;/a&gt;  版本必须要大于等于17 和 小于等于20&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://developer.android.google.cn/studio/install?hl=zh-cn&quot;&gt;Android Studio&lt;/a&gt; 最新版即可&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://nodejs.org/en/download/&quot;&gt;Node.js&lt;/a&gt;  版本必须要大于等于18&lt;/p&gt;
+&lt;p&gt;安卓模拟器 用android studio自带的，或者第三方的&lt;/p&gt;
+&lt;h3&gt;创建React Native项目&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;  npx react-native init AwesomeProject
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;建立出来后的项目结构&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-14-reactNativeSetup/02.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;检查环境&lt;/h3&gt;
+&lt;p&gt;中途必须配置好 JDK 和 Android SDK 和ADB 详情可以看中文网的文档&lt;/p&gt;
+&lt;p&gt;[React Native 中文网] (https://reactnative.cn/docs/environment-setup)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npx react-native doctor  # 检查环境
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;环境如果全部检查通过，可以开始启动项目了&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-14-reactNativeSetup/07.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;启动项目&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;#启动android
+npx react-native run-android
+#启动ios
+npx react-native run-ios
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-14-reactNativeSetup/08.png&quot; alt=&quot;08&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-14-reactNativeSetup/09.png&quot; alt=&quot;09&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;总结&lt;/h3&gt;
+&lt;p&gt;跑起这一个demo花了我一天的时间，我觉着这一天我可以做很多东西了，这里面各种编译，各种网络问题拉不下来依赖。编译看了下语法，还是和React有很大不同的，编译出来的代码是kotlin的，是调用的原生平台的组件，性能方面比Webview的性能要好很多，但是估计熟悉还是要话一点时间。&lt;/p&gt;
+</content:encoded></item><item><title>快速更换npm镜像源的几种方法</title><link>https://blog.loli.wang/blog/2024-08-14-nrmcenter/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-14-nrmcenter/doc/</guid><description>快速更换npm镜像源的几种方法</description><pubDate>Wed, 14 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;在思考使用原生应用还是使用混合开发的时候，准备拿fullter和React Native做对比，发现官方文档有个推荐的切换镜像源的方式&lt;strong&gt;nrm&lt;/strong&gt; ，故此来记录一下。写下我一般是怎样切换镜像的 (想到什么记录什么)&lt;/p&gt;
 &lt;h2&gt;常用镜像源&lt;/h2&gt;
-&lt;p&gt;npm   https://registry.npmjs.org/       默认官方镜像
-yarn  https://registry.yarnpkg.com/       yarn官方镜像
-taobao &lt;s&gt;https://registry.npm.taobao.org/ 已废弃&lt;/s&gt;  https://registry.npmmirror.com/  taobao镜像
-tencen https://mirrors.cloud.tencent.com/npm/ tencent镜像
-cnpm  https://r.cnpmjs.org/               cnpm镜像&lt;/p&gt;
+&lt;p&gt;npm   https://registry.npmjs.org/       默认官方镜像&lt;/p&gt;
+&lt;p&gt;yarn  https://registry.yarnpkg.com/       yarn官方镜像&lt;/p&gt;
+&lt;p&gt;taobao &lt;s&gt;https://registry.npm.taobao.org/ 已废弃&lt;/s&gt;  https://registry.npmmirror.com/  taobao镜像&lt;/p&gt;
+&lt;p&gt;tencen https://mirrors.cloud.tencent.com/npm/ tencent镜像&lt;/p&gt;
+&lt;p&gt;cnpm  https://r.cnpmjs.org/               cnpm镜像&lt;/p&gt;
 &lt;h2&gt;nrm 命令&lt;/h2&gt;
 &lt;p&gt;nrm 命令是一个用来管理npm镜像的命令行工具，可以方便的切换镜像源，使用起来非常方便。&lt;/p&gt;
 &lt;p&gt;安装nrm&lt;/p&gt;
