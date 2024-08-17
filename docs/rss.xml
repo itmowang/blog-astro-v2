@@ -1,4 +1,105 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[记录] React Native 搭建跑起第一个APP</title><link>https://blog.loli.wang/blog/2024-08-14-reactnativesetup/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-14-reactnativesetup/doc/</guid><description>React Native 搭建跑起第一个Demo</description><pubDate>Thu, 15 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;尝试了下 React Native 搭建跑起第一个Demo (第一次跑React Native是会比较花时间的，耐心去一步一步去解决就好)&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>2024年了居然有人还不会搭建FRP做内网穿透</title><link>https://blog.loli.wang/blog/2024-08-17-frpinit/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-17-frpinit/doc/</guid><description>2024年了居然有人还不会搭建FRP做内网穿透</description><pubDate>Sat, 17 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;最近不少人问我内网穿透的问题，我觉着作为一个开发者，正常可能经常会有些这种需求， 一般直接推荐 &lt;strong&gt;花生壳&lt;/strong&gt; 、&lt;strong&gt;NATAPP&lt;/strong&gt;等产品，但是直到问我，想要映射的端口太多怎么办，想绑定域名怎么办，不想备案怎么办，等等等这些问题。。。 我就会推荐自己搭建服务。但是纠结的是。很多人连听都没听过。&lt;/p&gt;
+&lt;h2&gt;搭建前提&lt;/h2&gt;
+&lt;p&gt;一台带有公网ip的外网服务器(VPS)&lt;/p&gt;
+&lt;h2&gt;什么是FRP&lt;/h2&gt;
+&lt;p&gt;frp 是一个专注于内网穿透的高性能的反向代理应用，支持 TCP、UDP、HTTP、HTTPS 等多种协议，且支持 P2P 通信。可以将内网服务以安全、便捷的方式通过具有公网 IP 节点的中转暴露到公网。&lt;/p&gt;
+&lt;h2&gt;安装服务端&lt;/h2&gt;
+&lt;p&gt;去github找到最新的发布的版本,并在服务器上使用使用&lt;strong&gt;uname -m&lt;/strong&gt;命令检查当前系统架构&lt;/p&gt;
+&lt;p&gt;https://github.com/fatedier/frp/releases/tag/v0.59.0&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 使用wget命令下载服务端压缩包
+wget https://github.com/fatedier/frp/releases/download/v0.59.0/frp_0.59.0_linux_amd64.tar.gz
+
+# 解压到 /usr/local
+tar -zxvf frp_0.59.0_linux_amd64.tar.gz -C /usr/local
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;进入 &lt;strong&gt;/etc/systemd/system/&lt;/strong&gt; 目录建立新的文件 &lt;strong&gt;frps.service&lt;/strong&gt; 配置成Systemd服务&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# frps.service 
+[Unit]
+Description=frps service
+After=network.target syslog.target
+Wants=network.target
+[Service]
+Type=simple
+#Restart=always
+Restart=on-failure
+RestartSec=5s
+#启动服务的命令
+ExecStart=/usr/local/frp_0.59.0_linux_amd64/frps -c /usr/local/frp_0.59.0_linux_amd64/frps.toml
+[Install]
+WantedBy=multi-user.target
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/03.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;保存 切换回我们原来的 &lt;strong&gt;/usr/local/frp_0.59.0_linux_amd64&lt;/strong&gt; 目录，修改文件 &lt;strong&gt;frps.toml&lt;/strong&gt; 文件&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+[common]
+bind_addr = xx.xx.xx.xx # 你的服务器ip地址
+bind_port = 7000
+kcp_bind_port = 7000
+vhost_https_port = 7001
+dashboard_addr = xx.xx.xx.xx
+dashboard_port = 7500
+dashboard_user = admin
+dashboard_pwd = admin
+log_file = ./frps.log
+log_level = info
+log_max_days = 3
+authentication_timeout = 900
+token=mowangmowang
+allow_ports = 2000-3000,3001,3003,4000-50000,3362
+max_pool_count = 50
+max_ports_per_client = 0
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&quot;https://gofrp.org/zh-cn/docs/reference/server-configures/&quot;&gt;服务端配置详情 - gofrp&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/04.png&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这样就差不多配置完成了。&lt;/p&gt;
+&lt;p&gt;在服务器上启动frp服务端&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 设为开机自启
+sudo systemctl enable frps
+# 启动frp
+sudo systemctl start frps
+# 查看启动日志 
+sudo systemctl status frps 
+# 重启frp服务
+sudo systemctl restart frps 
+# 关闭frp服务
+sudo systemctl stop frps 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/05.png&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;然后去网页上访问我们刚刚配置的 &lt;strong&gt;ip:7500&lt;/strong&gt; 管理面板是否正常 ，输入我们刚刚配置文件里设置的账号密码 &lt;strong&gt;admin&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/06.png&quot; alt=&quot;6&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这样服务端就配置成功了&lt;/p&gt;
+&lt;h2&gt;客户端的使用 (WIN)&lt;/h2&gt;
+&lt;p&gt;事实上服务端安装成客户端就很简单了，只不过是玩法问题，这里只告诉如何使用&lt;/p&gt;
+&lt;p&gt;下载windows包 解压到你的硬盘里&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/07.png&quot; alt=&quot;7&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;编辑 &lt;strong&gt;frpc.toml&lt;/strong&gt; 文件 ，并且配置简单映射下&lt;strong&gt;4321&lt;/strong&gt;端口到外网的&lt;strong&gt;2000&lt;/strong&gt;去&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[common]
+server_addr = &quot;你的服务器ip&quot;
+server_port = 7000
+token = &quot;mowangmowang&quot;
+
+[[proxies]]
+name = &quot;web&quot;
+type = &quot;tcp&quot;
+local_ip = &quot;127.0.0.1&quot;
+local_port  = 4321
+remote_port  = 2000
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;执行命令行命令&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;frpc -c frpc.toml
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/08.png&quot; alt=&quot;8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/09.png&quot; alt=&quot;8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-17-frpinit/10.png&quot; alt=&quot;8&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;映射成功&lt;/p&gt;
+&lt;h4&gt;相关资料&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&quot;https://gofrp.org/zh-cn/docs/reference/server-configures/&quot;&gt;服务端配置详情 - gofrp&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/fatedier/frp&quot;&gt;官方GITHUB - frp&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>[记录] React Native 搭建跑起第一个APP</title><link>https://blog.loli.wang/blog/2024-08-14-reactnativesetup/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-14-reactnativesetup/doc/</guid><description>React Native 搭建跑起第一个Demo</description><pubDate>Thu, 15 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;尝试了下 React Native 搭建跑起第一个Demo (第一次跑React Native是会比较花时间的，耐心去一步一步去解决就好)&lt;/p&gt;
 &lt;h3&gt;准备工作&lt;/h3&gt;
 &lt;p&gt;安装所需的工具&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;https://www.oracle.com/cn/java/technologies/downloads/#java17&quot;&gt;JDK 17&lt;/a&gt;  版本必须要大于等于17 和 小于等于20&lt;/p&gt;

@@ -1,0 +1,104 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> --><!-- Canonical URL --><link rel="canonical" href="https://blog.loli.wang/blog/2024-08-17-frpinit/doc/"><!-- Primary Meta Tags --><title>2024年了居然有人还不会搭建FRP做内网穿透 - 魔王の博客 </title><meta name="title" content="2024年了居然有人还不会搭建FRP做内网穿透 - 魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://blog.loli.wang/blog/2024-08-17-frpinit/doc/"><meta property="og:title" content="2024年了居然有人还不会搭建FRP做内网穿透 - 魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://blog.loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.loli.wang/blog/2024-08-17-frpinit/doc/"><meta property="twitter:title" content="2024年了居然有人还不会搭建FRP做内网穿透 - 魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://blog.loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/hoisted.DH1pNdf-.css">
+<link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.CGSjG33K.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://blog.loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2024 YOUR NAME HERE. | <a href="https://blog.loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail" id="lightgallery"> <h2 class="post-title">2024年了居然有人还不会搭建FRP做内网穿透</h2> <div class="post-date"> <time datetime="2024-08-17T15:27:24.000Z">2024-08-17 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://blog.loli.wang/blog/2024-08-17-frpinit/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2024-08-17-frpinit/06.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://blog.loli.wang/blog/2024-08-17-frpinit/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2024-08-17-frpinit/06.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2024-08-17-frpinit/06.png');"></div> <div class="post-content">  <p>最近不少人问我内网穿透的问题，我觉着作为一个开发者，正常可能经常会有些这种需求， 一般直接推荐 <strong>花生壳</strong> 、<strong>NATAPP</strong>等产品，但是直到问我，想要映射的端口太多怎么办，想绑定域名怎么办，不想备案怎么办，等等等这些问题。。。 我就会推荐自己搭建服务。但是纠结的是。很多人连听都没听过。</p>
+<h2 id="搭建前提">搭建前提</h2>
+<p>一台带有公网ip的外网服务器(VPS)</p>
+<h2 id="什么是frp">什么是FRP</h2>
+<p>frp 是一个专注于内网穿透的高性能的反向代理应用，支持 TCP、UDP、HTTP、HTTPS 等多种协议，且支持 P2P 通信。可以将内网服务以安全、便捷的方式通过具有公网 IP 节点的中转暴露到公网。</p>
+<h2 id="安装服务端">安装服务端</h2>
+<p>去github找到最新的发布的版本,并在服务器上使用使用<strong>uname -m</strong>命令检查当前系统架构</p>
+<p><a href="https://github.com/fatedier/frp/releases/tag/v0.59.0">https://github.com/fatedier/frp/releases/tag/v0.59.0</a></p>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/01.png" alt="1"></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 使用wget命令下载服务端压缩包</span></span>
+<span class="line"><span style="color:#B392F0">wget</span><span style="color:#9ECBFF"> https://github.com/fatedier/frp/releases/download/v0.59.0/frp_0.59.0_linux_amd64.tar.gz</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 解压到 /usr/local</span></span>
+<span class="line"><span style="color:#B392F0">tar</span><span style="color:#79B8FF"> -zxvf</span><span style="color:#9ECBFF"> frp_0.59.0_linux_amd64.tar.gz</span><span style="color:#79B8FF"> -C</span><span style="color:#9ECBFF"> /usr/local</span></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/02.png" alt="2"></p>
+<p>进入 <strong>/etc/systemd/system/</strong> 目录建立新的文件 <strong>frps.service</strong> 配置成Systemd服务</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># frps.service </span></span>
+<span class="line"><span style="color:#E1E4E8">[Unit]</span></span>
+<span class="line"><span style="color:#E1E4E8">Description</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">frps</span><span style="color:#B392F0"> service</span></span>
+<span class="line"><span style="color:#E1E4E8">After</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">network.target</span><span style="color:#B392F0"> syslog.target</span></span>
+<span class="line"><span style="color:#E1E4E8">Wants</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">network.target</span></span>
+<span class="line"><span style="color:#E1E4E8">[Service]</span></span>
+<span class="line"><span style="color:#E1E4E8">Type</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">simple</span></span>
+<span class="line"><span style="color:#6A737D">#Restart=always</span></span>
+<span class="line"><span style="color:#E1E4E8">Restart</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">on-failure</span></span>
+<span class="line"><span style="color:#E1E4E8">RestartSec</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">5s</span></span>
+<span class="line"><span style="color:#6A737D">#启动服务的命令</span></span>
+<span class="line"><span style="color:#E1E4E8">ExecStart</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">/usr/local/frp_0.59.0_linux_amd64/frps</span><span style="color:#B392F0"> -c</span><span style="color:#9ECBFF"> /usr/local/frp_0.59.0_linux_amd64/frps.toml</span></span>
+<span class="line"><span style="color:#E1E4E8">[Install]</span></span>
+<span class="line"><span style="color:#E1E4E8">WantedBy</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">multi-user.target</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/03.png" alt="3"></p>
+<p>保存 切换回我们原来的 <strong>/usr/local/frp_0.59.0_linux_amd64</strong> 目录，修改文件 <strong>frps.toml</strong> 文件</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">[common]</span></span>
+<span class="line"><span style="color:#B392F0">bind_addr</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> xx.xx.xx.xx</span><span style="color:#6A737D"> # 你的服务器ip地址</span></span>
+<span class="line"><span style="color:#B392F0">bind_port</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 7000</span></span>
+<span class="line"><span style="color:#B392F0">kcp_bind_port</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 7000</span></span>
+<span class="line"><span style="color:#B392F0">vhost_https_port</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 7001</span></span>
+<span class="line"><span style="color:#B392F0">dashboard_addr</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> xx.xx.xx.xx</span></span>
+<span class="line"><span style="color:#B392F0">dashboard_port</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 7500</span></span>
+<span class="line"><span style="color:#B392F0">dashboard_user</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> admin</span></span>
+<span class="line"><span style="color:#B392F0">dashboard_pwd</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> admin</span></span>
+<span class="line"><span style="color:#B392F0">log_file</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> ./frps.log</span></span>
+<span class="line"><span style="color:#B392F0">log_level</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> info</span></span>
+<span class="line"><span style="color:#B392F0">log_max_days</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 3</span></span>
+<span class="line"><span style="color:#B392F0">authentication_timeout</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 900</span></span>
+<span class="line"><span style="color:#E1E4E8">token</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">mowangmowang</span></span>
+<span class="line"><span style="color:#B392F0">allow_ports</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> 2000-3000,3001,3003,4000-50000,3362</span></span>
+<span class="line"><span style="color:#B392F0">max_pool_count</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 50</span></span>
+<span class="line"><span style="color:#B392F0">max_ports_per_client</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 0</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p><a href="https://gofrp.org/zh-cn/docs/reference/server-configures/">服务端配置详情 - gofrp</a></p>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/04.png" alt="4"></p>
+<p>这样就差不多配置完成了。</p>
+<p>在服务器上启动frp服务端</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 设为开机自启</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> enable</span><span style="color:#9ECBFF"> frps</span></span>
+<span class="line"><span style="color:#6A737D"># 启动frp</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> start</span><span style="color:#9ECBFF"> frps</span></span>
+<span class="line"><span style="color:#6A737D"># 查看启动日志 </span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> status</span><span style="color:#9ECBFF"> frps</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D"># 重启frp服务</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> restart</span><span style="color:#9ECBFF"> frps</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#6A737D"># 关闭frp服务</span></span>
+<span class="line"><span style="color:#B392F0">sudo</span><span style="color:#9ECBFF"> systemctl</span><span style="color:#9ECBFF"> stop</span><span style="color:#9ECBFF"> frps</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/05.png" alt="5"></p>
+<p>然后去网页上访问我们刚刚配置的 <strong>ip:7500</strong> 管理面板是否正常 ，输入我们刚刚配置文件里设置的账号密码 <strong>admin</strong></p>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/06.png" alt="6"></p>
+<p>这样服务端就配置成功了</p>
+<h2 id="客户端的使用-win">客户端的使用 (WIN)</h2>
+<p>事实上服务端安装成客户端就很简单了，只不过是玩法问题，这里只告诉如何使用</p>
+<p>下载windows包 解压到你的硬盘里</p>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/07.png" alt="7"></p>
+<p>编辑 <strong>frpc.toml</strong> 文件 ，并且配置简单映射下<strong>4321</strong>端口到外网的<strong>2000</strong>去</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#E1E4E8">[common]</span></span>
+<span class="line"><span style="color:#B392F0">server_addr</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> "你的服务器ip"</span></span>
+<span class="line"><span style="color:#B392F0">server_port</span><span style="color:#9ECBFF"> =</span><span style="color:#79B8FF"> 7000</span></span>
+<span class="line"><span style="color:#B392F0">token</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> "mowangmowang"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">[[proxies]]</span></span>
+<span class="line"><span style="color:#B392F0">name</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> "web"</span></span>
+<span class="line"><span style="color:#79B8FF">type</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> "tcp"</span></span>
+<span class="line"><span style="color:#B392F0">local_ip</span><span style="color:#9ECBFF"> =</span><span style="color:#9ECBFF"> "127.0.0.1"</span></span>
+<span class="line"><span style="color:#B392F0">local_port</span><span style="color:#9ECBFF">  =</span><span style="color:#79B8FF"> 4321</span></span>
+<span class="line"><span style="color:#B392F0">remote_port</span><span style="color:#9ECBFF">  =</span><span style="color:#79B8FF"> 2000</span></span>
+<span class="line"></span></code></pre>
+<p>执行命令行命令</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">frpc</span><span style="color:#79B8FF"> -c</span><span style="color:#9ECBFF"> frpc.toml</span></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/08.png" alt="8"></p>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/09.png" alt="8"></p>
+<p><img src="http://img.blog.loli.wang/2024-08-17-frpinit/10.png" alt="8"></p>
+<p>映射成功</p>
+<h4 id="相关资料">相关资料</h4>
+<p><a href="https://gofrp.org/zh-cn/docs/reference/server-configures/">服务端配置详情 - gofrp</a></p>
+<p><a href="https://github.com/fatedier/frp">官方GITHUB - frp</a></p>  </div> <div class="tag-container"> <a href="/tags/FRP" class="tag" title="FRP"> FRP </a><a href="/tags/内网穿透" class="tag" title="内网穿透"> 内网穿透 </a><a href="/tags/前端进阶" class="tag" title="前端进阶"> 前端进阶 </a> </div> </div>   </div> </div> </div>  </body></html> 
