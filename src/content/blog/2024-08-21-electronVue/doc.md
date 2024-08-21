@@ -2,7 +2,7 @@
 title: "electron + Vue 搭建第一个桌面端应用"
 description: "electron + Vue 搭建第一个桌面端应用"
 pubDate: "2024-08-21 23:27:24"
-heroImage: "http://img.blog.loli.wang/2024-08-17-frpinit/06.png"
+heroImage: "http://img.blog.loli.wang/2024-08-21-electronVue/06.png"
 tags:
   - electron
   - Vue
