@@ -353,9 +353,9 @@ app.on('window-all-closed', () => {
 
 ## 添加electron-builder打包
 (这个应该没上面好说的 比较简单)
+ 
 
 
-
-## 参考
+## 参考代码
 
 [demo 地址](https://github.com/itmowang/desktop-vue-demo)

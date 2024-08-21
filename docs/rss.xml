@@ -272,7 +272,7 @@ app.on(&apos;window-all-closed&apos;, () =&amp;gt; {
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-08-21-electronVue/06.png&quot; alt=&quot;6&quot; /&gt;&lt;/p&gt;
 &lt;h2&gt;添加electron-builder打包&lt;/h2&gt;
 &lt;p&gt;(这个应该没上面好说的 比较简单)&lt;/p&gt;
-&lt;h2&gt;参考&lt;/h2&gt;
+&lt;h2&gt;参考代码&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/itmowang/desktop-vue-demo&quot;&gt;demo 地址&lt;/a&gt;&lt;/p&gt;
 </content:encoded></item><item><title>2024年了居然有人还不会搭建FRP做内网穿透</title><link>https://blog.loli.wang/blog/2024-08-17-frpinit/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-17-frpinit/doc/</guid><description>2024年了居然有人还不会搭建FRP做内网穿透</description><pubDate>Sat, 17 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;最近不少人问我内网穿透的问题，我觉着作为一个开发者，正常可能经常会有些这种需求， 一般直接推荐 &lt;strong&gt;花生壳&lt;/strong&gt; 、&lt;strong&gt;NATAPP&lt;/strong&gt;等产品，但是直到问我，想要映射的端口太多怎么办，想绑定域名怎么办，不想备案怎么办，等等等这些问题。。。 我就会推荐自己搭建服务。但是纠结的是。很多人连听都没听过。&lt;/p&gt;
 &lt;h2&gt;搭建前提&lt;/h2&gt;
