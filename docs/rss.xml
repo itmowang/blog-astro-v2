@@ -1,4 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>electron + Vue 搭建第一个桌面端应用</title><link>https://blog.loli.wang/blog/2024-08-21-electronvue/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-21-electronvue/doc/</guid><description>electron + Vue 搭建第一个桌面端应用</description><pubDate>Wed, 21 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;搭建环境&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>一个基于 Monorepo + CloudFlare 全家桶 + Prisma + NodeJs 的简易全栈项目模板。</title><link>https://blog.loli.wang/blog/2024-10-05-mwcftemplate/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-10-05-mwcftemplate/doc/</guid><description>一个基于 Monorepo + CloudFlare Worker + CloudFlare Pages + CloudFlare D1 + Prisma + NodeJs 的简易全栈项目模板。</description><pubDate>Sat, 05 Oct 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;介绍&lt;/h2&gt;
+&lt;p&gt;一个基于 Monorepo + CloudFlare Worker + CloudFlare Pages + CloudFlare D1 + Prisma + NodeJs 的简易全栈项目模板。&lt;/p&gt;
+&lt;h2&gt;升级日志&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;2024-10-05 编写了基础的模板，并编写了用户注册和登录功能。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;使用&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# 拉取项目
+git clone https://github.com/itmowang/cloudflare_system.git
+
+# 安装pnpm
+npm install pnpm -g
+
+# 拉取项目依赖
+pnpm install
+
+# 启动本地环境
+pnpm run dev
+
+# 发布到 CloudFlare
+pnpm run build
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;其他相关&lt;/h2&gt;
+&lt;p&gt;方便用于开展其他项目的个人向模板&lt;/p&gt;
+&lt;h2&gt;文档&lt;/h2&gt;
+&lt;p&gt;...持续更新中&lt;/p&gt;
+&lt;h2&gt;演示&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-05-mwcftemplate/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-05-mwcftemplate/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>electron + Vue 搭建第一个桌面端应用</title><link>https://blog.loli.wang/blog/2024-08-21-electronvue/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-08-21-electronvue/doc/</guid><description>electron + Vue 搭建第一个桌面端应用</description><pubDate>Wed, 21 Aug 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;搭建环境&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;# 推荐使用yarn
 npm i -g yarn
 
