@@ -39,6 +39,8 @@ pnpm run build
 
 方便用于开展其他项目的个人向模板
 
+[https://github.com/itmowang/cloudflare_system](https://github.com/itmowang/cloudflare_system)
+
 ## 文档
 
 ...持续更新中
