@@ -1,4 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[问题记录] 使用 cloudflare wrangler 使用代理导致 Invalid URL</title><link>https://blog.loli.wang/blog/2024-10-08-cfworkersbughttpporxy/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-10-08-cfworkersbughttpporxy/doc/</guid><description>[问题记录] 使用 cloudflare wrangler 使用代理导致 Invalid URL</description><pubDate>Tue, 08 Oct 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;因为白嫖 cloudflare 的无服务器服务 ，  开了代理导致启动一直   Invalid URL&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[转职说明] 恭喜你达到20级，请选择你的转职路线</title><link>https://blog.loli.wang/blog/2024-10-10-mhsj/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-10-10-mhsj/doc/</guid><description>[转职说明] 恭喜你达到20级，请选择你的转职路线</description><pubDate>Thu, 10 Oct 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;恭喜你达到20等级，请选择你的转职路线：&lt;/h1&gt;
+&lt;h3&gt;火系魔法师&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-10-mhsj/0.gif&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;冰系魔法师&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-10-mhsj/1.gif&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;雷系魔法师&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-10-mhsj/2.gif&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;神枪手&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-10-mhsj/3.gif&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;战士&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-10-mhsj/4.gif&quot; alt=&quot;4&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;厨师&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-10-mhsj/5.gif&quot; alt=&quot;5&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>[问题记录] 使用 cloudflare wrangler 使用代理导致 Invalid URL</title><link>https://blog.loli.wang/blog/2024-10-08-cfworkersbughttpporxy/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-10-08-cfworkersbughttpporxy/doc/</guid><description>[问题记录] 使用 cloudflare wrangler 使用代理导致 Invalid URL</description><pubDate>Tue, 08 Oct 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;因为白嫖 cloudflare 的无服务器服务 ，  开了代理导致启动一直   Invalid URL&lt;/h1&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-08-cfworkersbughttpPorxy/01.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;同样的我去官方找了文档,也同样的，没有找到相关的说明，去官方看issues有相关的提问，但是都不了了之，最后在隔壁看到了解决方案。。。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-08-cfworkersbughttpPorxy/02.png&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
