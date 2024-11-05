@@ -1,4 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>关于我最近频繁换耳机的测评</title><link>https://blog.loli.wang/blog/2024-11-04-erjiceping/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-11-04-erjiceping/doc/</guid><description>关于我最近频繁换耳机的测评</description><pubDate>Mon, 04 Nov 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;耳机只是消耗品罢了&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>写了个临时邮箱的小Demo</title><link>https://blog.loli.wang/blog/2024-11-05-amail/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-11-05-amail/doc/</guid><description>写了个临时邮箱的小Demo</description><pubDate>Tue, 05 Nov 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;关于AMAIL 邮件服务&lt;/h1&gt;
+&lt;p&gt;AMAIL 是一个基于Cloudflare Email Routeing的邮件服务，用于快速搭建临时邮箱服务。&lt;/p&gt;
+&lt;h1&gt;快速上手&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;创建一个 Cloudflare 账户，并且绑定好一个属于自己的域名。 并且创建一个 Cloudflare Pages 项目。和一个 Cloudflare Workers。同样的也建立好KV存储。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;修改 &lt;strong&gt;/packages/workers/wrangler.toml&lt;/strong&gt; 中的 &lt;strong&gt;name&lt;/strong&gt; 改为你的cloudflare workers名称。 并且修改kv的&lt;code&gt;binding&lt;/code&gt; &lt;code&gt;id&lt;/code&gt;，修改 &lt;strong&gt;/packages/web/wrangler.toml&lt;/strong&gt; 中的 &lt;code&gt;name&lt;/code&gt; 改为你的cloudflare pages的所属name&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;修改 &lt;strong&gt;/packages/web/config.ts&lt;/strong&gt; 中的 &lt;code&gt;nuxt.config.ts&lt;/code&gt; 文件&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;public: {
+    API_URL: &quot;amail.xmw.pw&quot;,  // 你的workers绑定的域名
+    EMAIL_DOMAIN: &quot;xmw.pw&quot;    // 你所使用的邮箱域名
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;创建一个 Cloudflare routeing，开启 &lt;code&gt;Catch-all addres&lt;/code&gt;s 模式，并指向 &lt;code&gt;Workers&lt;/code&gt; 为邮件接受地&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/3.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;执行命令一键部署&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;pnpm build
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;预览&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/0.png&quot; alt=&quot;0&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/1.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://xmw.pw&quot;&gt;演示地址&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/itmowang/amail&quot;&gt;GitHub&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>关于我最近频繁换耳机的测评</title><link>https://blog.loli.wang/blog/2024-11-04-erjiceping/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-11-04-erjiceping/doc/</guid><description>关于我最近频繁换耳机的测评</description><pubDate>Mon, 04 Nov 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;耳机只是消耗品罢了&lt;/h1&gt;
 &lt;p&gt;在一个月前，我正在使用的耳机是  &lt;a href=&quot;https://www.sonystyle.com.cn/products/headphone/linkbuds_s/linkbuds_s_e.html&quot;&gt;Sony LinkBuds S&lt;/a&gt;，他是一款入耳式耳机， 降噪功能不错，我的使用时常为1年多一点，到目前为止他一直功能正常，但是美中不足的是，电池寿命已经短到无法使用了。而保修期仅限一年，所以只能换了。准确的说没有进行更换，我开始有了一个自己更换电池的想法。 正是这种想法。。。&lt;/p&gt;
 &lt;p&gt;我购买了同款的电池，以及购买了热风枪。和耳机专用胶水，虽然也是更换了电池，但是耳机合不上了，不知道是胶水问题还是我的操作问题，耳机边缘处也多了很多刀痕&lt;/p&gt;
 &lt;p&gt;强烈建议每次买耳机的时候给耳机买上全保换新只换不修的服务！！！！！！&lt;/p&gt;
@@ -59,40 +93,6 @@
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-11-04-erjiceping/18.jpg&quot; alt=&quot;3&quot; /&gt;
 &lt;img src=&quot;http://img.blog.loli.wang/2024-11-04-erjiceping/19.jpg&quot; alt=&quot;3&quot; /&gt;
 &lt;img src=&quot;http://img.blog.loli.wang/2024-11-04-erjiceping/20.jpg&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
-</content:encoded></item><item><title>写了个临时邮箱的小Demo</title><link>https://blog.loli.wang/blog/2024-11-05-amail/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-11-05-amail/doc/</guid><description>写了个临时邮箱的小Demo</description><pubDate>Mon, 04 Nov 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;关于AMAIL 邮件服务&lt;/h1&gt;
-&lt;p&gt;AMAIL 是一个基于Cloudflare Email Routeing的邮件服务，用于快速搭建临时邮箱服务。&lt;/p&gt;
-&lt;h1&gt;快速上手&lt;/h1&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;创建一个 Cloudflare 账户，并且绑定好一个属于自己的域名。 并且创建一个 Cloudflare Pages 项目。和一个 Cloudflare Workers。同样的也建立好KV存储。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;修改 &lt;strong&gt;/packages/workers/wrangler.toml&lt;/strong&gt; 中的 &lt;strong&gt;name&lt;/strong&gt; 改为你的cloudflare workers名称。 并且修改kv的&lt;code&gt;binding&lt;/code&gt; &lt;code&gt;id&lt;/code&gt;，修改 &lt;strong&gt;/packages/web/wrangler.toml&lt;/strong&gt; 中的 &lt;code&gt;name&lt;/code&gt; 改为你的cloudflare pages的所属name&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;修改 &lt;strong&gt;/packages/web/config.ts&lt;/strong&gt; 中的 &lt;code&gt;nuxt.config.ts&lt;/code&gt; 文件&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;public: {
-    API_URL: &quot;amail.xmw.pw&quot;,  // 你的workers绑定的域名
-    EMAIL_DOMAIN: &quot;xmw.pw&quot;    // 你所使用的邮箱域名
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;ol&gt;
-&lt;li&gt;创建一个 Cloudflare routeing，开启 &lt;code&gt;Catch-all addres&lt;/code&gt;s 模式，并指向 &lt;code&gt;Workers&lt;/code&gt; 为邮件接受地&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/3.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;执行命令一键部署&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;pnpm build
-&lt;/code&gt;&lt;/pre&gt;
-&lt;h3&gt;预览&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/0.png&quot; alt=&quot;0&quot; /&gt;
-&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/1.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
-&lt;h3&gt;&lt;/h3&gt;
-&lt;p&gt;&lt;a href=&quot;https://xmw.pw&quot;&gt;演示地址&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&quot;https://github.com/itmowang/amail&quot;&gt;GitHub&lt;/a&gt;&lt;/p&gt;
 </content:encoded></item><item><title>[转职说明] 恭喜你达到20级，请选择你的转职路线</title><link>https://blog.loli.wang/blog/2024-10-10-mhsj/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-10-10-mhsj/doc/</guid><description>[转职说明] 恭喜你达到20级，请选择你的转职路线</description><pubDate>Thu, 10 Oct 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;恭喜你达到20等级，请选择你的转职路线：&lt;/h1&gt;
 &lt;h3&gt;火系魔法师&lt;/h3&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-10-mhsj/0.gif&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;

@@ -1,7 +1,7 @@
 ---
 title: "写了个临时邮箱的小Demo"
 description: "写了个临时邮箱的小Demo"
-pubDate: "2024-11-04 23:27:24"
+pubDate: "2024-11-05 23:27:24"
 heroImage: "http://img.blog.loli.wang/2024-11-05-amail/0.png"
 tags:
   - 临时邮箱
