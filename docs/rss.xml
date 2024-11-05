@@ -59,6 +59,40 @@
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-11-04-erjiceping/18.jpg&quot; alt=&quot;3&quot; /&gt;
 &lt;img src=&quot;http://img.blog.loli.wang/2024-11-04-erjiceping/19.jpg&quot; alt=&quot;3&quot; /&gt;
 &lt;img src=&quot;http://img.blog.loli.wang/2024-11-04-erjiceping/20.jpg&quot; alt=&quot;3&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>写了个临时邮箱的小Demo</title><link>https://blog.loli.wang/blog/2024-11-05-amail/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-11-05-amail/doc/</guid><description>写了个临时邮箱的小Demo</description><pubDate>Mon, 04 Nov 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;关于AMAIL 邮件服务&lt;/h1&gt;
+&lt;p&gt;AMAIL 是一个基于Cloudflare Email Routeing的邮件服务，用于快速搭建临时邮箱服务。&lt;/p&gt;
+&lt;h1&gt;快速上手&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;创建一个 Cloudflare 账户，并且绑定好一个属于自己的域名。 并且创建一个 Cloudflare Pages 项目。和一个 Cloudflare Workers。同样的也建立好KV存储。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;修改 &lt;strong&gt;/packages/workers/wrangler.toml&lt;/strong&gt; 中的 &lt;strong&gt;name&lt;/strong&gt; 改为你的cloudflare workers名称。 并且修改kv的&lt;code&gt;binding&lt;/code&gt; &lt;code&gt;id&lt;/code&gt;，修改 &lt;strong&gt;/packages/web/wrangler.toml&lt;/strong&gt; 中的 &lt;code&gt;name&lt;/code&gt; 改为你的cloudflare pages的所属name&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;修改 &lt;strong&gt;/packages/web/config.ts&lt;/strong&gt; 中的 &lt;code&gt;nuxt.config.ts&lt;/code&gt; 文件&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;public: {
+    API_URL: &quot;amail.xmw.pw&quot;,  // 你的workers绑定的域名
+    EMAIL_DOMAIN: &quot;xmw.pw&quot;    // 你所使用的邮箱域名
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ol&gt;
+&lt;li&gt;创建一个 Cloudflare routeing，开启 &lt;code&gt;Catch-all addres&lt;/code&gt;s 模式，并指向 &lt;code&gt;Workers&lt;/code&gt; 为邮件接受地&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/3.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;执行命令一键部署&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;pnpm build
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;预览&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/0.png&quot; alt=&quot;0&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2024-11-05-amail/1.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://xmw.pw&quot;&gt;演示地址&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/itmowang/amail&quot;&gt;GitHub&lt;/a&gt;&lt;/p&gt;
 </content:encoded></item><item><title>[转职说明] 恭喜你达到20级，请选择你的转职路线</title><link>https://blog.loli.wang/blog/2024-10-10-mhsj/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-10-10-mhsj/doc/</guid><description>[转职说明] 恭喜你达到20级，请选择你的转职路线</description><pubDate>Thu, 10 Oct 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;恭喜你达到20等级，请选择你的转职路线：&lt;/h1&gt;
 &lt;h3&gt;火系魔法师&lt;/h3&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-10-10-mhsj/0.gif&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;

@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> --><!-- Canonical URL --><link rel="canonical" href="https://blog.loli.wang/blog/2024-11-05-amail/doc/"><!-- Primary Meta Tags --><title>写了个临时邮箱的小Demo - 魔王の博客 </title><meta name="title" content="写了个临时邮箱的小Demo - 魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://blog.loli.wang/blog/2024-11-05-amail/doc/"><meta property="og:title" content="写了个临时邮箱的小Demo - 魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://blog.loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.loli.wang/blog/2024-11-05-amail/doc/"><meta property="twitter:title" content="写了个临时邮箱的小Demo - 魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://blog.loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/hoisted.DH1pNdf-.css">
+<link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.CGSjG33K.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://blog.loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2024 YOUR NAME HERE. | <a href="https://blog.loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail" id="lightgallery"> <h2 class="post-title">写了个临时邮箱的小Demo</h2> <div class="post-date"> <time datetime="2024-11-04T15:27:24.000Z">2024-11-04 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://blog.loli.wang/blog/2024-11-05-amail/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2024-11-05-amail/0.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://blog.loli.wang/blog/2024-11-05-amail/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2024-11-05-amail/0.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2024-11-05-amail/0.png');"></div> <div class="post-content">  <h1 id="关于amail-邮件服务">关于AMAIL 邮件服务</h1>
+<p>AMAIL 是一个基于Cloudflare Email Routeing的邮件服务，用于快速搭建临时邮箱服务。</p>
+<h1 id="快速上手">快速上手</h1>
+<ol>
+<li>
+<p>创建一个 Cloudflare 账户，并且绑定好一个属于自己的域名。 并且创建一个 Cloudflare Pages 项目。和一个 Cloudflare Workers。同样的也建立好KV存储。</p>
+</li>
+<li>
+<p>修改 <strong>/packages/workers/wrangler.toml</strong> 中的 <strong>name</strong> 改为你的cloudflare workers名称。 并且修改kv的<code>binding</code> <code>id</code>，修改 <strong>/packages/web/wrangler.toml</strong> 中的 <code>name</code> 改为你的cloudflare pages的所属name</p>
+</li>
+<li>
+<p>修改 <strong>/packages/web/config.ts</strong> 中的 <code>nuxt.config.ts</code> 文件</p>
+</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="js"><code><span class="line"><span style="color:#B392F0">public</span><span style="color:#E1E4E8">: {</span></span>
+<span class="line"><span style="color:#B392F0">    API_URL</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"amail.xmw.pw"</span><span style="color:#E1E4E8">,  </span><span style="color:#6A737D">// 你的workers绑定的域名</span></span>
+<span class="line"><span style="color:#B392F0">    EMAIL_DOMAIN</span><span style="color:#E1E4E8">: </span><span style="color:#9ECBFF">"xmw.pw"</span><span style="color:#6A737D">    // 你所使用的邮箱域名</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span></code></pre>
+<ol start="4">
+<li>创建一个 Cloudflare routeing，开启 <code>Catch-all addres</code>s 模式，并指向 <code>Workers</code> 为邮件接受地</li>
+</ol>
+<p><img src="http://img.blog.loli.wang/2024-11-05-amail/3.png" alt="0"></p>
+<ol start="5">
+<li>执行命令一键部署</li>
+</ol>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">pnpm</span><span style="color:#9ECBFF"> build</span></span>
+<span class="line"></span></code></pre>
+<h3 id="预览">预览</h3>
+<p><img src="http://img.blog.loli.wang/2024-11-05-amail/0.png" alt="0">
+<img src="http://img.blog.loli.wang/2024-11-05-amail/1.png" alt="0"></p>
+<h3 id=""></h3>
+<p><a href="https://xmw.pw">演示地址</a></p>
+<p><a href="https://github.com/itmowang/amail">GitHub</a></p>  </div> <div class="tag-container"> <a href="/tags/临时邮箱" class="tag" title="临时邮箱"> 临时邮箱 </a><a href="/tags/是一个基于Cloudflare" class="tag" title="是一个基于Cloudflare"> 是一个基于Cloudflare </a><a href="/tags/前段进阶" class="tag" title="前段进阶"> 前段进阶 </a> </div> </div>   </div> </div> </div>  </body></html> 
