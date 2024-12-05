@@ -29,6 +29,9 @@ Github：[https://github.com/itmowang](https://github.com/itmowang "魔王，应
 
 QQ: 1531780018
 
+![切图1](http://blog.loli.wang/my/wx.jpg)
+![切图2](http://blog.loli.wang/my/qq.jpg)
+
 
 
 ### 下一步准备去做什么
