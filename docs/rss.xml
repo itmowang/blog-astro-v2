@@ -1,4 +1,25 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>写了个临时邮箱的小Demo</title><link>https://blog.loli.wang/blog/2024-11-05-amail/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-11-05-amail/doc/</guid><description>写了个临时邮箱的小Demo</description><pubDate>Tue, 05 Nov 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;关于AMAIL 邮件服务&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>如何将U盘拷录后进行格式化</title><link>https://blog.loli.wang/blog/2024-12-14-usbkaolurest/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-12-14-usbkaolurest/doc/</guid><description>如何将U盘拷录后进行格式化</description><pubDate>Sat, 14 Dec 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;因为前一阵子装linux的时候，拷录了一个镜像，但是后续发现没办法在win中直接格式化。导致状态不符, 原本16gb的U盘就剩余几百M容量了。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-12-14-usbkaolurest/03.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;步骤&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;打开CMD(命令指示符) ，输入 &lt;code&gt;diskpart&lt;/code&gt; 命令，进入磁盘管理。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-12-14-usbkaolurest/01.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;输入 &lt;code&gt;list disk&lt;/code&gt; 命令，查看磁盘列表，找到要格式化的磁盘，输入 &lt;code&gt;select disk x&lt;/code&gt; x为磁盘序号，例如我的是0，输入 &lt;code&gt;clean&lt;/code&gt; 命令。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-12-14-usbkaolurest/02.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-12-14-usbkaolurest/04.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;创建卷 &lt;code&gt;create partition primary&lt;/code&gt; ,查看 &lt;code&gt;list partition&lt;/code&gt;, 最后选择卷&lt;code&gt;select partition&lt;/code&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;最后进行格式化 U盘恢复正常
+&lt;img src=&quot;http://img.blog.loli.wang/2024-12-14-usbkaolurest/05.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</content:encoded></item><item><title>写了个临时邮箱的小Demo</title><link>https://blog.loli.wang/blog/2024-11-05-amail/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-11-05-amail/doc/</guid><description>写了个临时邮箱的小Demo</description><pubDate>Tue, 05 Nov 2024 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;关于AMAIL 邮件服务&lt;/h1&gt;
 &lt;p&gt;AMAIL 是一个基于Cloudflare Email Routeing的邮件服务，用于快速搭建临时邮箱服务。&lt;/p&gt;
 &lt;h1&gt;快速上手&lt;/h1&gt;
 &lt;ol&gt;
