@@ -2,7 +2,7 @@
 title: "2024年度总结（苟活版）"
 description: "2024年度总结（苟活版）"
 pubDate: "2024-12-30 23:27:24"
-heroImage: "http://img.blog.loli.wang/2024-08-14-reactNativeSetup/09.png"
+heroImage: "http://imglife.blog.loli.wang/2024-12-30-mw/06.png"
 tags:
   - 2024年度总结（苟活版）
   - 生活篇 
@@ -37,10 +37,10 @@ tags:
 
   不过把一些杂七杂八以前没用的洋垃圾和淘来的东西重新用上了，比如蜗牛星际刷了飞牛OS，外贸影视盒子废物利用，等等。
 
-  ![1](http://img.blog.loli.wang/2024-12-30-mw/02.jpg)
-  ![2](http://img.blog.loli.wang/2024-12-30-mw/03.jpg)
-  ![3](http://img.blog.loli.wang/2024-12-30-mw/04.jpg)
-  ![4](http://img.blog.loli.wang/2024-12-30-mw/05.jpg)
+  ![1](http://imglife.blog.loli.wang/2024-12-30-mw/02.jpg)
+  ![2](http://imglife.blog.loli.wang/2024-12-30-mw/03.jpg)
+  ![3](http://imglife.blog.loli.wang/2024-12-30-mw/04.jpg)
+  ![4](http://imglife.blog.loli.wang/2024-12-30-mw/05.jpg)
 
 
 ## 生病
@@ -70,7 +70,7 @@ tags:
   不过要开刀。心里还是有点膈应，很多时候难以接受，心里有点害怕恐慌，不过写上这篇  客的时候已经接受了，主要是很多其他方面来的打击比这个更加痛苦。
 
 
-  ![6](http://img.blog.loli.wang/2024-12-30-mw/06.png)
+  ![6](http://imglife.blog.loli.wang/2024-12-30-mw/06.png)
 
   先观察观察吧。这玩意如果影响到正常生活是必须要割掉的。并且会引发其他内科疾病。
 
