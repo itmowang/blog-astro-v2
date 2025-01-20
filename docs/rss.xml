@@ -1,4 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>如何将U盘拷录后进行格式化</title><link>https://blog.loli.wang/blog/2024-12-14-usbkaolurest/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-12-14-usbkaolurest/doc/</guid><description>如何将U盘拷录后进行格式化</description><pubDate>Sat, 14 Dec 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;因为前一阵子装linux的时候，拷录了一个镜像，但是后续发现没办法在win中直接格式化。导致状态不符, 原本16gb的U盘就剩余几百M容量了。&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>【记录】旧版 Dart Sass 中已经移除 @import 引入方式的问题</title><link>https://blog.loli.wang/blog/2025-01-20-sasserrorupd/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-01-20-sasserrorupd/doc/</guid><description>Deprecation Warning: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.</description><pubDate>Mon, 20 Jan 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;将公司的项目项目升级sass版本的时候发现了项目警告&lt;/h2&gt;
+&lt;p&gt;提示如下&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Deprecation Warning: Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+
+More info and automated migrator: https://sass-lang.com/d/import
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-01-20-sasserrorupd/01.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;官方提示了，使用新的引入方式 @use，如下已经不让使用 @import 引入方式了&lt;/p&gt;
+&lt;p&gt;在vite里面修改下配置文件即可&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 
+ css: {
+    preprocessorOptions: {
+      scss: {
+        // additionalData: `@import &quot;./node_modules/swiper/swiper.scss&quot;;`,
+        additionalData: `@use &quot;./node_modules/swiper/swiper.scss&quot;;`,
+      },
+    },
+  }
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>如何将U盘拷录后进行格式化</title><link>https://blog.loli.wang/blog/2024-12-14-usbkaolurest/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2024-12-14-usbkaolurest/doc/</guid><description>如何将U盘拷录后进行格式化</description><pubDate>Sat, 14 Dec 2024 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;因为前一阵子装linux的时候，拷录了一个镜像，但是后续发现没办法在win中直接格式化。导致状态不符, 原本16gb的U盘就剩余几百M容量了。&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2024-12-14-usbkaolurest/03.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
 &lt;h2&gt;步骤&lt;/h2&gt;
 &lt;ol&gt;
