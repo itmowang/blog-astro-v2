@@ -1,4 +1,1025 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[工具] 一个好用的 Nginx 配置生成工具</title><link>https://blog.loli.wang/blog/2025-02-06-ngconf/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-02-06-ngconf/doc/</guid><description>[工具] 一个好用的 Nginx 配置生成工具</description><pubDate>Thu, 06 Feb 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;NGINXConfig 工具介绍&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>最近写流程图和流程设计器的初始化demo</title><link>https://blog.loli.wang/blog/2025-03-13-zjdemo/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-13-zjdemo/doc/</guid><description>最近写流程图和流程设计器的初始化demo</description><pubDate>Thu, 13 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;这个月不知道发生了什么。&lt;/h2&gt;
+&lt;p&gt;这个月不知道发生了什么，多出来几个图表的功能，图表还是不是简单的展示图表，令人纠结，为了防止以后 无法回忆起当时做了什么，记录写个demo&lt;/p&gt;
+&lt;h2&gt;1.流程图 Antv X6&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;import React, { useEffect, useRef, useState } from &quot;react&quot;;
+import { Graph, Shape } from &quot;@antv/x6&quot;;
+import dagre from &quot;dagre&quot;;
+import { fetch } from &apos;@/api/order&apos;;
+import &quot;./workMap.scss&quot;;
+import { useQuery } from &quot;@tanstack/react-query&quot;;
+import { message } from &quot;antd&quot;;
+
+const NODE_WIDTH = 160;
+const NODE_HEIGHT = 80;
+
+const colorMap = {
+    &quot;SO No.&quot;: {
+        textColor: &quot;#FAD27B&quot;,
+        bgColor: &quot;#FAD27B&quot;,
+    },
+    &quot;Schedule No.&quot;: {
+        textColor: &quot;#AAD09D&quot;,
+        bgColor: &quot;#AAD09D&quot;,
+    },
+    &quot;Task No.&quot;: {
+        textColor: &quot;#89CCD5&quot;,
+        bgColor: &quot;#89CCD5&quot;,
+    },
+    &quot;Operation No.&quot;: {
+        textColor: &quot;#8382BE&quot;,
+        bgColor: &quot;#8382BE&quot;,
+    },
+    &quot;Purchase No.&quot;: {
+        textColor: &quot;#FA7B7B&quot;,
+        bgColor: &quot;#FA7B7B&quot;,
+    },
+    &quot;Billing No.&quot;: {
+        textColor: &quot;#DC7DB0&quot;,
+        bgColor: &quot;#DC7DB0&quot;,
+    }
+} as any;
+
+//  TO : Ocean TA: Air  TT :Trucking TC: Customs TW: Warehouse TE： Express TB: Billing
+const taskTitleMatch = (type: string, label: string) =&amp;gt; {
+    if (type === &quot;Task No.&quot;) {
+        // 运输方式映射表
+        const transportMap = {
+            TO: &apos;Ocean&apos;,
+            TA: &apos;Air&apos;,
+            TT: &apos;Trucking&apos;,
+            TC: &apos;Customs&apos;,
+            TW: &apos;Warehouse&apos;,
+            TE: &apos;Express&apos;,
+            TB: &apos;Billing&apos;
+        } as any;
+        // 提取label前2个字符作为运输方式代码
+        const transportCode = label.slice(0, 2);
+        // 返回匹配的运输方式全称，若无则返回原始label
+        return `${transportMap[transportCode]} ${type}` ;
+    } else {
+        return type
+    }
+}
+
+
+Shape.HTML.register({
+    shape: &quot;custom-html&quot;,
+    width: NODE_WIDTH,
+    height: NODE_HEIGHT,
+    html(node) {
+        const div = document.createElement(&quot;div&quot;);
+        div.className = &quot;custom-html&quot;;
+        const { label, type } = node.data;
+        // 根据 type 获取颜色配置，如果没有则使用默认颜色
+        const { textColor, bgColor } = colorMap[type]
+
+        div.innerHTML = `&amp;lt;div class=&quot;content&quot; style=&quot; background-color: ${bgColor}; border: 1px solid ${bgColor};&quot;&amp;gt;
+        &amp;lt;div class=&quot;labelBox&quot;&amp;gt;
+            &amp;lt;div&amp;gt;${taskTitleMatch(type, label)}&amp;lt;/div&amp;gt;
+        &amp;lt;div&amp;gt;
+        &amp;lt;div class=&quot;textBox&quot; style=&quot;color:#000&quot;&amp;gt;
+            &amp;lt;div&amp;gt;${label}&amp;lt;/div&amp;gt;
+        &amp;lt;div&amp;gt;
+    &amp;lt;/div&amp;gt;`;
+        return div;
+    },
+});
+
+interface IProps {
+    type: &apos;so&apos; | &apos;po&apos;,
+    orderNo: string
+}
+const OrgChartGraph: React.FC&amp;lt;IProps&amp;gt; = ({ type, orderNo }) =&amp;gt; {
+    const containerRef = useRef&amp;lt;HTMLDivElement&amp;gt;(null);
+    const [nodes, setNodes] = useState&amp;lt;any[]&amp;gt;([]);
+    const [edges, setEdges] = useState&amp;lt;any[]&amp;gt;([]);
+    const [data, setData] = useState&amp;lt;any[]&amp;gt;([]);
+
+    const { refetch, isLoading } = useQuery(
+        [&apos;fetch&apos;],
+        () =&amp;gt;
+            fetch({
+                orderNo
+            }),
+        {
+            enabled: false,
+            onSuccess(data: any) {
+                if (data.code == 200) {
+                    const source = data.data;
+                    setData(source)
+                    const { nodes, edges } = transformData(source);
+                    setNodes(nodes)
+                    setEdges(edges)
+                } else {
+                    message.error(data.message)
+                }
+            },
+        },
+    )
+
+    function transformData(data: any[]) {
+        const nodes = [] as any[];
+        const edges = [] as any[];
+        function traverse(node: { orderNo: any; type: any; createUser: any; child: any[]; }, parent: { orderNo: any; } | null) {
+            // 将当前节点添加到 nodes 中
+            nodes.push({
+                id: node.orderNo,       // 使用 orderNo 作为节点 id
+                label: node.orderNo,    // label 可按需求修改，比如显示 orderNo
+                type: node.type,        // 用于后续 colorMap 的映射
+                createUser: node.createUser,
+            });
+
+            // 如果存在父节点，则生成一条边，从父节点指向当前节点
+            if (parent) {
+                edges.push({
+                    source: parent.orderNo,
+                    target: node.orderNo,
+                });
+            }
+
+            // 递归处理子节点
+            if (node.child &amp;amp;&amp;amp; node.child.length &amp;gt; 0) {
+                node.child.forEach(child =&amp;gt; traverse(child, node));
+            }
+        }
+
+        // 处理根节点（注意接口返回的数据为数组）
+        data.forEach(rootNode =&amp;gt; traverse(rootNode, null));
+        return { nodes, edges };
+    }
+
+
+    useEffect(() =&amp;gt; {
+        refetch()
+    }, []);
+
+    useEffect(() =&amp;gt; {
+        const graph = new Graph({
+            container: containerRef.current!,
+            interacting: {
+                nodeMovable: false, // 禁止节点拖动
+                edgeMovable: false, // 禁止连线拖动
+            },
+            panning: {
+                enabled: true,
+            },
+            mousewheel: {
+                enabled: true,
+                modifiers: [&apos;ctrl&apos;, &apos;meta&apos;],
+            },
+        });
+        
+        nodes.forEach((node) =&amp;gt; {
+            graph.addNode({
+                id: node.id,
+                shape: &quot;custom-html&quot;,
+                width: NODE_WIDTH,
+                height: NODE_HEIGHT,
+                data: node,
+            });
+        });
+
+        // 创建边
+        edges.forEach((edge) =&amp;gt; {
+            graph.addEdge({
+                source: edge.source,
+                target: edge.target,
+                attrs: {
+                    line: {
+                        strokeWidth: 2,
+                        stroke: &quot;#A2B1C3&quot;,
+                        sourceMarker: null,
+                        targetMarker: null,
+                    },
+                },
+            });
+        });
+
+        // 自定义布局函数
+        const layoutGraph = () =&amp;gt; {
+            const dir = &quot;LR&quot; as string;
+            const g = new dagre.graphlib.Graph();
+            g.setGraph({ rankdir: dir, nodesep: 16, ranksep: 50 });
+            g.setDefaultEdgeLabel(() =&amp;gt; ({}));
+
+            graph.getNodes().forEach((node) =&amp;gt; {
+                const { width, height } = node.getSize();
+                g.setNode(node.id, { width, height });
+            });
+
+            graph.getEdges().forEach((edge) =&amp;gt; {
+                const sourceId = edge.getSourceCellId();
+                const targetId = edge.getTargetCellId();
+                g.setEdge(sourceId, targetId);
+            });
+
+            dagre.layout(g);
+
+            g.nodes().forEach((id) =&amp;gt; {
+                const node = graph.getCellById(id) as any;
+                if (node) {
+                    const pos = g.node(id);
+                    node.position(pos.x, pos.y);
+                }
+            });
+
+            graph.getEdges().forEach((edge) =&amp;gt; {
+                const source = edge.getSourceNode();
+                const target = edge.getTargetNode();
+                if (!source || !target) return;
+
+                const sourceBBox = source.getBBox();
+                const targetBBox = target.getBBox();
+
+                if ((dir === &quot;LR&quot; || dir === &quot;RL&quot;) &amp;amp;&amp;amp; sourceBBox.y !== targetBBox.y) {
+                    const gap =
+                        dir === &quot;LR&quot;
+                            ? targetBBox.x - sourceBBox.x - sourceBBox.width
+                            : -sourceBBox.x + targetBBox.x + targetBBox.width;
+                    const fix = dir === &quot;LR&quot; ? sourceBBox.width : 0;
+                    const x = sourceBBox.x + fix + gap / 2;
+                    edge.setVertices([
+                        { x, y: sourceBBox.center.y },
+                        { x, y: targetBBox.center.y },
+                    ]);
+                } else if ((dir === &quot;TB&quot; || dir === &quot;BT&quot;) &amp;amp;&amp;amp; sourceBBox.x !== targetBBox.x) {
+                    const gap =
+                        dir === &quot;TB&quot;
+                            ? targetBBox.y - sourceBBox.y - sourceBBox.height
+                            : -sourceBBox.y + targetBBox.y + targetBBox.height;
+                    const fix = dir === &quot;TB&quot; ? sourceBBox.height : 0;
+                    const y = sourceBBox.y + fix + gap / 2;
+                    edge.setVertices([
+                        { x: sourceBBox.center.x, y },
+                        { x: targetBBox.center.x, y },
+                    ]);
+                } else {
+                    edge.setVertices([]);
+                }
+            });
+
+            //   graph.centerContent();
+
+        };
+
+        layoutGraph();
+
+    }, [data])
+
+    return (
+        &amp;lt;div&amp;gt;
+            {/* 各颜色节点代表不同状态 */}
+            &amp;lt;div className=&quot;flex flex-wrap gap-4 mb-4 ml-2&quot;&amp;gt;
+                {Object.entries(colorMap).map(([key, { bgColor } ]:any) =&amp;gt; (
+                    &amp;lt;div key={key} className=&quot;flex items-center mr-4&quot;&amp;gt;
+                        &amp;lt;span className=&quot;text-sm  mr-2 text-[#999999]&quot;&amp;gt;{key}&amp;lt;/span&amp;gt; &amp;lt;div
+                            className=&quot;w-6 h-3&quot;
+                            style={{ backgroundColor: bgColor }}&amp;gt;&amp;lt;/div&amp;gt;
+                       
+                    &amp;lt;/div&amp;gt;
+                ))}
+            &amp;lt;/div&amp;gt;
+            &amp;lt;div className=&quot;html-basic-app&quot;&amp;gt;
+                &amp;lt;div
+                    className=&quot;app-content&quot;
+                    ref={containerRef}
+                    style={{ width: &quot;100%&quot;, height: &quot;500px&quot; }}
+                /&amp;gt;
+            &amp;lt;/div&amp;gt;
+        &amp;lt;/div&amp;gt;
+    );
+};
+
+export default OrgChartGraph;
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;
+
+.html-basic-app {
+  display: flex;
+  padding: 0;
+  font-family: sans-serif;
+
+
+  .app-content {
+    flex: 1;
+    margin-right: 8px;
+    margin-left: 8px;
+  }
+
+  .custom-html {
+    width: 100%;
+    height: 100%;
+
+    .content {
+      border-radius: 5px;
+
+      .labelBox {
+        color: #FFF;
+        font-weight: bold;
+        font-size: 12px;
+        text-indent: 1em;
+        line-height: 30px;
+      }
+
+      .textBox {
+        background-color: white;
+        width: 100%;
+        border-radius: 0 0 5px 5px;
+        font-weight: 500;
+        text-indent: 10px;
+        font-size: 12px;
+        line-height: 30px;
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;演示效果&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-13-zjdemo/01.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;2. 拖拽流程图&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# core.tsx
+import { Graph, Shape } from &apos;@antv/x6&apos;
+import { Stencil } from &apos;@antv/x6-plugin-stencil&apos;
+import { Transform } from &apos;@antv/x6-plugin-transform&apos;
+import { Selection } from &apos;@antv/x6-plugin-selection&apos;
+import { Snapline } from &apos;@antv/x6-plugin-snapline&apos;
+import { Keyboard } from &apos;@antv/x6-plugin-keyboard&apos;
+import { Clipboard } from &apos;@antv/x6-plugin-clipboard&apos;
+import { History } from &apos;@antv/x6-plugin-history&apos;
+import { EventEmitter } from &apos;events&apos;;
+
+
+export let graph: Graph | null = null;
+
+export const emitter = new EventEmitter;
+
+export const initGraph = (container: HTMLElement) =&amp;gt; {
+    graph = new Graph({
+        container,
+        grid: true,
+        mousewheel: {
+            enabled: true,
+            zoomAtMousePosition: true,
+            modifiers: &apos;ctrl&apos;,
+            minScale: 0.5,
+            maxScale: 3,
+        },
+        connecting: {
+            router: &apos;manhattan&apos;,
+            connector: {
+                name: &apos;rounded&apos;,
+                args: { radius: 8 },
+            },
+            anchor: &apos;center&apos;,
+            connectionPoint: &apos;anchor&apos;,
+            allowBlank: false,
+            snap: { radius: 20 },
+            createEdge() {
+                return new Shape.Edge({
+                    attrs: {
+                        line: {
+                            stroke: &apos;#A2B1C3&apos;,
+                            strokeWidth: 2,
+                            targetMarker: {
+                                name: &apos;block&apos;,
+                                width: 12,
+                                height: 8,
+                            },
+                        },
+                    },
+                    zIndex: 0,
+                })
+            },
+            validateConnection({ targetMagnet }) {
+                return !!targetMagnet
+            },
+        },
+        highlighting: {
+            magnetAdsorbed: {
+                name: &apos;stroke&apos;,
+                args: {
+                    attrs: {
+                        fill: &apos;#5F95FF&apos;,
+                        stroke: &apos;#5F95FF&apos;,
+                    },
+                },
+            },
+        },
+    })
+
+    // graph.on(&apos;node:click&apos;, () =&amp;gt; {
+    //     alert(&quot;第一个点击触发&quot;)
+    // })
+
+    // 使用插件
+    graph
+        .use(
+            new Transform({
+                resizing: true,
+                rotating: true,
+            }),
+        )
+        .use(
+            new Selection({
+                rubberband: true,
+                showNodeSelectionBox: true,
+            }),
+        )
+        .use(new Snapline())
+        .use(new Keyboard())
+        .use(new Clipboard())
+        .use(new History())
+
+    // 初始化 stencil
+    const stencil = new Stencil({
+        title: &apos;流程图&apos;,
+        target: graph,
+        stencilGraphWidth: 200,
+        stencilGraphHeight: 180,
+        collapsable: true,
+        groups: [
+            { title: &apos;基础流程图&apos;, name: &apos;group1&apos; },
+            {
+                title: &apos;系统设计图&apos;,
+                name: &apos;group2&apos;,
+                graphHeight: 250,
+                layoutOptions: { rowHeight: 70 },
+            },
+        ],
+        layoutOptions: {
+            columns: 2,
+            columnWidth: 80,
+            rowHeight: 55,
+        },
+    })
+    // 将 stencil 的容器挂载到对应 DOM 节点上
+    document.getElementById(&apos;stencil&apos;)!.appendChild(stencil.container)
+
+    onNodeClick();
+    // 快捷键绑定及事件
+    graph.bindKey([&apos;meta+c&apos;, &apos;ctrl+c&apos;], () =&amp;gt; {
+        const cells = graph!.getSelectedCells()
+        if (cells.length) graph!.copy(cells)
+        return false
+    })
+    graph.bindKey([&apos;meta+x&apos;, &apos;ctrl+x&apos;], () =&amp;gt; {
+        const cells = graph!.getSelectedCells()
+        if (cells.length) graph!.cut(cells)
+        return false
+    })
+    graph.bindKey([&apos;meta+v&apos;, &apos;ctrl+v&apos;], () =&amp;gt; {
+        if (!graph!.isClipboardEmpty()) {
+            const cells = graph!.paste({ offset: 32 })
+            graph!.cleanSelection()
+            graph!.select(cells)
+        }
+        return false
+    })
+    graph.bindKey([&apos;meta+z&apos;, &apos;ctrl+z&apos;], () =&amp;gt; {
+        if (graph!.canUndo()) graph!.undo()
+        return false
+    })
+    graph.bindKey([&apos;meta+shift+z&apos;, &apos;ctrl+shift+z&apos;], () =&amp;gt; {
+        if (graph!.canRedo()) graph!.redo()
+        return false
+    })
+    graph.bindKey([&apos;meta+a&apos;, &apos;ctrl+a&apos;], () =&amp;gt; {
+        const nodes = graph!.getNodes()
+        if (nodes) graph!.select(nodes)
+    })
+    graph.bindKey(&apos;backspace&apos;, () =&amp;gt; {
+        const cells = graph!.getSelectedCells()
+        if (cells.length) graph!.removeCells(cells)
+    })
+    graph.bindKey([&apos;ctrl+1&apos;, &apos;meta+1&apos;], () =&amp;gt; {
+        const zoom = graph!.zoom()
+        if (zoom &amp;lt; 1.5) graph!.zoom(0.1)
+    })
+    graph.bindKey([&apos;ctrl+2&apos;, &apos;meta+2&apos;], () =&amp;gt; {
+        const zoom = graph!.zoom()
+        if (zoom &amp;gt; 0.5) graph!.zoom(-0.1)
+    })
+
+    // 鼠标移入移出时显示/隐藏连接桩
+    const showPorts = (ports: NodeListOf&amp;lt;SVGElement&amp;gt;, show: boolean) =&amp;gt; {
+        for (let i = 0, len = ports.length; i &amp;lt; len; i += 1) {
+            ports[i].style.visibility = show ? &apos;visible&apos; : &apos;hidden&apos;
+        }
+    }
+    graph.on(&apos;node:mouseenter&apos;, () =&amp;gt; {
+        const container = document.getElementById(&apos;graph-container&apos;)!
+        const ports = container.querySelectorAll(&apos;.x6-port-body&apos;) as NodeListOf&amp;lt;SVGElement&amp;gt;
+        showPorts(ports, true)
+    })
+    graph.on(&apos;node:mouseleave&apos;, () =&amp;gt; {
+        const container = document.getElementById(&apos;graph-container&apos;)!
+        const ports = container.querySelectorAll(&apos;.x6-port-body&apos;) as NodeListOf&amp;lt;SVGElement&amp;gt;
+        showPorts(ports, false)
+    })
+
+    // 定义连接桩及端口
+    const ports = {
+        groups: {
+            top: {
+                position: &apos;top&apos;,
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        stroke: &apos;#5F95FF&apos;,
+                        strokeWidth: 1,
+                        fill: &apos;#fff&apos;,
+                        style: { visibility: &apos;hidden&apos; },
+                    },
+                },
+            },
+            right: {
+                position: &apos;right&apos;,
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        stroke: &apos;#5F95FF&apos;,
+                        strokeWidth: 1,
+                        fill: &apos;#fff&apos;,
+                        style: { visibility: &apos;hidden&apos; },
+                    },
+                },
+            },
+            bottom: {
+                position: &apos;bottom&apos;,
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        stroke: &apos;#5F95FF&apos;,
+                        strokeWidth: 1,
+                        fill: &apos;#fff&apos;,
+                        style: { visibility: &apos;hidden&apos; },
+                    },
+                },
+            },
+            left: {
+                position: &apos;left&apos;,
+                attrs: {
+                    circle: {
+                        r: 4,
+                        magnet: true,
+                        stroke: &apos;#5F95FF&apos;,
+                        strokeWidth: 1,
+                        fill: &apos;#fff&apos;,
+                        style: { visibility: &apos;hidden&apos; },
+                    },
+                },
+            },
+        },
+        items: [
+            { group: &apos;top&apos; },
+            { group: &apos;right&apos; },
+            { group: &apos;bottom&apos; },
+            { group: &apos;left&apos; },
+        ],
+    }
+
+    // 注册自定义节点
+    Graph.registerNode(
+        &apos;custom-rect&apos;,
+        {
+            inherit: &apos;rect&apos;,
+            width: 66,
+            height: 36,
+            attrs: {
+                body: {
+                    strokeWidth: 1,
+                    stroke: &apos;#5F95FF&apos;,
+                    fill: &apos;#EFF4FF&apos;,
+                },
+                text: {
+                    fontSize: 12,
+                    fill: &apos;#262626&apos;,
+                },
+            },
+            ports: { ...ports },
+        },
+        true,
+    )
+
+    Graph.registerNode(
+        &apos;custom-polygon&apos;,
+        {
+            inherit: &apos;polygon&apos;,
+            width: 66,
+            height: 36,
+            attrs: {
+                body: {
+                    strokeWidth: 1,
+                    stroke: &apos;#5F95FF&apos;,
+                    fill: &apos;#EFF4FF&apos;,
+                },
+                text: {
+                    fontSize: 12,
+                    fill: &apos;#262626&apos;,
+                },
+            },
+            ports: {
+                ...ports,
+                items: [{ group: &apos;top&apos; }, { group: &apos;bottom&apos; }],
+            },
+        },
+        true,
+    )
+
+    Graph.registerNode(
+        &apos;custom-circle&apos;,
+        {
+            inherit: &apos;circle&apos;,
+            width: 45,
+            height: 45,
+            attrs: {
+                body: {
+                    strokeWidth: 1,
+                    stroke: &apos;#5F95FF&apos;,
+                    fill: &apos;#EFF4FF&apos;,
+                },
+                text: {
+                    fontSize: 12,
+                    fill: &apos;#262626&apos;,
+                },
+            },
+            ports: { ...ports },
+        },
+        true,
+    )
+
+    Graph.registerNode(
+        &apos;custom-image&apos;,
+        {
+            inherit: &apos;rect&apos;,
+            width: 52,
+            height: 52,
+            markup: [
+                { tagName: &apos;rect&apos;, selector: &apos;body&apos; },
+                { tagName: &apos;image&apos; },
+                { tagName: &apos;text&apos;, selector: &apos;label&apos; },
+            ],
+            attrs: {
+                body: { stroke: &apos;#5F95FF&apos;, fill: &apos;#5F95FF&apos; },
+                image: {
+                    width: 26,
+                    height: 26,
+                    refX: 13,
+                    refY: 16,
+                },
+                label: {
+                    refX: 3,
+                    refY: 2,
+                    textAnchor: &apos;left&apos;,
+                    textVerticalAnchor: &apos;top&apos;,
+                    fontSize: 12,
+                    fill: &apos;#fff&apos;,
+                },
+            },
+            ports: { ...ports },
+        },
+        true,
+    )
+
+    // 创建 stencil 节点（基础流程图）
+    const r1 = graph.createNode({
+        shape: &apos;custom-rect&apos;,
+        label: &apos;开始&apos;,
+        attrs: { body: { rx: 20, ry: 26 } },
+    })
+    const r2 = graph.createNode({
+        shape: &apos;custom-rect&apos;,
+        label: &apos;过程&apos;,
+    })
+    const r3 = graph.createNode({
+        shape: &apos;custom-rect&apos;,
+        label: &apos;可选过程&apos;,
+        attrs: { body: { rx: 6, ry: 6 } },
+    })
+    const r4 = graph.createNode({
+        shape: &apos;custom-polygon&apos;,
+        label: &apos;决策&apos;,
+        attrs: { body: { refPoints: &apos;0,10 10,0 20,10 10,20&apos; } },
+    })
+    const r5 = graph.createNode({
+        shape: &apos;custom-polygon&apos;,
+        label: &apos;数据&apos;,
+        attrs: { body: { refPoints: &apos;10,0 40,0 30,20 0,20&apos; } },
+    })
+    const r6 = graph.createNode({
+        shape: &apos;custom-circle&apos;,
+        label: &apos;连接&apos;,
+    })
+    stencil.load([r1, r2, r3, r4, r5, r6], &apos;group1&apos;)
+
+    // 创建 stencil 图标节点（系统设计图）
+    const imageShapes = [
+        {
+            label: &apos;Client&apos;,
+            image: &apos;https://gw.alipayobjects.com/zos/bmw-prod/687b6cb9-4b97-42a6-96d0-34b3099133ac.svg&apos;,
+        },
+        {
+            label: &apos;Http&apos;,
+            image: &apos;https://gw.alipayobjects.com/zos/bmw-prod/dc1ced06-417d-466f-927b-b4a4d3265791.svg&apos;,
+        },
+        {
+            label: &apos;Api&apos;,
+            image: &apos;https://gw.alipayobjects.com/zos/bmw-prod/c55d7ae1-8d20-4585-bd8f-ca23653a4489.svg&apos;,
+        },
+        {
+            label: &apos;Sql&apos;,
+            image: &apos;https://gw.alipayobjects.com/zos/bmw-prod/6eb71764-18ed-4149-b868-53ad1542c405.svg&apos;,
+        },
+        {
+            label: &apos;Clound&apos;,
+            image: &apos;https://gw.alipayobjects.com/zos/bmw-prod/c36fe7cb-dc24-4854-aeb5-88d8dc36d52e.svg&apos;,
+        },
+        {
+            label: &apos;Mq&apos;,
+            image: &apos;https://gw.alipayobjects.com/zos/bmw-prod/2010ac9f-40e7-49d4-8c4a-4fcf2f83033b.svg&apos;,
+        },
+    ]
+    const imageNodes = imageShapes.map((item) =&amp;gt;
+        graph!.createNode({
+            shape: &apos;custom-image&apos;,
+            label: item.label,
+            attrs: { image: { &apos;xlink:href&apos;: item.image } },
+        }),
+    )
+    stencil.load(imageNodes, &apos;group2&apos;)
+
+}
+
+
+export const onNodeClick = () =&amp;gt; {
+    graph!.on(&apos;node:click&apos;, ({ node }) =&amp;gt; {
+        // 通知流程展开
+        emitter.emit(&apos;flowDrawerShow&apos;,node);
+        console.log(graph!.toJSON());
+    })
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;# index.tsx
+import React, { createContext, useEffect } from &apos;react&apos;
+import FlowWithDrawer from &apos;@/components/FlowWithDrawer&apos;
+
+import { initGraph } from &apos;@/core/graph&apos;
+
+const FlowTools: React.FC = () =&amp;gt; {
+  useEffect(() =&amp;gt; {
+    initGraph(document.getElementById(&apos;graph-container&apos;)!)
+  }, [])
+
+  return (
+      &amp;lt;div&amp;gt;
+        &amp;lt;div id=&quot;container&quot; className=&quot;flex h-screen&quot;&amp;gt;
+          &amp;lt;div id=&quot;stencil&quot; className=&quot;w-[200px] border-r border-gray-300 overflow-auto&quot;&amp;gt;&amp;lt;/div&amp;gt;
+          &amp;lt;div id=&quot;graph-container&quot; className=&quot;flex-1 relative&quot;&amp;gt;&amp;lt;/div&amp;gt;
+        &amp;lt;/div&amp;gt;
+        &amp;lt;FlowWithDrawer/&amp;gt;
+      &amp;lt;/div&amp;gt;
+  )
+}
+
+export default FlowTools
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;# tailwind.css
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#container {
+    display: flex;
+    border: 1px solid #dfe3e8;
+}
+
+#stencil {
+    width: 180px;
+    height: 100%;
+    position: relative;
+    border-right: 1px solid #dfe3e8;
+}
+
+#graph-container {
+    width: calc(100% - 180px);
+    height: 100%;
+}
+
+.x6-widget-stencil {
+    background-color: #fff;
+}
+
+.x6-widget-stencil-title {
+    background-color: #fff;
+}
+
+.x6-widget-stencil-group-title {
+    background-color: #fff !important;
+}
+
+.x6-widget-transform {
+    margin: -1px 0 0 -1px;
+    padding: 0px;
+    border: 1px solid #239edd;
+}
+
+.x6-widget-transform&amp;gt;div {
+    border: 1px solid #239edd;
+}
+
+.x6-widget-transform&amp;gt;div:hover {
+    background-color: #3dafe4;
+}
+
+.x6-widget-transform-active-handle {
+    background-color: #3dafe4;
+}
+
+.x6-widget-transform-resize {
+    border-radius: 0;
+}
+
+.x6-widget-selection-inner {
+    border: 1px solid #239edd;
+}
+
+.x6-widget-selection-box {
+    opacity: 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-13-zjdemo/02.png&quot; alt=&quot;0&quot; /&gt;
+&lt;img src=&quot;http://img.blog.loli.wang/2025-03-13-zjdemo/03.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;3. bpmn 图表&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# core.ts
+import BpmnJS from &apos;bpmn-js/lib/Modeler&apos;;
+import test from &apos;@/xml/test.bpmn&apos;
+
+
+export let modeler:BpmnJS;
+
+export const initBpmn = (container: HTMLElement) =&amp;gt; {
+    if (modeler) return;
+    // 创建 BpmnJS 实例
+    modeler = new BpmnJS({
+        container
+    });
+
+    modeler.importXML(test)
+}
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;# index.tsx
+
+import React, { useEffect, useRef } from &quot;react&quot;;
+import { initBpmn } from &quot;@/core/core&quot;;
+import &quot;bpmn-js/dist/assets/diagram-js.css&quot;;
+import &quot;bpmn-js/dist/assets/bpmn-font/css/bpmn.css&quot;;
+
+const BpmnTools: React.FC = () =&amp;gt; {
+
+  useEffect(() =&amp;gt; {
+      initBpmn(document.getElementById(&quot;bpmnCanvas&quot;)!);
+  }, []);
+
+  return (
+    &amp;lt;div className=&quot;app&quot;&amp;gt;
+      &amp;lt;div
+        id=&quot;bpmnCanvas&quot;
+        className=&quot;bpmn-viewer&quot;
+        style={{ width: &quot;100%&quot;, height: &quot;100vh&quot; }}
+      /&amp;gt;
+    &amp;lt;/div&amp;gt;
+  );
+};
+
+export default BpmnTools;
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;# test.bpmn
+&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;
+&amp;lt;definitions xmlns=&quot;http://www.omg.org/spec/BPMN/20100524/MODEL&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns:flowable=&quot;http://flowable.org/bpmn&quot; xmlns:bpmndi=&quot;http://www.omg.org/spec/BPMN/20100524/DI&quot; xmlns:omgdc=&quot;http://www.omg.org/spec/DD/20100524/DC&quot; xmlns:omgdi=&quot;http://www.omg.org/spec/DD/20100524/DI&quot; typeLanguage=&quot;http://www.w3.org/2001/XMLSchema&quot; expressionLanguage=&quot;http://www.w3.org/1999/XPath&quot; targetNamespace=&quot;http://www.flowable.org/processdef&quot;&amp;gt;
+  &amp;lt;process id=&quot;self_support_order_sales&quot; name=&quot;self_support_order_sales&quot; isExecutable=&quot;true&quot;&amp;gt;
+    &amp;lt;documentation&amp;gt;self_support_order_sales&amp;lt;/documentation&amp;gt;
+    &amp;lt;startEvent id=&quot;startEvent1&quot; name=&quot;开始&quot;&amp;gt;&amp;lt;/startEvent&amp;gt;
+    &amp;lt;userTask id=&quot;sid-2C6198F8-7872-416A-A5D7-520922753E6F&quot; name=&quot;客户订单待接收&quot; flowable:assignee=&quot;${task_user}&quot; xmlns:buttonparam=&quot;http://buttonparam.com.cn&quot; buttonparam:buttonparam=&quot;[{&amp;amp;quot;id&amp;amp;quot;:5,&amp;amp;quot;name&amp;amp;quot;:&amp;amp;quot;Reject&amp;amp;quot;,&amp;amp;quot;alias&amp;amp;quot;:&amp;amp;quot;Reject&amp;amp;quot;,&amp;amp;quot;cssname&amp;amp;quot;:&amp;amp;quot; &amp;amp;quot;,&amp;amp;quot;type&amp;amp;quot;:&amp;amp;quot;1&amp;amp;quot;,&amp;amp;quot;createTime&amp;amp;quot;:&amp;amp;quot;2021-03-16 12:04:38&amp;amp;quot;,&amp;amp;quot;updateTime&amp;amp;quot;:&amp;amp;quot;2021-08-24 09:44:57&amp;amp;quot;,&amp;amp;quot;$$hashKey&amp;amp;quot;:&amp;amp;quot;object:1312&amp;amp;quot;},{&amp;amp;quot;id&amp;amp;quot;:13,&amp;amp;quot;name&amp;amp;quot;:&amp;amp;quot;Confirm&amp;amp;quot;,&amp;amp;quot;alias&amp;amp;quot;:&amp;amp;quot;Confirm&amp;amp;quot;,&amp;amp;quot;cssname&amp;amp;quot;:&amp;amp;quot;primary&amp;amp;quot;,&amp;amp;quot;type&amp;amp;quot;:&amp;amp;quot;1&amp;amp;quot;,&amp;amp;quot;createTime&amp;amp;quot;:&amp;amp;quot;2021-03-17 16:39:09&amp;amp;quot;,&amp;amp;quot;updateTime&amp;amp;quot;:&amp;amp;quot;2021-08-24 09:45:45&amp;amp;quot;,&amp;amp;quot;$$hashKey&amp;amp;quot;:&amp;amp;quot;object:1315&amp;amp;quot;}]&quot; xmlns:nodetype=&quot;http://nodetype.com.cn&quot; nodetype:nodetype=&quot;&quot; xmlns:mail_param=&quot;http://mailparam.com.cn&quot; mail_param:mail_param=&quot;&amp;amp;quot;&amp;amp;quot;&quot;&amp;gt;
+      &amp;lt;extensionElements&amp;gt;
+        &amp;lt;modeler:initiator-can-complete xmlns:modeler=&quot;http://flowable.org/modeler&quot;&amp;gt;&amp;lt;![CDATA[false]]&amp;gt;&amp;lt;/modeler:initiator-can-complete&amp;gt;
+      &amp;lt;/extensionElements&amp;gt;
+    &amp;lt;/userTask&amp;gt;
+    &amp;lt;sequenceFlow id=&quot;sid-1EB675F0-8B1F-42E3-B105-AFD704C4F6B9&quot; sourceRef=&quot;startEvent1&quot; targetRef=&quot;sid-2C6198F8-7872-416A-A5D7-520922753E6F&quot;&amp;gt;&amp;lt;/sequenceFlow&amp;gt;
+    &amp;lt;userTask id=&quot;sid-43EB1A4D-AB9D-4E8E-954B-44B48738DE7C&quot; name=&quot;客户订单已驳回&quot; flowable:assignee=&quot;${task_user}&quot; xmlns:buttonparam=&quot;http://buttonparam.com.cn&quot; buttonparam:buttonparam=&quot;&amp;amp;quot;&amp;amp;quot;&quot; xmlns:nodetype=&quot;http://nodetype.com.cn&quot; nodetype:nodetype=&quot;&quot; xmlns:mail_param=&quot;http://mailparam.com.cn&quot; mail_param:mail_param=&quot;&amp;amp;quot;&amp;amp;quot;&quot;&amp;gt;
+      &amp;lt;extensionElements&amp;gt;
+        &amp;lt;modeler:initiator-can-complete xmlns:modeler=&quot;http://flowable.org/modeler&quot;&amp;gt;&amp;lt;![CDATA[false]]&amp;gt;&amp;lt;/modeler:initiator-can-complete&amp;gt;
+      &amp;lt;/extensionElements&amp;gt;
+    &amp;lt;/userTask&amp;gt;
+    &amp;lt;userTask id=&quot;sid-E0B61951-18D7-4CA5-B340-FE9A4CD4E9F0&quot; name=&quot;销售订单待确认&quot; flowable:assignee=&quot;${task_user}&quot; xmlns:buttonparam=&quot;http://buttonparam.com.cn&quot; buttonparam:buttonparam=&quot;[{&amp;amp;quot;id&amp;amp;quot;:5,&amp;amp;quot;name&amp;amp;quot;:&amp;amp;quot;Reject&amp;amp;quot;,&amp;amp;quot;alias&amp;amp;quot;:&amp;amp;quot;Reject&amp;amp;quot;,&amp;amp;quot;cssname&amp;amp;quot;:&amp;amp;quot; &amp;amp;quot;,&amp;amp;quot;type&amp;amp;quot;:&amp;amp;quot;1&amp;amp;quot;,&amp;amp;quot;createTime&amp;amp;quot;:&amp;amp;quot;2021-03-16 12:04:38&amp;amp;quot;,&amp;amp;quot;updateTime&amp;amp;quot;:&amp;amp;quot;2021-08-24 09:44:57&amp;amp;quot;,&amp;amp;quot;$$hashKey&amp;amp;quot;:&amp;amp;quot;object:2155&amp;amp;quot;},{&amp;amp;quot;id&amp;amp;quot;:13,&amp;amp;quot;name&amp;amp;quot;:&amp;amp;quot;Confirm&amp;amp;quot;,&amp;amp;quot;alias&amp;amp;quot;:&amp;amp;quot;Confirm&amp;amp;quot;,&amp;amp;quot;cssname&amp;amp;quot;:&amp;amp;quot;primary&amp;amp;quot;,&amp;amp;quot;type&amp;amp;quot;:&amp;amp;quot;1&amp;amp;quot;,&amp;amp;quot;createTime&amp;amp;quot;:&amp;amp;quot;2021-03-17 16:39:09&amp;amp;quot;,&amp;amp;quot;updateTime&amp;amp;quot;:&amp;amp;quot;2021-08-24 09:45:45&amp;amp;quot;,&amp;amp;quot;$$hashKey&amp;amp;quot;:&amp;amp;quot;object:2158&amp;amp;quot;}]&quot; xmlns:nodetype=&quot;http://nodetype.com.cn&quot; nodetype:nodetype=&quot;{
+&amp;amp;quot;nodeType&amp;amp;quot;:&amp;amp;quot;Confirm_start&amp;amp;quot;,
+&amp;amp;quot;signal&amp;amp;quot;:&amp;amp;quot;update_product&amp;amp;quot;
+}&quot; xmlns:mail_param=&quot;http://mailparam.com.cn&quot; mail_param:mail_param=&quot;&amp;amp;quot;&amp;amp;quot;&quot;&amp;gt;
+      &amp;lt;extensionElements&amp;gt;
+        &amp;lt;modeler:initiator-can-complete xmlns:modeler=&quot;http://flowable.org/modeler&quot;&amp;gt;&amp;lt;![CDATA[false]]&amp;gt;&amp;lt;/modeler:initiator-can-complete&amp;gt;
+      &amp;lt;/extensionElements&amp;gt;
+    &amp;lt;/userTask&amp;gt;
+    &amp;lt;userTask id=&quot;sid-34D7D478-B1FE-42A8-BBB1-FDC6BA6BD169&quot; name=&quot;销售订单已确认&quot; flowable:assignee=&quot;${task_user}&quot; xmlns:buttonparam=&quot;http://buttonparam.com.cn&quot; buttonparam:buttonparam=&quot;&amp;amp;quot;&amp;amp;quot;&quot; xmlns:nodetype=&quot;http://nodetype.com.cn&quot; nodetype:nodetype=&quot;&quot; xmlns:mail_param=&quot;http://mailparam.com.cn&quot; mail_param:mail_param=&quot;&amp;amp;quot;&amp;amp;quot;&quot;&amp;gt;
+      &amp;lt;extensionElements&amp;gt;
+        &amp;lt;modeler:initiator-can-complete xmlns:modeler=&quot;http://flowable.org/modeler&quot;&amp;gt;&amp;lt;![CDATA[false]]&amp;gt;&amp;lt;/modeler:initiator-can-complete&amp;gt;
+      &amp;lt;/extensionElements&amp;gt;
+    &amp;lt;/userTask&amp;gt;
+    &amp;lt;endEvent id=&quot;sid-B45763A0-0E5F-41EF-B89F-54B52324D694&quot;&amp;gt;&amp;lt;/endEvent&amp;gt;
+    &amp;lt;sequenceFlow id=&quot;sid-39048C6C-4266-45C4-96C7-D1C030542352&quot; sourceRef=&quot;sid-34D7D478-B1FE-42A8-BBB1-FDC6BA6BD169&quot; targetRef=&quot;sid-B45763A0-0E5F-41EF-B89F-54B52324D694&quot;&amp;gt;&amp;lt;/sequenceFlow&amp;gt;
+    &amp;lt;userTask id=&quot;sid-DAF4B04E-6EF3-4AEB-B033-447CEA228874&quot; name=&quot;销售订单已驳回&quot; flowable:assignee=&quot;${task_user}&quot; xmlns:buttonparam=&quot;http://buttonparam.com.cn&quot; buttonparam:buttonparam=&quot;[{&amp;amp;quot;id&amp;amp;quot;:5,&amp;amp;quot;name&amp;amp;quot;:&amp;amp;quot;Reject&amp;amp;quot;,&amp;amp;quot;alias&amp;amp;quot;:&amp;amp;quot;Reject&amp;amp;quot;,&amp;amp;quot;cssname&amp;amp;quot;:&amp;amp;quot; &amp;amp;quot;,&amp;amp;quot;type&amp;amp;quot;:&amp;amp;quot;1&amp;amp;quot;,&amp;amp;quot;createTime&amp;amp;quot;:&amp;amp;quot;2021-03-16 12:04:38&amp;amp;quot;,&amp;amp;quot;updateTime&amp;amp;quot;:&amp;amp;quot;2021-08-24 09:44:57&amp;amp;quot;,&amp;amp;quot;$$hashKey&amp;amp;quot;:&amp;amp;quot;object:2988&amp;amp;quot;}]&quot; xmlns:nodetype=&quot;http://nodetype.com.cn&quot; nodetype:nodetype=&quot;&quot; xmlns:mail_param=&quot;http://mailparam.com.cn&quot; mail_param:mail_param=&quot;&amp;amp;quot;&amp;amp;quot;&quot;&amp;gt;
+      &amp;lt;extensionElements&amp;gt;
+        &amp;lt;modeler:initiator-can-complete xmlns:modeler=&quot;http://flowable.org/modeler&quot;&amp;gt;&amp;lt;![CDATA[false]]&amp;gt;&amp;lt;/modeler:initiator-can-complete&amp;gt;
+      &amp;lt;/extensionElements&amp;gt;
+    &amp;lt;/userTask&amp;gt;
+    &amp;lt;sequenceFlow id=&quot;sid-1EE913E4-CCAB-439D-BE26-338D4530DFC3&quot; name=&quot;驳回(同步客户S/O)&quot; sourceRef=&quot;sid-DAF4B04E-6EF3-4AEB-B033-447CEA228874&quot; targetRef=&quot;sid-43EB1A4D-AB9D-4E8E-954B-44B48738DE7C&quot;&amp;gt;
+      &amp;lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&amp;gt;&amp;lt;![CDATA[${Reject}]]&amp;gt;&amp;lt;/conditionExpression&amp;gt;
+    &amp;lt;/sequenceFlow&amp;gt;
+    &amp;lt;sequenceFlow id=&quot;sid-8CD85261-F4E8-438F-928C-6E891027584D&quot; name=&quot;驳回&quot; sourceRef=&quot;sid-E0B61951-18D7-4CA5-B340-FE9A4CD4E9F0&quot; targetRef=&quot;sid-DAF4B04E-6EF3-4AEB-B033-447CEA228874&quot;&amp;gt;
+      &amp;lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&amp;gt;&amp;lt;![CDATA[${Reject}]]&amp;gt;&amp;lt;/conditionExpression&amp;gt;
+    &amp;lt;/sequenceFlow&amp;gt;
+    &amp;lt;sequenceFlow id=&quot;sid-BDCCAE12-E4C3-482E-9065-9BF43459CC15&quot; name=&quot;确认(触发orderP/O新建)&quot; sourceRef=&quot;sid-E0B61951-18D7-4CA5-B340-FE9A4CD4E9F0&quot; targetRef=&quot;sid-34D7D478-B1FE-42A8-BBB1-FDC6BA6BD169&quot;&amp;gt;
+      &amp;lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&amp;gt;&amp;lt;![CDATA[${Confirm}]]&amp;gt;&amp;lt;/conditionExpression&amp;gt;
+    &amp;lt;/sequenceFlow&amp;gt;
+    &amp;lt;sequenceFlow id=&quot;sid-7040954B-1B18-450D-A42F-1EA77654A9CF&quot; name=&quot;确认&quot; sourceRef=&quot;sid-2C6198F8-7872-416A-A5D7-520922753E6F&quot; targetRef=&quot;sid-E0B61951-18D7-4CA5-B340-FE9A4CD4E9F0&quot;&amp;gt;
+      &amp;lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&amp;gt;&amp;lt;![CDATA[${Confirm}]]&amp;gt;&amp;lt;/conditionExpression&amp;gt;
+    &amp;lt;/sequenceFlow&amp;gt;
+    &amp;lt;sequenceFlow id=&quot;sid-262A809B-A151-4D1B-B8A7-3F23FCBFA358&quot; name=&quot;驳回（同步客户P/O）&quot; sourceRef=&quot;sid-2C6198F8-7872-416A-A5D7-520922753E6F&quot; targetRef=&quot;sid-43EB1A4D-AB9D-4E8E-954B-44B48738DE7C&quot;&amp;gt;
+      &amp;lt;conditionExpression xsi:type=&quot;tFormalExpression&quot;&amp;gt;&amp;lt;![CDATA[${Reject}]]&amp;gt;&amp;lt;/conditionExpression&amp;gt;
+    &amp;lt;/sequenceFlow&amp;gt;
+    &amp;lt;sequenceFlow id=&quot;sid-B904D61F-C5CF-41AB-A348-3B665ABC8A12&quot; sourceRef=&quot;sid-43EB1A4D-AB9D-4E8E-954B-44B48738DE7C&quot; targetRef=&quot;sid-B45763A0-0E5F-41EF-B89F-54B52324D694&quot;&amp;gt;&amp;lt;/sequenceFlow&amp;gt;
+  &amp;lt;/process&amp;gt;
+  &amp;lt;bpmndi:BPMNDiagram id=&quot;BPMNDiagram_self_support_order_sales&quot;&amp;gt;
+    &amp;lt;bpmndi:BPMNPlane bpmnElement=&quot;self_support_order_sales&quot; id=&quot;BPMNPlane_self_support_order_sales&quot;&amp;gt;
+      &amp;lt;bpmndi:BPMNShape bpmnElement=&quot;startEvent1&quot; id=&quot;BPMNShape_startEvent1&quot;&amp;gt;
+        &amp;lt;omgdc:Bounds height=&quot;30.0&quot; width=&quot;30.0&quot; x=&quot;570.0&quot; y=&quot;30.0&quot;&amp;gt;&amp;lt;/omgdc:Bounds&amp;gt;
+      &amp;lt;/bpmndi:BPMNShape&amp;gt;
+      &amp;lt;bpmndi:BPMNShape bpmnElement=&quot;sid-2C6198F8-7872-416A-A5D7-520922753E6F&quot; id=&quot;BPMNShape_sid-2C6198F8-7872-416A-A5D7-520922753E6F&quot;&amp;gt;
+        &amp;lt;omgdc:Bounds height=&quot;80.0&quot; width=&quot;100.0&quot; x=&quot;535.0&quot; y=&quot;186.0&quot;&amp;gt;&amp;lt;/omgdc:Bounds&amp;gt;
+      &amp;lt;/bpmndi:BPMNShape&amp;gt;
+      &amp;lt;bpmndi:BPMNShape bpmnElement=&quot;sid-43EB1A4D-AB9D-4E8E-954B-44B48738DE7C&quot; id=&quot;BPMNShape_sid-43EB1A4D-AB9D-4E8E-954B-44B48738DE7C&quot;&amp;gt;
+        &amp;lt;omgdc:Bounds height=&quot;80.0&quot; width=&quot;100.0&quot; x=&quot;825.0&quot; y=&quot;186.0&quot;&amp;gt;&amp;lt;/omgdc:Bounds&amp;gt;
+      &amp;lt;/bpmndi:BPMNShape&amp;gt;
+      &amp;lt;bpmndi:BPMNShape bpmnElement=&quot;sid-E0B61951-18D7-4CA5-B340-FE9A4CD4E9F0&quot; id=&quot;BPMNShape_sid-E0B61951-18D7-4CA5-B340-FE9A4CD4E9F0&quot;&amp;gt;
+        &amp;lt;omgdc:Bounds height=&quot;80.0&quot; width=&quot;100.0&quot; x=&quot;535.0&quot; y=&quot;405.0&quot;&amp;gt;&amp;lt;/omgdc:Bounds&amp;gt;
+      &amp;lt;/bpmndi:BPMNShape&amp;gt;
+      &amp;lt;bpmndi:BPMNShape bpmnElement=&quot;sid-34D7D478-B1FE-42A8-BBB1-FDC6BA6BD169&quot; id=&quot;BPMNShape_sid-34D7D478-B1FE-42A8-BBB1-FDC6BA6BD169&quot;&amp;gt;
+        &amp;lt;omgdc:Bounds height=&quot;80.0&quot; width=&quot;100.0&quot; x=&quot;535.0&quot; y=&quot;660.0&quot;&amp;gt;&amp;lt;/omgdc:Bounds&amp;gt;
+      &amp;lt;/bpmndi:BPMNShape&amp;gt;
+      &amp;lt;bpmndi:BPMNShape bpmnElement=&quot;sid-B45763A0-0E5F-41EF-B89F-54B52324D694&quot; id=&quot;BPMNShape_sid-B45763A0-0E5F-41EF-B89F-54B52324D694&quot;&amp;gt;
+        &amp;lt;omgdc:Bounds height=&quot;28.0&quot; width=&quot;28.0&quot; x=&quot;571.0&quot; y=&quot;840.0&quot;&amp;gt;&amp;lt;/omgdc:Bounds&amp;gt;
+      &amp;lt;/bpmndi:BPMNShape&amp;gt;
+      &amp;lt;bpmndi:BPMNShape bpmnElement=&quot;sid-DAF4B04E-6EF3-4AEB-B033-447CEA228874&quot; id=&quot;BPMNShape_sid-DAF4B04E-6EF3-4AEB-B033-447CEA228874&quot;&amp;gt;
+        &amp;lt;omgdc:Bounds height=&quot;80.0&quot; width=&quot;100.0&quot; x=&quot;750.0&quot; y=&quot;405.0&quot;&amp;gt;&amp;lt;/omgdc:Bounds&amp;gt;
+      &amp;lt;/bpmndi:BPMNShape&amp;gt;
+      &amp;lt;bpmndi:BPMNEdge bpmnElement=&quot;sid-BDCCAE12-E4C3-482E-9065-9BF43459CC15&quot; id=&quot;BPMNEdge_sid-BDCCAE12-E4C3-482E-9065-9BF43459CC15&quot;&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;585.0&quot; y=&quot;484.95000000000005&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;585.0&quot; y=&quot;660.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+      &amp;lt;/bpmndi:BPMNEdge&amp;gt;
+      &amp;lt;bpmndi:BPMNEdge bpmnElement=&quot;sid-8CD85261-F4E8-438F-928C-6E891027584D&quot; id=&quot;BPMNEdge_sid-8CD85261-F4E8-438F-928C-6E891027584D&quot;&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;634.9499999999999&quot; y=&quot;445.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;750.0&quot; y=&quot;445.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+      &amp;lt;/bpmndi:BPMNEdge&amp;gt;
+      &amp;lt;bpmndi:BPMNEdge bpmnElement=&quot;sid-1EE913E4-CCAB-439D-BE26-338D4530DFC3&quot; id=&quot;BPMNEdge_sid-1EE913E4-CCAB-439D-BE26-338D4530DFC3&quot;&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;800.0&quot; y=&quot;405.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;800.0&quot; y=&quot;247.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;824.9999999999998&quot; y=&quot;246.03653846153847&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+      &amp;lt;/bpmndi:BPMNEdge&amp;gt;
+      &amp;lt;bpmndi:BPMNEdge bpmnElement=&quot;sid-B904D61F-C5CF-41AB-A348-3B665ABC8A12&quot; id=&quot;BPMNEdge_sid-B904D61F-C5CF-41AB-A348-3B665ABC8A12&quot;&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;875.0&quot; y=&quot;265.95000000000005&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;875.0&quot; y=&quot;854.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;598.9499200108609&quot; y=&quot;854.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+      &amp;lt;/bpmndi:BPMNEdge&amp;gt;
+      &amp;lt;bpmndi:BPMNEdge bpmnElement=&quot;sid-262A809B-A151-4D1B-B8A7-3F23FCBFA358&quot; id=&quot;BPMNEdge_sid-262A809B-A151-4D1B-B8A7-3F23FCBFA358&quot;&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;634.9499999999999&quot; y=&quot;226.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;824.9999999999804&quot; y=&quot;226.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+      &amp;lt;/bpmndi:BPMNEdge&amp;gt;
+      &amp;lt;bpmndi:BPMNEdge bpmnElement=&quot;sid-1EB675F0-8B1F-42E3-B105-AFD704C4F6B9&quot; id=&quot;BPMNEdge_sid-1EB675F0-8B1F-42E3-B105-AFD704C4F6B9&quot;&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;585.0&quot; y=&quot;59.94999944212711&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;585.0&quot; y=&quot;186.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+      &amp;lt;/bpmndi:BPMNEdge&amp;gt;
+      &amp;lt;bpmndi:BPMNEdge bpmnElement=&quot;sid-7040954B-1B18-450D-A42F-1EA77654A9CF&quot; id=&quot;BPMNEdge_sid-7040954B-1B18-450D-A42F-1EA77654A9CF&quot;&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;585.0&quot; y=&quot;265.95000000000005&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;585.0&quot; y=&quot;405.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+      &amp;lt;/bpmndi:BPMNEdge&amp;gt;
+      &amp;lt;bpmndi:BPMNEdge bpmnElement=&quot;sid-39048C6C-4266-45C4-96C7-D1C030542352&quot; id=&quot;BPMNEdge_sid-39048C6C-4266-45C4-96C7-D1C030542352&quot;&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;585.0&quot; y=&quot;739.9499999999999&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+        &amp;lt;omgdi:waypoint x=&quot;585.0&quot; y=&quot;840.0&quot;&amp;gt;&amp;lt;/omgdi:waypoint&amp;gt;
+      &amp;lt;/bpmndi:BPMNEdge&amp;gt;
+    &amp;lt;/bpmndi:BPMNPlane&amp;gt;
+  &amp;lt;/bpmndi:BPMNDiagram&amp;gt;
+&amp;lt;/definitions&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;记录下。。。。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-13-zjdemo/04.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>[工具] 一个好用的 Nginx 配置生成工具</title><link>https://blog.loli.wang/blog/2025-02-06-ngconf/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-02-06-ngconf/doc/</guid><description>[工具] 一个好用的 Nginx 配置生成工具</description><pubDate>Thu, 06 Feb 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;NGINXConfig 工具介绍&lt;/h2&gt;
 &lt;p&gt;在运维和开发过程中，配置 Nginx 常常是一项既重要又令人头疼的任务。尤其是对于新手来说，手动编写 Nginx 配置文件可能充满了各种细节与坑。今天，我们要介绍的 &lt;strong&gt;NGINXConfig 工具&lt;/strong&gt;，正是一款能够帮你快速生成优化配置的在线工具，极大地降低了配置 Nginx 的门槛。&lt;/p&gt;
 &lt;h3&gt;工具概述&lt;/h3&gt;
 &lt;p&gt;NGINXConfig 是 DigitalOcean 提供的一个在线配置生成工具，它可以让你通过简单的表单输入，定制出符合自己需求的 Nginx 配置文件。无论你是配置静态网站、反向代理、还是需要支持 PHP 的应用，这个工具都可以帮助你一步步完成配置，从而减少出错几率，提高部署效率。&lt;/p&gt;
