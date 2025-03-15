@@ -1,4 +1,147 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>最近写流程图和流程设计器的初始化demo</title><link>https://blog.loli.wang/blog/2025-03-13-zjdemo/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-13-zjdemo/doc/</guid><description>最近写流程图和流程设计器的初始化demo</description><pubDate>Thu, 13 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;这个月不知道发生了什么。&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>React 插件推荐 《React-pdf》 浏览器动态渲染PDF</title><link>https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/</guid><description>React 插件推荐 《React-pdf》 浏览器动态渲染PDF</description><pubDate>Sat, 15 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;为什么推荐&lt;/h2&gt;
+&lt;p&gt;最近工作上总是有让我很头疼的问题，需要让我显示一个报表单，并且还可以下载成为 PDF。简单来说，就是要实现在线预览和下载功能。正好以前看到过 &lt;code&gt;react-pdf&lt;/code&gt; 这个插件，这次正好用上了。&lt;/p&gt;
+&lt;p&gt;前端生成 PDF 并且能动态渲染的插件其实非常少见。像 &lt;code&gt;canvas + html2pdf&lt;/code&gt; 这种方式，生成的其实是图片格式的 PDF，无法编辑，且存在像素模糊的问题。而 &lt;code&gt;react-pdf&lt;/code&gt; 可以真正地渲染出可编辑的 PDF 文件。&lt;/p&gt;
+&lt;h2&gt;插件介绍&lt;/h2&gt;
+&lt;p&gt;官网 ： &lt;a href=&quot;https://react-pdf.org/&quot;&gt;react-pdf&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;react-pdf&lt;/code&gt; 允许我们使用 React 组件的方式来构建 PDF 文档。它基于 &lt;code&gt;@react-pdf/renderer&lt;/code&gt; 库，可以直接在浏览器端生成 PDF，并支持动态内容更新。&lt;/p&gt;
+&lt;h2&gt;插件安装&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# npm
+npm install @react-pdf/renderer --save
+
+# yarn
+yarn add @react-pdf/renderer
+
+# pnpm
+pnpm add @react-pdf/renderer
+
+# bun
+bun install @react-pdf/renderer
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;基本使用&lt;/h2&gt;
+&lt;p&gt;首先，我们需要引入 &lt;code&gt;react-pdf&lt;/code&gt; 提供的核心组件：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import React from &quot;react&quot;;
+import { Document, Page, Text, View, StyleSheet, PDFDownloadLink, PDFViewer, Font } from &quot;@react-pdf/renderer&quot;;
+
+// @ts-ignore
+import MK from &apos;@/assets/font/MK.ttf&apos;;
+
+// Register font
+Font.register({ family: &apos;pinru&apos;, src: MK });
+
+const data = [
+  { id: 1, name: &apos;张三&apos;, age: 20, score: 85 },
+  { id: 2, name: &apos;李四&apos;, age: 22, score: 90 },
+  { id: 2, name: &apos;李四&apos;, age: 22, score: 90 },
+  { id: 2, name: &apos;李四&apos;, age: 22, score: 90 },
+  { id: 2, name: &apos;李四&apos;, age: 22, score: 90 },
+  { id: 2, name: &apos;李四&apos;, age: 22, score: 90 },
+];
+
+// 定义样式
+const styles = StyleSheet.create({
+  page: {
+    fontFamily: &apos;pinru&apos;,
+    fontSize: 10,
+    padding: 20,
+    lineHeight: 2,
+  },
+  header: { textAlign: &apos;center&apos;, fontSize: 18, marginBottom: 10 },
+  table: { display: &apos;table&apos;, width: &apos;100%&apos;, borderStyle: &apos;solid&apos;, borderWidth: 1, borderColor: &apos;#000&apos; },
+  tableRow: { flexDirection: &apos;row&apos; },
+  tableColHeader: { width: &apos;25%&apos;, borderStyle: &apos;solid&apos;, borderWidth: 1, backgroundColor: &apos;#eee&apos;, padding: 5, textAlign: &apos;center&apos; },
+  tableCol: { width: &apos;25%&apos;, borderStyle: &apos;solid&apos;, borderWidth: 1, padding: 5, textAlign: &apos;center&apos; },
+});
+const MyDocument = () =&amp;gt; (
+  &amp;lt;PDFViewer width=&quot;100%&quot; height=&quot;100%&quot;&amp;gt;
+    &amp;lt;Document&amp;gt;
+      &amp;lt;Page size=&quot;A4&quot; style={styles.page}&amp;gt;
+        &amp;lt;Text style={styles.header}&amp;gt;报表单&amp;lt;/Text&amp;gt;
+        &amp;lt;View style={styles.table}&amp;gt;
+          {/* 表头 */}
+          &amp;lt;View style={styles.tableRow}&amp;gt;
+            &amp;lt;Text style={styles.tableColHeader}&amp;gt;ID&amp;lt;/Text&amp;gt;
+            &amp;lt;Text style={styles.tableColHeader}&amp;gt;姓名&amp;lt;/Text&amp;gt;
+            &amp;lt;Text style={styles.tableColHeader}&amp;gt;年龄&amp;lt;/Text&amp;gt;
+            &amp;lt;Text style={styles.tableColHeader}&amp;gt;成绩&amp;lt;/Text&amp;gt;
+          &amp;lt;/View&amp;gt;
+          {/* 数据行 */}
+          {data.map((item, index) =&amp;gt; (
+            &amp;lt;View style={styles.tableRow} key={index}&amp;gt;
+              &amp;lt;Text style={styles.tableCol}&amp;gt;{item.id}&amp;lt;/Text&amp;gt;
+              &amp;lt;Text style={styles.tableCol}&amp;gt;{item.name}&amp;lt;/Text&amp;gt;
+              &amp;lt;Text style={styles.tableCol}&amp;gt;{item.age}&amp;lt;/Text&amp;gt;
+              &amp;lt;Text style={styles.tableCol}&amp;gt;{item.score}&amp;lt;/Text&amp;gt;
+            &amp;lt;/View&amp;gt;
+          ))}
+        &amp;lt;/View&amp;gt;
+      &amp;lt;/Page&amp;gt;
+    &amp;lt;/Document&amp;gt;
+  &amp;lt;/PDFViewer&amp;gt;
+);
+
+const App = () =&amp;gt; (
+  &amp;lt;div className=&quot;h-screen w-screen&quot;&amp;gt;
+    &amp;lt;h2&amp;gt;React PDF 示例&amp;lt;/h2&amp;gt;
+    &amp;lt;MyDocument /&amp;gt;
+  &amp;lt;/div&amp;gt;
+);
+
+export default App;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;演示效果&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-15-reactPdfTools/01.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;代码解析&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;code&gt;Document&lt;/code&gt;：表示 PDF 文档的根组件。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Page&lt;/code&gt;：定义 PDF 的页面，可以包含多个 &lt;code&gt;Page&lt;/code&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Text&lt;/code&gt;：用于添加文本内容。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;View&lt;/code&gt;：类似于 &lt;code&gt;div&lt;/code&gt;，用于布局。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;StyleSheet.create&lt;/code&gt;：用于定义 PDF 组件的样式。&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;PDFDownloadLink&lt;/code&gt;：提供 PDF 下载功能。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;进阶使用&lt;/h2&gt;
+&lt;h3&gt;1. 生成多页 PDF&lt;/h3&gt;
+&lt;p&gt;如果需要创建多页 PDF，可以这样实现：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;const MultiPageDocument = () =&amp;gt; (
+  &amp;lt;Document&amp;gt;
+    {[1, 2, 3].map((pageNum) =&amp;gt; (
+      &amp;lt;Page key={pageNum} size=&quot;A4&quot; style={styles.page}&amp;gt;
+        &amp;lt;View style={styles.section}&amp;gt;
+          &amp;lt;Text&amp;gt;第 {pageNum} 页&amp;lt;/Text&amp;gt;
+        &amp;lt;/View&amp;gt;
+      &amp;lt;/Page&amp;gt;
+    ))}
+  &amp;lt;/Document&amp;gt;
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2. 在页面中直接渲染 PDF 预览&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;react-pdf&lt;/code&gt; 还提供了 &lt;code&gt;PDFViewer&lt;/code&gt; 组件，可以直接在页面中预览 PDF：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import { PDFViewer } from &quot;@react-pdf/renderer&quot;;
+
+const PDFPreview = () =&amp;gt; (
+  &amp;lt;PDFViewer width=&quot;100%&quot; height=&quot;500px&quot;&amp;gt;
+    &amp;lt;MyDocument /&amp;gt;
+  &amp;lt;/PDFViewer&amp;gt;
+);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3. 处理复杂的报表&lt;/h3&gt;
+&lt;p&gt;对于包含表格的 PDF，可以使用 &lt;code&gt;react-pdf-table&lt;/code&gt; 或者手动布局：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;View style={{ flexDirection: &quot;row&quot;, borderBottom: &quot;1pt solid #000&quot; }}&amp;gt;
+  &amp;lt;Text style={{ flex: 1 }}&amp;gt;列 1&amp;lt;/Text&amp;gt;
+  &amp;lt;Text style={{ flex: 1 }}&amp;gt;列 2&amp;lt;/Text&amp;gt;
+  &amp;lt;Text style={{ flex: 1 }}&amp;gt;列 3&amp;lt;/Text&amp;gt;
+&amp;lt;/View&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;react-pdf&lt;/code&gt; 是一个非常强大的 PDF 生成工具，可以帮助前端开发者以组件化的方式构建 PDF 文档。它解决了传统 &lt;code&gt;html2canvas&lt;/code&gt; 方式存在的模糊问题，并提供了丰富的自定义能力。&lt;/p&gt;
+&lt;p&gt;适用于：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;动态生成 PDF 文档&lt;/li&gt;
+&lt;li&gt;在线预览和下载&lt;/li&gt;
+&lt;li&gt;生成多页 PDF&lt;/li&gt;
+&lt;li&gt;复杂的表格、报表&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>最近写流程图和流程设计器的初始化demo</title><link>https://blog.loli.wang/blog/2025-03-13-zjdemo/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-13-zjdemo/doc/</guid><description>最近写流程图和流程设计器的初始化demo</description><pubDate>Thu, 13 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;这个月不知道发生了什么。&lt;/h2&gt;
 &lt;p&gt;这个月不知道发生了什么，多出来几个图表的功能，图表还是不是简单的展示图表，令人纠结，为了防止以后 无法回忆起当时做了什么，记录写个demo&lt;/p&gt;
 &lt;h2&gt;1.流程图 Antv X6&lt;/h2&gt;
 &lt;pre&gt;&lt;code&gt;import React, { useEffect, useRef, useState } from &quot;react&quot;;

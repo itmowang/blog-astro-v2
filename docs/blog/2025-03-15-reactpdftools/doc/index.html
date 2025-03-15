@@ -1,0 +1,146 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> --><!-- Canonical URL --><link rel="canonical" href="https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/"><!-- Primary Meta Tags --><title>React 插件推荐 《React-pdf》 浏览器动态渲染PDF - 魔王の博客 </title><meta name="title" content="React 插件推荐 《React-pdf》 浏览器动态渲染PDF - 魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/"><meta property="og:title" content="React 插件推荐 《React-pdf》 浏览器动态渲染PDF - 魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://blog.loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/"><meta property="twitter:title" content="React 插件推荐 《React-pdf》 浏览器动态渲染PDF - 魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://blog.loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/hoisted.DH1pNdf-.css">
+<link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.CGSjG33K.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://blog.loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2025 YOUR NAME HERE. | <a href="https://blog.loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail" id="lightgallery"> <h2 class="post-title">React 插件推荐 《React-pdf》 浏览器动态渲染PDF</h2> <div class="post-date"> <time datetime="2025-03-15T15:27:24.000Z">2025-03-15 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2025-03-15-reactPdfTools/01.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2025-03-15-reactPdfTools/01.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2025-03-15-reactPdfTools/01.png');"></div> <div class="post-content">  <h2 id="为什么推荐">为什么推荐</h2>
+<p>最近工作上总是有让我很头疼的问题，需要让我显示一个报表单，并且还可以下载成为 PDF。简单来说，就是要实现在线预览和下载功能。正好以前看到过 <code>react-pdf</code> 这个插件，这次正好用上了。</p>
+<p>前端生成 PDF 并且能动态渲染的插件其实非常少见。像 <code>canvas + html2pdf</code> 这种方式，生成的其实是图片格式的 PDF，无法编辑，且存在像素模糊的问题。而 <code>react-pdf</code> 可以真正地渲染出可编辑的 PDF 文件。</p>
+<h2 id="插件介绍">插件介绍</h2>
+<p>官网 ： <a href="https://react-pdf.org/">react-pdf</a></p>
+<p><code>react-pdf</code> 允许我们使用 React 组件的方式来构建 PDF 文档。它基于 <code>@react-pdf/renderer</code> 库，可以直接在浏览器端生成 PDF，并支持动态内容更新。</p>
+<h2 id="插件安装">插件安装</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># npm</span></span>
+<span class="line"><span style="color:#B392F0">npm</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> @react-pdf/renderer</span><span style="color:#79B8FF"> --save</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># yarn</span></span>
+<span class="line"><span style="color:#B392F0">yarn</span><span style="color:#9ECBFF"> add</span><span style="color:#9ECBFF"> @react-pdf/renderer</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># pnpm</span></span>
+<span class="line"><span style="color:#B392F0">pnpm</span><span style="color:#9ECBFF"> add</span><span style="color:#9ECBFF"> @react-pdf/renderer</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># bun</span></span>
+<span class="line"><span style="color:#B392F0">bun</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> @react-pdf/renderer</span></span>
+<span class="line"></span></code></pre>
+<h2 id="基本使用">基本使用</h2>
+<p>首先，我们需要引入 <code>react-pdf</code> 提供的核心组件：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="tsx"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> React </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "react"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> { Document, Page, Text, View, StyleSheet, PDFDownloadLink, PDFViewer, Font } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "@react-pdf/renderer"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// @ts-ignore</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> MK </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> '@/assets/font/MK.ttf'</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// Register font</span></span>
+<span class="line"><span style="color:#E1E4E8">Font.</span><span style="color:#B392F0">register</span><span style="color:#E1E4E8">({ family: </span><span style="color:#9ECBFF">'pinru'</span><span style="color:#E1E4E8">, src: </span><span style="color:#79B8FF">MK</span><span style="color:#E1E4E8"> });</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> data</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#E1E4E8">  { id: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, name: </span><span style="color:#9ECBFF">'张三'</span><span style="color:#E1E4E8">, age: </span><span style="color:#79B8FF">20</span><span style="color:#E1E4E8">, score: </span><span style="color:#79B8FF">85</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  { id: </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, name: </span><span style="color:#9ECBFF">'李四'</span><span style="color:#E1E4E8">, age: </span><span style="color:#79B8FF">22</span><span style="color:#E1E4E8">, score: </span><span style="color:#79B8FF">90</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  { id: </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, name: </span><span style="color:#9ECBFF">'李四'</span><span style="color:#E1E4E8">, age: </span><span style="color:#79B8FF">22</span><span style="color:#E1E4E8">, score: </span><span style="color:#79B8FF">90</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  { id: </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, name: </span><span style="color:#9ECBFF">'李四'</span><span style="color:#E1E4E8">, age: </span><span style="color:#79B8FF">22</span><span style="color:#E1E4E8">, score: </span><span style="color:#79B8FF">90</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  { id: </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, name: </span><span style="color:#9ECBFF">'李四'</span><span style="color:#E1E4E8">, age: </span><span style="color:#79B8FF">22</span><span style="color:#E1E4E8">, score: </span><span style="color:#79B8FF">90</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  { id: </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, name: </span><span style="color:#9ECBFF">'李四'</span><span style="color:#E1E4E8">, age: </span><span style="color:#79B8FF">22</span><span style="color:#E1E4E8">, score: </span><span style="color:#79B8FF">90</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">];</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D">// 定义样式</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#79B8FF"> styles</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> StyleSheet.</span><span style="color:#B392F0">create</span><span style="color:#E1E4E8">({</span></span>
+<span class="line"><span style="color:#E1E4E8">  page: {</span></span>
+<span class="line"><span style="color:#E1E4E8">    fontFamily: </span><span style="color:#9ECBFF">'pinru'</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    fontSize: </span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    padding: </span><span style="color:#79B8FF">20</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">    lineHeight: </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#E1E4E8">  },</span></span>
+<span class="line"><span style="color:#E1E4E8">  header: { textAlign: </span><span style="color:#9ECBFF">'center'</span><span style="color:#E1E4E8">, fontSize: </span><span style="color:#79B8FF">18</span><span style="color:#E1E4E8">, marginBottom: </span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  table: { display: </span><span style="color:#9ECBFF">'table'</span><span style="color:#E1E4E8">, width: </span><span style="color:#9ECBFF">'100%'</span><span style="color:#E1E4E8">, borderStyle: </span><span style="color:#9ECBFF">'solid'</span><span style="color:#E1E4E8">, borderWidth: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, borderColor: </span><span style="color:#9ECBFF">'#000'</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  tableRow: { flexDirection: </span><span style="color:#9ECBFF">'row'</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  tableColHeader: { width: </span><span style="color:#9ECBFF">'25%'</span><span style="color:#E1E4E8">, borderStyle: </span><span style="color:#9ECBFF">'solid'</span><span style="color:#E1E4E8">, borderWidth: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, backgroundColor: </span><span style="color:#9ECBFF">'#eee'</span><span style="color:#E1E4E8">, padding: </span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">, textAlign: </span><span style="color:#9ECBFF">'center'</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">  tableCol: { width: </span><span style="color:#9ECBFF">'25%'</span><span style="color:#E1E4E8">, borderStyle: </span><span style="color:#9ECBFF">'solid'</span><span style="color:#E1E4E8">, borderWidth: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, padding: </span><span style="color:#79B8FF">5</span><span style="color:#E1E4E8">, textAlign: </span><span style="color:#9ECBFF">'center'</span><span style="color:#E1E4E8"> },</span></span>
+<span class="line"><span style="color:#E1E4E8">});</span></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#B392F0"> MyDocument</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#79B8FF">PDFViewer</span><span style="color:#B392F0"> width</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"100%"</span><span style="color:#B392F0"> height</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"100%"</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">    &#x3C;</span><span style="color:#79B8FF">Document</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">      &#x3C;</span><span style="color:#79B8FF">Page</span><span style="color:#B392F0"> size</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"A4"</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.page}></span></span>
+<span class="line"><span style="color:#E1E4E8">        &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.header}>报表单&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">        &#x3C;</span><span style="color:#79B8FF">View</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.table}></span></span>
+<span class="line"><span style="color:#E1E4E8">          {</span><span style="color:#6A737D">/* 表头 */</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">          &#x3C;</span><span style="color:#79B8FF">View</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableRow}></span></span>
+<span class="line"><span style="color:#E1E4E8">            &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableColHeader}>ID&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">            &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableColHeader}>姓名&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">            &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableColHeader}>年龄&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">            &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableColHeader}>成绩&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">          &#x3C;/</span><span style="color:#79B8FF">View</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">          {</span><span style="color:#6A737D">/* 数据行 */</span><span style="color:#E1E4E8">}</span></span>
+<span class="line"><span style="color:#E1E4E8">          {data.</span><span style="color:#B392F0">map</span><span style="color:#E1E4E8">((</span><span style="color:#FFAB70">item</span><span style="color:#E1E4E8">, </span><span style="color:#FFAB70">index</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">            &#x3C;</span><span style="color:#79B8FF">View</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableRow} </span><span style="color:#B392F0">key</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{index}></span></span>
+<span class="line"><span style="color:#E1E4E8">              &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableCol}>{item.id}&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">              &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableCol}>{item.name}&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">              &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableCol}>{item.age}&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">              &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.tableCol}>{item.score}&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">            &#x3C;/</span><span style="color:#79B8FF">View</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">          ))}</span></span>
+<span class="line"><span style="color:#E1E4E8">        &#x3C;/</span><span style="color:#79B8FF">View</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">      &#x3C;/</span><span style="color:#79B8FF">Page</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">    &#x3C;/</span><span style="color:#79B8FF">Document</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;/</span><span style="color:#79B8FF">PDFViewer</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#B392F0"> App</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#85E89D">div</span><span style="color:#B392F0"> className</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"h-screen w-screen"</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">    &#x3C;</span><span style="color:#85E89D">h2</span><span style="color:#E1E4E8">>React PDF 示例&#x3C;/</span><span style="color:#85E89D">h2</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">    &#x3C;</span><span style="color:#79B8FF">MyDocument</span><span style="color:#E1E4E8"> /></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;/</span><span style="color:#85E89D">div</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">export</span><span style="color:#F97583"> default</span><span style="color:#E1E4E8"> App;</span></span>
+<span class="line"></span></code></pre>
+<h2 id="演示效果">演示效果</h2>
+<p><img src="http://img.blog.loli.wang/2025-03-15-reactPdfTools/01.png" alt="0"></p>
+<h2 id="代码解析">代码解析</h2>
+<ol>
+<li><code>Document</code>：表示 PDF 文档的根组件。</li>
+<li><code>Page</code>：定义 PDF 的页面，可以包含多个 <code>Page</code>。</li>
+<li><code>Text</code>：用于添加文本内容。</li>
+<li><code>View</code>：类似于 <code>div</code>，用于布局。</li>
+<li><code>StyleSheet.create</code>：用于定义 PDF 组件的样式。</li>
+<li><code>PDFDownloadLink</code>：提供 PDF 下载功能。</li>
+</ol>
+<h2 id="进阶使用">进阶使用</h2>
+<h3 id="1-生成多页-pdf">1. 生成多页 PDF</h3>
+<p>如果需要创建多页 PDF，可以这样实现：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="tsx"><code><span class="line"><span style="color:#F97583">const</span><span style="color:#B392F0"> MultiPageDocument</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#79B8FF">Document</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">    {[</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">2</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">3</span><span style="color:#E1E4E8">].</span><span style="color:#B392F0">map</span><span style="color:#E1E4E8">((</span><span style="color:#FFAB70">pageNum</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">      &#x3C;</span><span style="color:#79B8FF">Page</span><span style="color:#B392F0"> key</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{pageNum} </span><span style="color:#B392F0">size</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"A4"</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.page}></span></span>
+<span class="line"><span style="color:#E1E4E8">        &#x3C;</span><span style="color:#79B8FF">View</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{styles.section}></span></span>
+<span class="line"><span style="color:#E1E4E8">          &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">>第 {pageNum} 页&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">        &#x3C;/</span><span style="color:#79B8FF">View</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">      &#x3C;/</span><span style="color:#79B8FF">Page</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">    ))}</span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;/</span><span style="color:#79B8FF">Document</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span></code></pre>
+<h3 id="2-在页面中直接渲染-pdf-预览">2. 在页面中直接渲染 PDF 预览</h3>
+<p><code>react-pdf</code> 还提供了 <code>PDFViewer</code> 组件，可以直接在页面中预览 PDF：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="tsx"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> { PDFViewer } </span><span style="color:#F97583">from</span><span style="color:#9ECBFF"> "@react-pdf/renderer"</span><span style="color:#E1E4E8">;</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">const</span><span style="color:#B392F0"> PDFPreview</span><span style="color:#F97583"> =</span><span style="color:#E1E4E8"> () </span><span style="color:#F97583">=></span><span style="color:#E1E4E8"> (</span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#79B8FF">PDFViewer</span><span style="color:#B392F0"> width</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"100%"</span><span style="color:#B392F0"> height</span><span style="color:#F97583">=</span><span style="color:#9ECBFF">"500px"</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">    &#x3C;</span><span style="color:#79B8FF">MyDocument</span><span style="color:#E1E4E8"> /></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;/</span><span style="color:#79B8FF">PDFViewer</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">);</span></span>
+<span class="line"></span></code></pre>
+<h3 id="3-处理复杂的报表">3. 处理复杂的报表</h3>
+<p>对于包含表格的 PDF，可以使用 <code>react-pdf-table</code> 或者手动布局：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="tsx"><code><span class="line"><span style="color:#E1E4E8">&#x3C;</span><span style="color:#79B8FF">View</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{{ flexDirection: </span><span style="color:#9ECBFF">"row"</span><span style="color:#E1E4E8">, borderBottom: </span><span style="color:#9ECBFF">"1pt solid #000"</span><span style="color:#E1E4E8"> }}></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{{ flex: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8"> }}>列 1&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{{ flex: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8"> }}>列 2&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">  &#x3C;</span><span style="color:#79B8FF">Text</span><span style="color:#B392F0"> style</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">{{ flex: </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8"> }}>列 3&#x3C;/</span><span style="color:#79B8FF">Text</span><span style="color:#E1E4E8">></span></span>
+<span class="line"><span style="color:#E1E4E8">&#x3C;/</span><span style="color:#79B8FF">View</span><span style="color:#E1E4E8">></span></span>
+<span class="line"></span></code></pre>
+<h2 id="总结">总结</h2>
+<p><code>react-pdf</code> 是一个非常强大的 PDF 生成工具，可以帮助前端开发者以组件化的方式构建 PDF 文档。它解决了传统 <code>html2canvas</code> 方式存在的模糊问题，并提供了丰富的自定义能力。</p>
+<p>适用于：</p>
+<ul>
+<li>动态生成 PDF 文档</li>
+<li>在线预览和下载</li>
+<li>生成多页 PDF</li>
+<li>复杂的表格、报表</li>
+</ul>  </div> <div class="tag-container"> <a href="/tags/前端进阶" class="tag" title="前端进阶"> 前端进阶 </a><a href="/tags/操作" class="tag" title="操作"> 操作 </a> </div> </div>   </div> </div> </div>  </body></html> 
