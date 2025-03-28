@@ -1,4 +1,73 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>React 插件推荐 《React-pdf》 浏览器动态渲染PDF</title><link>https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/</guid><description>React 插件推荐 《React-pdf》 浏览器动态渲染PDF</description><pubDate>Sat, 15 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;为什么推荐&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>Node版本管理fnm的使用体验</title><link>https://blog.loli.wang/blog/2025-03-28-nodemanagefnm/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-28-nodemanagefnm/doc/</guid><description>Node版本管理fnm的使用体验</description><pubDate>Fri, 28 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;之前有一篇文章介绍过 node 版本管理工具 volta 的使用 &lt;a href=&quot;https://blog.loli.wang/blog/2023-11-27-volatsetup/doc/index.html&quot;&gt;Node 版本管理 Volta 的使用&lt;/a&gt; 这次偶然发现nodejs官方使用的示例变为了 fnm，用来体验下。&lt;/p&gt;
+&lt;h2&gt;fnm 的介绍&lt;/h2&gt;
+&lt;p&gt;fnm 是使用 Rust 编写的 Node 版本管理工具，它允许您安装多个版本的 Node，并轻松切换它们。&lt;/p&gt;
+&lt;p&gt;优势：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- 🌎 跨平台支持（macOS、Windows、Linux）
+- ✨ 单文件，轻松安装，即时启动
+- 🚀 以速度为中心
+- 📂 适用于.node-version和.nvmrc文件
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;安装&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# mac/linux
+  curl -fsSL https://fnm.vercel.app/install | bash
+
+# Winget (Windows)
+  winget install Schniz.fnm
+
+# scoop (Windows)
+  scoop install fnm
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-28-nodeManageFnm/01.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;简单使用&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;# 安装 node 22版本最新版本
+fnm install 22 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;下载速度很快，只需要12秒。就可以下载完成。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-28-nodeManageFnm/03.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 
+&amp;gt;@FOR /f &quot;tokens=*&quot; %i IN (&apos;fnm env&apos;) DO @%i
+
+# 切换版本
+fnm use v22.14.0
+
+# 查看版本
+
+node -v
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-28-nodeManageFnm/04.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;这样就切换成了22.14.0版本。&lt;/p&gt;
+&lt;h2&gt;高阶使用 (Monorepo 使用方案)&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;在项目的根目录（或任意子目录）添加 .node-version 或 .nvmrc 文件&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;
+monorepo/
+├── .node-version （指定整个仓库的 node 版本）
+├── package.json
+├── packages/
+│   ├── app1/
+│   │   └── .node-version ← 子项目 app1 的 Node 版本
+│   └── app2/
+│       └── .node-version ← 子项目 app2 的 Node 版本
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当你写好配置文件后&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 
+@FOR /f &quot;tokens=*&quot; %i IN (&apos;fnm env&apos;) DO @%i
+
+
+# 切换版本
+fnm use 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;可以看到 我们当前是切换成功了，我们然后切换到到子项目看看&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-28-nodeManageFnm/05.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;子项目也切换成功。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2025-03-28-nodeManageFnm/06.png&quot; alt=&quot;0&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;总结&lt;/h2&gt;
+&lt;p&gt;fnm 是一个非常不错的 Node 版本管理工具，它允许您安装多个版本的 Node，并轻松切换它们。 它具有许多优点，如跨平台支持、单文件安装、快速速度和适用于 .node-version 和 .nvmrc 文件的兼容性。&lt;/p&gt;
+</content:encoded></item><item><title>React 插件推荐 《React-pdf》 浏览器动态渲染PDF</title><link>https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-15-reactpdftools/doc/</guid><description>React 插件推荐 《React-pdf》 浏览器动态渲染PDF</description><pubDate>Sat, 15 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;为什么推荐&lt;/h2&gt;
 &lt;p&gt;最近工作上总是有让我很头疼的问题，需要让我显示一个报表单，并且还可以下载成为 PDF。简单来说，就是要实现在线预览和下载功能。正好以前看到过 &lt;code&gt;react-pdf&lt;/code&gt; 这个插件，这次正好用上了。&lt;/p&gt;
 &lt;p&gt;前端生成 PDF 并且能动态渲染的插件其实非常少见。像 &lt;code&gt;canvas + html2pdf&lt;/code&gt; 这种方式，生成的其实是图片格式的 PDF，无法编辑，且存在像素模糊的问题。而 &lt;code&gt;react-pdf&lt;/code&gt; 可以真正地渲染出可编辑的 PDF 文件。&lt;/p&gt;
 &lt;h2&gt;插件介绍&lt;/h2&gt;
