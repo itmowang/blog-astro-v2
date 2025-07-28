@@ -1,4 +1,125 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>让浏览器发出声音 SpeechSynthesisUtterance </title><link>https://blog.loli.wang/blog/2025-07-28-speechsynthesisutterance/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-07-28-speechsynthesisutterance/doc/</guid><description>让浏览器发出声音 SpeechSynthesisUtterance</description><pubDate>Mon, 28 Jul 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;Web Speech API&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>curl 一些常用的指令</title><link>https://blog.loli.wang/blog/2025-07-28-curldocs/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-07-28-curldocs/doc/</guid><description>curl 一些常用的指令</description><pubDate>Mon, 28 Jul 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;curl&lt;/code&gt; 命令是一个用于从 URL 获取数据的工具，它可以从 HTTP、HTTPS、FTP、SFTP 等协议中获取数据。&lt;/p&gt;
+&lt;p&gt;它支持非常多的协议：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;DICT、FILE、FTP、FTPS、GOPHER、GOPHERS、HTTP、HTTPS、IMAP、IMAPS、LDAP、LDAPS、MQTT、POP3、POP3S、RTMP、RTMPS、RTSP、SCP、SFTP、SMB、SMBS、SMTP、SMTPS、TELNET、TFTP、WS 和 WSS
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;curl 命令的常见用法：&lt;/h3&gt;
+&lt;h4&gt;1. 获取网页内容&lt;/h4&gt;
+&lt;p&gt;这是 &lt;code&gt;curl&lt;/code&gt; 最基础的用法，它会将指定 URL 的内容直接输出到终端。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl [https://example.com](https://example.com)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;2. 保存网页内容到文件&lt;/h4&gt;
+&lt;p&gt;如果你希望将获取到的内容保存下来，而不是直接输出，可以使用 &lt;code&gt;-o&lt;/code&gt; 或 &lt;code&gt;-O&lt;/code&gt; 选项。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;-o&lt;/code&gt; (小写)&lt;/strong&gt;: 将内容保存到你指定的文件名。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -o page.html [https://example.com](https://example.com)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;-O&lt;/code&gt; (大写)&lt;/strong&gt;: 使用 URL 中的文件名来保存内容。例如，下面的命令会创建一个名为 &lt;code&gt;download.zip&lt;/code&gt; 的文件。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -O [https://example.com/files/download.zip](https://example.com/files/download.zip)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;3. 查看 HTTP 响应头&lt;/h4&gt;
+&lt;p&gt;在调试时，查看服务器返回的响应头信息非常有用。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;-i&lt;/code&gt; 或 &lt;code&gt;--include&lt;/code&gt;&lt;/strong&gt;: 在输出中包含 HTTP 响应头和响应体。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -i [https://example.com](https://example.com)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;-I&lt;/code&gt; (大写) 或 &lt;code&gt;--head&lt;/code&gt;&lt;/strong&gt;: 只获取并显示 HTTP 响应头。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -I [https://example.com](https://example.com)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;4. 发送不同方法的请求&lt;/h4&gt;
+&lt;p&gt;你可以使用 &lt;code&gt;-X&lt;/code&gt; 选项来指定 HTTP 请求的方法，如 &lt;code&gt;POST&lt;/code&gt;, &lt;code&gt;PUT&lt;/code&gt;, &lt;code&gt;DELETE&lt;/code&gt; 等。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送 POST 请求&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -X POST [https://api.example.com/data](https://api.example.com/data)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送 DELETE 请求&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -X DELETE [https://api.example.com/data/item/123](https://api.example.com/data/item/123)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;5. 发送数据&lt;/h4&gt;
+&lt;p&gt;在与 API 交互时，经常需要发送数据。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送表单数据 (&lt;code&gt;-d&lt;/code&gt; 或 &lt;code&gt;--data&lt;/code&gt;)&lt;/strong&gt;
+这会模拟一个标准的 HTML 表单提交，默认的 &lt;code&gt;Content-Type&lt;/code&gt; 是 &lt;code&gt;application/x-www-form-urlencoded&lt;/code&gt;。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -d &quot;name=John Doe&amp;amp;project=curl&quot; [https://example.com/form](https://example.com/form)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;发送 JSON 数据&lt;/strong&gt;
+对于现代 API，发送 JSON 数据是常态。你需要手动设置 &lt;code&gt;Content-Type&lt;/code&gt; 头，并传递 JSON 字符串。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -X POST -H &quot;Content-Type: application/json&quot; -d &apos;{&quot;key&quot;:&quot;value&quot;, &quot;id&quot;:123}&apos; [https://api.example.com/items](https://api.example.com/items)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;6. 添加自定义请求头 (&lt;code&gt;-H&lt;/code&gt; 或 &lt;code&gt;--header&lt;/code&gt;)&lt;/h4&gt;
+&lt;p&gt;在需要身份验证或传递特定元数据时，自定义请求头至关重要。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -H &quot;Authorization: Bearer your_api_token&quot; -H &quot;X-Custom-Header: MyValue&quot; [https://api.example.com/user](https://api.example.com/user)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;7. 跟随重定向 (&lt;code&gt;-L&lt;/code&gt; 或 &lt;code&gt;--location&lt;/code&gt;)&lt;/h4&gt;
+&lt;p&gt;默认情况下，&lt;code&gt;curl&lt;/code&gt; 不会跟随 HTTP 3xx 重定向。使用 &lt;code&gt;-L&lt;/code&gt; 选项可以使其请求重定向后的最终 URL。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 如果 [http://google.com](http://google.com) 重定向到 [https://www.google.com](https://www.google.com), -L 会获取最终页面的内容
+curl -L [http://google.com](http://google.com)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;8. 上传文件&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;curl&lt;/code&gt; 同样可以轻松处理文件上传。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;使用 &lt;code&gt;-F&lt;/code&gt; 或 &lt;code&gt;--form&lt;/code&gt; (multipart/form-data)&lt;/strong&gt;
+这会模拟一个包含文件上传的表单提交。使用 &lt;code&gt;@&lt;/code&gt; 符号指定文件路径。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -F &quot;file=@/path/to/your/image.png&quot; -F &quot;username=testuser&quot; [https://example.com/upload](https://example.com/upload)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;使用 &lt;code&gt;-T&lt;/code&gt; 或 &lt;code&gt;--upload-file&lt;/code&gt;&lt;/strong&gt;
+对于 &lt;code&gt;PUT&lt;/code&gt; 或 &lt;code&gt;FTP&lt;/code&gt; 等协议，可以直接上传文件内容作为请求体。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;curl -T /path/to/your/file.txt ftp://[ftp.example.com/remote/](https://ftp.example.com/remote/)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;9. 断点续传 (&lt;code&gt;-C -&lt;/code&gt;)&lt;/h4&gt;
+&lt;p&gt;在下载大文件时，如果网络中断，此功能非常有用。&lt;code&gt;-C -&lt;/code&gt; 告诉 &lt;code&gt;curl&lt;/code&gt; 自动寻找断点并从那里继续下载。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 如果下载中断，再次运行相同命令即可恢复下载
+curl -C - -O [https://releases.ubuntu.com/22.04.4/ubuntu-22.04.4-desktop-amd64.iso](https://releases.ubuntu.com/22.04.4/ubuntu-22.04.4-desktop-amd64.iso)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;10. 处理 Cookies&lt;/h4&gt;
+&lt;p&gt;&lt;code&gt;curl&lt;/code&gt; 可以方便地存储和发送 cookies，用于维持会话。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;-c, --cookie-jar &amp;lt;file&amp;gt;&lt;/code&gt;&lt;/strong&gt;: 将服务器返回的 Cookies 保存到文件中。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;-b, --cookie &amp;lt;file|string&amp;gt;&lt;/code&gt;&lt;/strong&gt;: 从文件或字符串中读取 Cookies 并发送。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&amp;lt;!-- end list --&amp;gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 1. 登录并将 session cookies 保存到 cookie.txt
+curl -c cookie.txt -d &quot;user=admin&amp;amp;pass=secret123&quot; [https://example.com/login](https://example.com/login)
+
+# 2. 使用保存的 cookies 访问需要授权的页面
+curl -b cookie.txt [https://example.com/dashboard](https://example.com/dashboard)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;11. 静默模式 (&lt;code&gt;-s&lt;/code&gt; 或 &lt;code&gt;--silent&lt;/code&gt;)&lt;/h4&gt;
+&lt;p&gt;在脚本中使用 &lt;code&gt;curl&lt;/code&gt; 时，你可能不希望看到进度条或错误信息。&lt;code&gt;-s&lt;/code&gt; 会隐藏这些输出。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 该命令将只输出响应体，没有其他任何信息
+content=$(curl -s [https://api.example.com/data](https://api.example.com/data))
+echo $content
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;curl&lt;/code&gt; 是一个极其强大的工具，它的功能远不止于此。通过 &lt;code&gt;man curl&lt;/code&gt; 命令可以查看其完整的文档和所有可用选项，探索更多高级用法。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+
+以后补充实际场景的使用。&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item><item><title>让浏览器发出声音 SpeechSynthesisUtterance </title><link>https://blog.loli.wang/blog/2025-07-28-speechsynthesisutterance/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-07-28-speechsynthesisutterance/doc/</guid><description>让浏览器发出声音 SpeechSynthesisUtterance</description><pubDate>Mon, 28 Jul 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;Web Speech API&lt;/h2&gt;
 &lt;p&gt;Web Speech API 是一个 JavaScript API，用于让你的语音数据集成到web应用中。&lt;/p&gt;
 &lt;p&gt;语音识别通过接口使用(语音转化文字)   &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition&quot;&gt;SpeechRecognition&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;语音合成通过接口使用(文本转换语音播报)   [SpeechSynthesisUtterance]   (https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance)&lt;/p&gt;

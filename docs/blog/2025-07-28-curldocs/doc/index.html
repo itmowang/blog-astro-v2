@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> --><!-- Canonical URL --><link rel="canonical" href="https://blog.loli.wang/blog/2025-07-28-curldocs/doc/"><!-- Primary Meta Tags --><title>curl 一些常用的指令 - 魔王の博客 </title><meta name="title" content="curl 一些常用的指令 - 魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://blog.loli.wang/blog/2025-07-28-curldocs/doc/"><meta property="og:title" content="curl 一些常用的指令 - 魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://blog.loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.loli.wang/blog/2025-07-28-curldocs/doc/"><meta property="twitter:title" content="curl 一些常用的指令 - 魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://blog.loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/hoisted.DH1pNdf-.css">
+<link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.CGSjG33K.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://blog.loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2025 YOUR NAME HERE. | <a href="https://blog.loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail" id="lightgallery"> <h2 class="post-title">curl 一些常用的指令</h2> <div class="post-date"> <time datetime="2025-07-28T15:27:24.000Z">2025-07-28 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://blog.loli.wang/blog/2025-07-28-curldocs/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2025-07-28-curldocs/01.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://blog.loli.wang/blog/2025-07-28-curldocs/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2025-07-28-curldocs/01.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2025-07-28-curldocs/01.png');"></div> <div class="post-content">  <h2 id=""></h2>
+<p><code>curl</code> 命令是一个用于从 URL 获取数据的工具，它可以从 HTTP、HTTPS、FTP、SFTP 等协议中获取数据。</p>
+<p>它支持非常多的协议：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">DICT、FILE、FTP、FTPS、GOPHER、GOPHERS、HTTP、HTTPS、IMAP、IMAPS、LDAP、LDAPS、MQTT、POP3、POP3S、RTMP、RTMPS、RTSP、SCP、SFTP、SMB、SMBS、SMTP、SMTPS、TELNET、TFTP、WS</span><span style="color:#9ECBFF"> 和</span><span style="color:#9ECBFF"> WSS</span></span>
+<span class="line"></span></code></pre>
+<h3 id="curl-命令的常见用法">curl 命令的常见用法：</h3>
+<h4 id="1-获取网页内容">1. 获取网页内容</h4>
+<p>这是 <code>curl</code> 最基础的用法，它会将指定 URL 的内容直接输出到终端。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#E1E4E8"> [https://example.com](</span><span style="color:#B392F0">https://example.com</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h4 id="2-保存网页内容到文件">2. 保存网页内容到文件</h4>
+<p>如果你希望将获取到的内容保存下来，而不是直接输出，可以使用 <code>-o</code> 或 <code>-O</code> 选项。</p>
+<ul>
+<li>
+<p><strong><code>-o</code> (小写)</strong>: 将内容保存到你指定的文件名。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -o</span><span style="color:#9ECBFF"> page.html</span><span style="color:#E1E4E8"> [https://example.com](</span><span style="color:#B392F0">https://example.com</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+<li>
+<p><strong><code>-O</code> (大写)</strong>: 使用 URL 中的文件名来保存内容。例如，下面的命令会创建一个名为 <code>download.zip</code> 的文件。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -O</span><span style="color:#E1E4E8"> [https://example.com/files/download.zip](</span><span style="color:#B392F0">https://example.com/files/download.zip</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+</ul>
+<h4 id="3-查看-http-响应头">3. 查看 HTTP 响应头</h4>
+<p>在调试时，查看服务器返回的响应头信息非常有用。</p>
+<ul>
+<li>
+<p><strong><code>-i</code> 或 <code>--include</code></strong>: 在输出中包含 HTTP 响应头和响应体。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -i</span><span style="color:#E1E4E8"> [https://example.com](</span><span style="color:#B392F0">https://example.com</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+<li>
+<p><strong><code>-I</code> (大写) 或 <code>--head</code></strong>: 只获取并显示 HTTP 响应头。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -I</span><span style="color:#E1E4E8"> [https://example.com](</span><span style="color:#B392F0">https://example.com</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+</ul>
+<h4 id="4-发送不同方法的请求">4. 发送不同方法的请求</h4>
+<p>你可以使用 <code>-X</code> 选项来指定 HTTP 请求的方法，如 <code>POST</code>, <code>PUT</code>, <code>DELETE</code> 等。</p>
+<ul>
+<li>
+<p><strong>发送 POST 请求</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -X</span><span style="color:#9ECBFF"> POST</span><span style="color:#E1E4E8"> [https://api.example.com/data](</span><span style="color:#B392F0">https://api.example.com/data</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+<li>
+<p><strong>发送 DELETE 请求</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -X</span><span style="color:#9ECBFF"> DELETE</span><span style="color:#E1E4E8"> [https://api.example.com/data/item/123](</span><span style="color:#B392F0">https://api.example.com/data/item/123</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+</ul>
+<h4 id="5-发送数据">5. 发送数据</h4>
+<p>在与 API 交互时，经常需要发送数据。</p>
+<ul>
+<li>
+<p><strong>发送表单数据 (<code>-d</code> 或 <code>--data</code>)</strong>
+这会模拟一个标准的 HTML 表单提交，默认的 <code>Content-Type</code> 是 <code>application/x-www-form-urlencoded</code>。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -d</span><span style="color:#9ECBFF"> "name=John Doe&#x26;project=curl"</span><span style="color:#E1E4E8"> [https://example.com/form](</span><span style="color:#B392F0">https://example.com/form</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+<li>
+<p><strong>发送 JSON 数据</strong>
+对于现代 API，发送 JSON 数据是常态。你需要手动设置 <code>Content-Type</code> 头，并传递 JSON 字符串。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -X</span><span style="color:#9ECBFF"> POST</span><span style="color:#79B8FF"> -H</span><span style="color:#9ECBFF"> "Content-Type: application/json"</span><span style="color:#79B8FF"> -d</span><span style="color:#9ECBFF"> '{"key":"value", "id":123}'</span><span style="color:#E1E4E8"> [https://api.example.com/items](</span><span style="color:#B392F0">https://api.example.com/items</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+</ul>
+<h4 id="6-添加自定义请求头--h-或---header">6. 添加自定义请求头 (<code>-H</code> 或 <code>--header</code>)</h4>
+<p>在需要身份验证或传递特定元数据时，自定义请求头至关重要。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -H</span><span style="color:#9ECBFF"> "Authorization: Bearer your_api_token"</span><span style="color:#79B8FF"> -H</span><span style="color:#9ECBFF"> "X-Custom-Header: MyValue"</span><span style="color:#E1E4E8"> [https://api.example.com/user](</span><span style="color:#B392F0">https://api.example.com/user</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h4 id="7-跟随重定向--l-或---location">7. 跟随重定向 (<code>-L</code> 或 <code>--location</code>)</h4>
+<p>默认情况下，<code>curl</code> 不会跟随 HTTP 3xx 重定向。使用 <code>-L</code> 选项可以使其请求重定向后的最终 URL。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 如果 [http://google.com](http://google.com) 重定向到 [https://www.google.com](https://www.google.com), -L 会获取最终页面的内容</span></span>
+<span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -L</span><span style="color:#E1E4E8"> [http://google.com](</span><span style="color:#B392F0">http://google.com</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h4 id="8-上传文件">8. 上传文件</h4>
+<p><code>curl</code> 同样可以轻松处理文件上传。</p>
+<ul>
+<li>
+<p><strong>使用 <code>-F</code> 或 <code>--form</code> (multipart/form-data)</strong>
+这会模拟一个包含文件上传的表单提交。使用 <code>@</code> 符号指定文件路径。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -F</span><span style="color:#9ECBFF"> "file=@/path/to/your/image.png"</span><span style="color:#79B8FF"> -F</span><span style="color:#9ECBFF"> "username=testuser"</span><span style="color:#E1E4E8"> [https://example.com/upload](</span><span style="color:#B392F0">https://example.com/upload</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+<li>
+<p><strong>使用 <code>-T</code> 或 <code>--upload-file</code></strong>
+对于 <code>PUT</code> 或 <code>FTP</code> 等协议，可以直接上传文件内容作为请求体。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -T</span><span style="color:#9ECBFF"> /path/to/your/file.txt</span><span style="color:#9ECBFF"> ftp://[ftp.example.com/remote/]</span><span style="color:#E1E4E8">(</span><span style="color:#B392F0">https://ftp.example.com/remote/</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+</li>
+</ul>
+<h4 id="9-断点续传--c-">9. 断点续传 (<code>-C -</code>)</h4>
+<p>在下载大文件时，如果网络中断，此功能非常有用。<code>-C -</code> 告诉 <code>curl</code> 自动寻找断点并从那里继续下载。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 如果下载中断，再次运行相同命令即可恢复下载</span></span>
+<span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -C</span><span style="color:#9ECBFF"> -</span><span style="color:#79B8FF"> -O</span><span style="color:#E1E4E8"> [https://releases.ubuntu.com/22.04.4/ubuntu-22.04.4-desktop-amd64.iso](</span><span style="color:#B392F0">https://releases.ubuntu.com/22.04.4/ubuntu-22.04.4-desktop-amd64.iso</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h4 id="10-处理-cookies">10. 处理 Cookies</h4>
+<p><code>curl</code> 可以方便地存储和发送 cookies，用于维持会话。</p>
+<ul>
+<li><strong><code>-c, --cookie-jar &#x3C;file></code></strong>: 将服务器返回的 Cookies 保存到文件中。</li>
+<li><strong><code>-b, --cookie &#x3C;file|string></code></strong>: 从文件或字符串中读取 Cookies 并发送。</li>
+</ul>
+<!-- end list -->
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 1. 登录并将 session cookies 保存到 cookie.txt</span></span>
+<span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -c</span><span style="color:#9ECBFF"> cookie.txt</span><span style="color:#79B8FF"> -d</span><span style="color:#9ECBFF"> "user=admin&#x26;pass=secret123"</span><span style="color:#E1E4E8"> [https://example.com/login](</span><span style="color:#B392F0">https://example.com/login</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 2. 使用保存的 cookies 访问需要授权的页面</span></span>
+<span class="line"><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -b</span><span style="color:#9ECBFF"> cookie.txt</span><span style="color:#E1E4E8"> [https://example.com/dashboard](</span><span style="color:#B392F0">https://example.com/dashboard</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<h4 id="11-静默模式--s-或---silent">11. 静默模式 (<code>-s</code> 或 <code>--silent</code>)</h4>
+<p>在脚本中使用 <code>curl</code> 时，你可能不希望看到进度条或错误信息。<code>-s</code> 会隐藏这些输出。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 该命令将只输出响应体，没有其他任何信息</span></span>
+<span class="line"><span style="color:#E1E4E8">content</span><span style="color:#F97583">=</span><span style="color:#E1E4E8">$(</span><span style="color:#B392F0">curl</span><span style="color:#79B8FF"> -s</span><span style="color:#E1E4E8"> [https://api.example.com/data](</span><span style="color:#B392F0">https://api.example.com/data</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"><span style="color:#79B8FF">echo</span><span style="color:#E1E4E8"> $content</span></span>
+<span class="line"></span></code></pre>
+<p><code>curl</code> 是一个极其强大的工具，它的功能远不止于此。通过 <code>man curl</code> 命令可以查看其完整的文档和所有可用选项，探索更多高级用法。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span></span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>以后补充实际场景的使用。</span></span>
+<span class="line"><span></span></span></code></pre>  </div> <div class="tag-container"> <a href="/tags/前端进阶" class="tag" title="前端进阶"> 前端进阶 </a><a href="/tags/操作" class="tag" title="操作"> 操作 </a> </div> </div>   </div> </div> </div>  </body></html> 
