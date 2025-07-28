@@ -1,4 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>Node版本管理fnm的使用体验</title><link>https://blog.loli.wang/blog/2025-03-28-nodemanagefnm/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-28-nodemanagefnm/doc/</guid><description>Node版本管理fnm的使用体验</description><pubDate>Fri, 28 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>让浏览器发出声音 SpeechSynthesisUtterance </title><link>https://blog.loli.wang/blog/2025-07-28-speechsynthesisutterance/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-07-28-speechsynthesisutterance/doc/</guid><description>让浏览器发出声音 SpeechSynthesisUtterance</description><pubDate>Mon, 28 Jul 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;Web Speech API&lt;/h2&gt;
+&lt;p&gt;Web Speech API 是一个 JavaScript API，用于让你的语音数据集成到web应用中。&lt;/p&gt;
+&lt;p&gt;语音识别通过接口使用(语音转化文字)   &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition&quot;&gt;SpeechRecognition&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;语音合成通过接口使用(文本转换语音播报)   [SpeechSynthesisUtterance]   (https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesisUtterance)&lt;/p&gt;
+&lt;h2&gt;目前只使了文本转语音&lt;/h2&gt;
+&lt;p&gt;因为目前有个需求是需要把文字转成语音，在以前我会考虑把一些云厂商的tts封装好加入到程序内，但是最近发现这个api已经很完善了，考虑直接用了。&lt;/p&gt;
+&lt;p&gt;但是在使用途中遇到一些坑，使用定时器的时候，发现发现抓取的时间是空的，最开始需要等待一段时间后才能正常被文字转换语音&lt;/p&gt;
+&lt;p&gt;在网上看了解决方案，使用借鉴的案例&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;// 引用 SpeechSynthesisUtterance 讓瀏覽器說話 - Front-End - Let&apos;s Write
+// https://www.letswrite.tw/speech-synthesis-utterance/#speechsynthesisutterance
+
+var synth = window.speechSynthesis;
+function setVoices() {
+  return new Promise((resolve, reject) =&amp;gt; {
+  let timer;
+  timer = setInterval(() =&amp;gt; {
+    if(synth.getVoices().length !== 0) {
+      resolve(synth.getVoices());
+      clearInterval(timer);
+    }
+  }, 10);
+ })
+}
+setVoices().then(voices =&amp;gt; console.log(voices));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;感谢大佬解决我的问题。&lt;/p&gt;
+&lt;p&gt;测试效果视频&lt;/p&gt;
+&lt;p&gt;&amp;lt;video src=&quot;http://img.blog.loli.wang/2025-07-28-speechSynthesisUtterance/01.mp4&quot; controls=&quot;controls&quot; width=&quot;100%&quot; height=&quot;100%&quot;&amp;gt;&amp;lt;/video&amp;gt;&lt;/p&gt;
+</content:encoded></item><item><title>Node版本管理fnm的使用体验</title><link>https://blog.loli.wang/blog/2025-03-28-nodemanagefnm/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-28-nodemanagefnm/doc/</guid><description>Node版本管理fnm的使用体验</description><pubDate>Fri, 28 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;&lt;/h2&gt;
 &lt;p&gt;之前有一篇文章介绍过 node 版本管理工具 volta 的使用 &lt;a href=&quot;https://blog.loli.wang/blog/2023-11-27-volatsetup/doc/index.html&quot;&gt;Node 版本管理 Volta 的使用&lt;/a&gt; 这次偶然发现nodejs官方使用的示例变为了 fnm，用来体验下。&lt;/p&gt;
 &lt;h2&gt;fnm 的介绍&lt;/h2&gt;
 &lt;p&gt;fnm 是使用 Rust 编写的 Node 版本管理工具，它允许您安装多个版本的 Node，并轻松切换它们。&lt;/p&gt;
