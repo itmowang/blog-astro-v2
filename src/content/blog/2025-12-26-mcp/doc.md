@@ -1,8 +1,8 @@
 ---
 title: "[转] MCP 到底是个什么鬼？"
 description: "MCP 到底是个什么鬼？"
-pubDate: "2025-07-28 23:27:24"
-heroImage: "http://img.blog.loli.wang/2025-07-28-speechSynthesisUtterance/01.png"
+pubDate: "2025-12-26 23:27:24"
+heroImage: "http://img.blog.loli.wang/2025-12-26-mcp/01.png"
 tags:
   - AI相关
   - 操作
