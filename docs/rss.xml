@@ -147,6 +147,113 @@ setVoices().then(voices =&amp;gt; console.log(voices));
 &lt;p&gt;感谢大佬解决我的问题。&lt;/p&gt;
 &lt;p&gt;测试效果视频&lt;/p&gt;
 &lt;p&gt;&amp;lt;video src=&quot;http://img.blog.loli.wang/2025-07-28-speechSynthesisUtterance/01.mp4&quot; controls=&quot;controls&quot; width=&quot;100%&quot; height=&quot;100%&quot;&amp;gt;&amp;lt;/video&amp;gt;&lt;/p&gt;
+</content:encoded></item><item><title>[转] MCP 到底是个什么鬼？</title><link>https://blog.loli.wang/blog/2025-12-26-mcp/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-12-26-mcp/doc/</guid><description>MCP 到底是个什么鬼？</description><pubDate>Mon, 28 Jul 2025 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;盘点今年最火的 AI 概念，MCP 必须算是一个，这家伙来势汹汹，各路营销号更是加班加点推波助澜，可是，静下心来想一想，我们真的知道 MCP 是个什么东西么？很多人可能并不是很清楚，只有一个模糊的印象：这玩意好像是让 LLM/Agent 拥有调用外部工具能力的一种...东西吧...&lt;/p&gt;
+&lt;p&gt;不信你去问问周围的人，1000 个人的心中可能至少有 800 个 MCP 的版本... 而且，多数可能都是似是而非的、模糊的，甚至是错误的。&lt;/p&gt;
+&lt;p&gt;之所以这么混乱，是因为乌七八糟的营销号看多了，哦不，是因为没理顺 MCP 和这几个东西之间的关系：LLM 、Agent （含各种 agent 框架）、Function calling&lt;/p&gt;
+&lt;p&gt;如果你非常清晰，这篇文章其实就不需要看了，否则，看完这篇文章你大概率会神清气爽：哦，就这啊！&lt;/p&gt;
+&lt;p&gt;要理解 MCP,我们要问自己一些非常朴素的问题:为什么会有 MCP?它是在什么背景下出现的?没有有它会怎么样?有了它又怎么样?怎么用呢?用了之后有什么好处?&lt;/p&gt;
+&lt;h2&gt;一、从 Function Calling 说起&lt;/h2&gt;
+&lt;p&gt;别急,我们从 function calling 开始说起&lt;/p&gt;
+&lt;p&gt;大语言模型（ LLM ）本身只能“耍嘴皮子”——生成文本，无法直接“动手”调用外部的工具解决一些实际问题（比如一些实时数据查询、数学计算等），所以 openai 在发布 gpt-4-turbo 时推出了 Function Calling 的能力，注意，它不是真的 call 了什么 function ，而是让模型可以&lt;strong&gt;生成结构化的调用指令（ JSON ）&lt;/strong&gt;，什么意思呢，大致是这样的一个过程：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;用户提问+工具列表 → LLM 返回工具调用指令（如需） → 应用根据 LLM 的指令实际调用工具 → 结果再传给 LLM → LLM 返回最终答案 → 用户看到结果&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这个流程里面没有 MCP 啥事，也还没有出现什么 MCP 。&lt;/p&gt;
+&lt;p&gt;你说，这不是很简单么，我的应用程序就按照这个流程写代码就行了，也没多少行代码啊。&lt;/p&gt;
+&lt;p&gt;当然,简单的应用不会有什么问题,就这么玩很丝滑,但是一旦你的应用变的复杂了,工具变得多了,问题就慢慢来了,由于工具逻辑写在你的 App 代码里,所以:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;换 LLM 供应商了?可能要改代码吧？虽然多数 LLM 供应商都支持 openai 的标准,但是也有不一样的,比如 Google 的 Gemini 用 &quot;Function Declaration&quot;,Anthropic 用 &quot;Tool use&quot;&lt;/li&gt;
+&lt;li&gt;工具逻辑/参数变了?你得改代码吧?因为你得维护传给 LLM 的工具参数嘛(名字+工具描述+参数)&lt;/li&gt;
+&lt;li&gt;想加新工具?你还得改代码并重新部署吧?&lt;/li&gt;
+&lt;li&gt;其他项目想复用你的工具,你做过的所有事情,他也得来一遍吧?&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;二、MCP 的思想&lt;/h2&gt;
+&lt;p&gt;总而言之,只要工具维护在你的应用程序里面,和 LLM 交互的这一整套来来回回的流程都得你自己维护。很自然的,你就会想办法把工具的这套东西独立出来,一个朴素而基本的思想是这样的:&lt;/p&gt;
+&lt;p&gt;为什么不搞一个独立的服务，就类似于一个 api 的服务，我应用程序通过这个 api 服务来 list 工具，然后我只要把这些传给 LLM 就行了，执行的时候，我也 call api 来真正调用工具。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;恭喜你，其实这就是 mcp 思想的本质：某种服务 ↔ AI 应用 ↔ LLM 。你看，其实就是解耦，平淡无奇。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;注意，到这里你应该已经发现了：“某种服务”和 LLM 并没有直接的关系，说白了，MCP 和 LLM 其实没有任何的直接关系，MCP 不是直接为 LLM 服务的，LLM 也对 MCP 没有任何的感知，桥接这两者的实际上是你的应用程序（ MCP 的文档里面的 HOST 指的就是应用程序，比如 Claude 这样的 app ，或者你自己开发的 agentic APP ）&lt;/p&gt;
+&lt;p&gt;接下来，你可能就真的这么做了，搞了一个 http 服务，上面有几种接口：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;listing 服务接口：负责维护所有支持的工具的 API 的描述&lt;/li&gt;
+&lt;li&gt;具体的工具接口：负责调用各种外部的 API 、函数、命令行等等，再弄一个标准的返回结构&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;一切都非常的丝滑,你的 APP 终于不需要耦合工具了,舒服,直到有一天...你发现隔壁老王也搞了一个类似的工具集,你一看，他的工具也不错啊,你也想接进来用,于是你的 APP 代码开始出现坏味道了,又开始写了一堆的 adapter 代码,久而久之,这和原来在 APP 内维护工具的做法有什么区别呢?没有任何区别啊,你又走回了老路...&lt;/p&gt;
+&lt;p&gt;这时候,你就开始想了:谁要是能把 adapter 这个事情给统一了该多好,让工具的开发者都在同一个框架下开发并维护工具,这样接口都是统一的,不就不需要写那么多适配器代码了么?&lt;/p&gt;
+&lt;h2&gt;三、MCP 的本质&lt;/h2&gt;
+&lt;p&gt;恭喜你,这就是 MCP 干的事情。&lt;/p&gt;
+&lt;p&gt;MCP 这个名字起的真的是一言难尽： &lt;strong&gt;Model Context Protocol&lt;/strong&gt;，乍一看，模型上下文协议，你肯定会想，跟模型有关系、还跟上下文有关系，还是个协议，结果你看了半天，它是个搞工具调用的，你就自我怀疑了：他跟模型好像没有产生直接关系啊？它跟上下文也没有产生直接关系啊？顶多算是个间接关系、远房亲戚吧？不不不，这么厉害的东西不会这么简单的，是不是我理解错了？&lt;/p&gt;
+&lt;p&gt;其实你理解的一点都没错，事实就是：MCP 这名字起的确实是华而不实、牵强附会、硬蹭热点、假装高级，一股制造概念的营销骚气。要我看啊，给它改一个名字，你就秒懂了，叫它 TCP （ Tool Calling Protocol ，工具调用协议），你看，多精准。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;其实可以站在 Anthropic 角度解释下它的起名逻辑：由于工具调用及其结果会被纳入到 LLM Model 的对话上下文（ Context ）中，从而影响后续的对话，而且确实它是一种应用层的用于交换数据的协议（ Protocol ），所以，叫它 MCP ，有什么毛病嘛？！呵~呵~🙂，你开心就好~&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;本质上 MCP 就是定义了一个远程工具调用的“应用层协议”，是一个应用层的通讯标准/约定，所以你看他的技术栈就明白了：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;应用层: FastMCP 装饰器 (@mcp.tool, @mcp.resource)
+    ↓
+协议层: JSON-RPC 2.0 消息格式
+    ↓
+传输层: stdio/sse/streamable-http (三选一)
+    ↓
+网络层: asyncio + aiohttp/标准 IO
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你看，他其实就是在应用层做了一些封装和创新，以达到：让任何人写出来的 Tool-Service （就是 MCP server ）能够被其他人的 Tool-Client （就是 MCP client ）调用，而调用方无需写很多乱七八糟的胶水代码。就这么朴实无华。你他看它官方编程框架里面的名字是不是都无比眼熟，fastMCP ，是不是感觉到 fastAPI 那股子熟悉感？我猜官方 FastMCP 可能也是借鉴了 FastAPI 的设计理念和实现方式吧（我印象中 fastapi 的 fastMCP 是先出来的），本质就是给 API 套了一层马甲（约定了输入输出等微创新，当然 mcp 也支持本地 stdio 啦），仅此而已。&lt;/p&gt;
+&lt;p&gt;结果很多营销号连基本原理都没搞清楚，就被 Anthropic 带着节奏跑，山呼海啸：震惊，LLM 长出手脚来了，可以干活了，Agent 市场要翻天覆地了！ MCP 王炸！&lt;/p&gt;
+&lt;p&gt;图画的一个比一个抽象,解释的一个比一个魔幻...&lt;/p&gt;
+&lt;p&gt;当然了,这一波炒作下来也不是什么坏事,确实有很多 API 被&quot;标准化&quot;了,给 LLM 应用开发者带来了不少的便利。&lt;/p&gt;
+&lt;h2&gt;四、MCP 是如何工作的?&lt;/h2&gt;
+&lt;p&gt;MCP 它是怎么工作的呢?大致上,分成这么几个步骤:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;MCP-Server ，就是工具提供者，使用 mcp 的标准，借助 mcp 框架写一个 server ，server 这个名字我也想吐槽一下，总给人感觉它是一种需要启动起来的“远程服务”，其实它可以是一个远程的服务，也可以是一个本地的代码（当然也会被 mcp 框架偷偷的“启动起来”）&lt;/li&gt;
+&lt;li&gt;APP ，也就是工具的调用者，使用 mcp 的标准，用 MCP-Client 先连接上 mcp server ，询问它有哪些具体的工具可以使用，mcp server 就会返回一个清单&lt;/li&gt;
+&lt;li&gt;APP ，将工具信息按需乖乖的处理成 LLM 的 function calling 等参数，加上 Message ，开始和 LLM 进行对话，对话的流程是这样的：&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;用户发出：帮我查一下北京天气，然后推荐适合的穿衣搭配
+    ↓
+第 1 轮：APP 将 Message + function calling 参数发送给 LLM
+    ↓
+第 2 轮：LLM 返回天气查询工具调用的指令
+    ↓
+第 3 轮：APP 使用 mcp-client 调用天气查询，返回温度数据，再把这个数据发送给 LLM
+    ↓
+第 4 轮：LLM 分析温度后，返回穿衣推荐工具调用的指令
+    ↓
+第 5 轮：APP 使用 mcp-client 调用穿衣推荐工具，再把这个数据发送给 LLM
+    ↓
+第 6 轮：LLM 返回最终答案
+    ↓
+用户收到：今天的气温是零下 10 度，建议你穿貂
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;你看，MCP 它只把事情做了一半，剩下的另一半还得应用开发者自己做，什么意思呢，在这个流程里面&lt;/p&gt;
+&lt;p&gt;MCP-Server ↔ AI 应用（ MCP-Client ） ↔ LLM&lt;/p&gt;
+&lt;p&gt;AI 应用(MCP-Client)和 LLM 的交互的过程并不是 MCP 能覆盖到的,AI 应用和 LLM 实际上要经过多轮的来来回回交互才能获得最终的结果,这个事情还是得应用开发者自己维护,好在,一些 agent 框架也在这里做了不少工作,帮助开发者简化了这个流程,让开发者感觉到一种错觉:LLM 和 MCP-Server 之间是互联互通的。这是好事,毕竟,应用的开发者应该专注于应用逻辑的开发,而不是跟底层的这些通讯机制死磕。&lt;/p&gt;
+&lt;p&gt;好啦,这就是 MCP 真实的原本的样子,希望看完这篇文章,可以让你对 MCP 祛魅,也理顺 MCP 和 LLM 、Agent （含各种 agent 框架）、Function calling 之间的关系。&lt;/p&gt;
+&lt;h2&gt;五、如何使用 MCP?&lt;/h2&gt;
+&lt;p&gt;理解了 MCP 的本质后,你可能会想,有没有一个现成的框架能让我快速上手,避免重复造轮子呢?有一部分的 LLM 应用的编程框架已经集成了。&lt;/p&gt;
+&lt;p&gt;这里我为自己开发的 Chak 项目做个推广哈，我开发了一个极简风格的 LLM chat sdk —— Chak&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;🚀 *&lt;strong&gt;GitHub: &lt;a href=&quot;https://github.com/zhixiangxue/chak-ai*&quot;&gt;https://github.com/zhixiangxue/chak-ai*&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;它是一个极简的多模型 LLM 客户端，内置了上下文管理和工具调用，极简，开箱即用。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;使用 Chak ，你无需关心 mcp 各种花里胡啥的实现和概念，你只需要 2 步就能让你的 llm 拥有调用工具的能力，一切都是透明的：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;from chak import Conversation
+from chak.mcp import Server
+
+# 从 MCP 服务器加载工具（可以筛选工具）
+tools = await Server(url=&quot;...&quot;).tools()
+
+# 把工具和 LLM 关联起来，剩下的，你就专注于收发消息就行了
+conv = Conversation(&quot;openai/gpt-4o&quot;, tools=tools)
+response = await conv.asend(&quot;What&apos;s the weather in San Francisco?&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;这里我写了很多的例子，注释很详细，动手运行一遍，保证你秒懂： &lt;a href=&quot;https://github.com/zhixiangxue/chak-ai/tree/main/examples&quot;&gt;https://github.com/zhixiangxue/chak-ai/tree/main/examples&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;当然，如果你有兴趣可以看下源码，看看 chak 是如何利用 mcp 调用工具&amp;amp;协调 LLM 工作的。欢迎提 issue ，欢迎交流，更欢迎贡献~&lt;/p&gt;
+&lt;h2&gt;六、最后&lt;/h2&gt;
+&lt;p&gt;MCP 的应用还有很多问题业界也都在探索解决，典型的比如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;工具路由：如何把“对的工具”在“对的时间”给到“对的 LLM”？&lt;/li&gt;
+&lt;li&gt;调试和可观测：工具调用特别多的时候，如何排查问题？是工具的问题还是 LLM 的问题？&lt;/li&gt;
+&lt;li&gt;生态碎片化：表面上好像有了很多的 mcp 服务，但是谁为质量负责呢？ mcp 的生态能否形成利益的正循环？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;MCP 才刚刚开始，MCP 确实是为 AI 的世界定义了“USB 协议”，让工具的即插即用成为了可能。但协议之上，“电脑主板厂商”（ AI 应用/Agent 编程框架）的适配度够么？ USB 的“外设”（各种 MCP Server ）足够丰富、健壮、易用么？生态会持续的形成良性循环么？考验才刚刚开始，至少，从目前看来，有一说一，一般。&lt;/p&gt;
+&lt;p&gt;以上，全文。&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://v2ex.com/t/1174927&quot;&gt;原文链接&lt;/a&gt;&lt;/p&gt;
 </content:encoded></item><item><title>Node版本管理fnm的使用体验</title><link>https://blog.loli.wang/blog/2025-03-28-nodemanagefnm/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-03-28-nodemanagefnm/doc/</guid><description>Node版本管理fnm的使用体验</description><pubDate>Fri, 28 Mar 2025 15:27:24 GMT</pubDate><content:encoded>&lt;h2&gt;&lt;/h2&gt;
 &lt;p&gt;之前有一篇文章介绍过 node 版本管理工具 volta 的使用 &lt;a href=&quot;https://blog.loli.wang/blog/2023-11-27-volatsetup/doc/index.html&quot;&gt;Node 版本管理 Volta 的使用&lt;/a&gt; 这次偶然发现nodejs官方使用的示例变为了 fnm，用来体验下。&lt;/p&gt;
 &lt;h2&gt;fnm 的介绍&lt;/h2&gt;
