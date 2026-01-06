@@ -1,4 +1,210 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[转] MCP 到底是个什么鬼？</title><link>https://blog.loli.wang/blog/2025-12-26-mcp/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-12-26-mcp/doc/</guid><description>MCP 到底是个什么鬼？</description><pubDate>Fri, 26 Dec 2025 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;盘点今年最火的 AI 概念，MCP 必须算是一个，这家伙来势汹汹，各路营销号更是加班加点推波助澜，可是，静下心来想一想，我们真的知道 MCP 是个什么东西么？很多人可能并不是很清楚，只有一个模糊的印象：这玩意好像是让 LLM/Agent 拥有调用外部工具能力的一种...东西吧...&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[学习] 大语言模型到底在干什么</title><link>https://blog.loli.wang/blog/2026-01-06-agent001/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2026-01-06-agent001/doc/</guid><description>[学习] 大语言模型到底在干什么</description><pubDate>Tue, 06 Jan 2026 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;大语言模型到底在干什么&lt;/h1&gt;
+&lt;p&gt;在开发 Agent 之前，我们需要先理解一个最核心的组件：大语言模型（Large Language Model, LLM）。
+早期的模型只是“复读机”，经历了从“统计概率”到“深度学习”，再到“通用人工智能”原型的三次跨越后，现在的 LLM 具备了世界模型（World Model）的雏形。&lt;/p&gt;
+&lt;p&gt;主要发展过程如下：&lt;/p&gt;
+&lt;h4&gt;&lt;strong&gt;1. 萌芽期：统计与神经网络（2013 - 2017）&lt;/strong&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;关键技术&lt;/strong&gt;：Word2Vec, RNN, LSTM。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特征&lt;/strong&gt;：这一时期的模型主要用于翻译和情感分析。虽然能处理序列，但“记性”不好，难以理解长文本，更无法进行复杂的逻辑推理。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;局限&lt;/strong&gt;：模型规模小，且必须针对特定任务（如下棋、翻译）进行专项训练。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;strong&gt;2. 转折点：Transformer 的诞生（2017 - 2019）&lt;/strong&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;里程碑&lt;/strong&gt;：Google 发布论文 &lt;em&gt;Attention is All You Need&lt;/em&gt;，提出了 &lt;strong&gt;Transformer&lt;/strong&gt; 架构。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特征&lt;/strong&gt;：引入了“自注意力机制（Self-Attention）”，让模型能够并行处理数据并捕捉长距离的语义联系。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;代表作&lt;/strong&gt;：BERT（理解力强）和 GPT-1/2（生成能力初现）。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;strong&gt;3. 爆发期：大规模预训练与涌现能力（2020 - 2022）&lt;/strong&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;里程碑&lt;/strong&gt;：GPT-3 的发布。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特征&lt;/strong&gt;：人们发现，当模型参数达到千亿级别时，会产生**“涌现能力（Emergent Abilities）”**——模型开始具备零样本学习（Zero-shot）和上下文学习（In-context Learning）能力，不再需要为每个小任务微调。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;社会化&lt;/strong&gt;：ChatGPT 的出现标志着 LLM 正式具备了强大的指令遵循和多轮对话能力。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;strong&gt;4. 现状：从 ChatBot 迈向 Agent（2023 至今）&lt;/strong&gt;&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;核心逻辑&lt;/strong&gt;：模型不再仅仅是“聊天工具”，而是作为&lt;strong&gt;推理引擎&lt;/strong&gt;。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;特征&lt;/strong&gt;：随着推理能力（Reasoning，如 OpenAI o1, DeepSeek-R1）和多模态能力（Vision）的突破，模型可以自主规划步骤、调用工具、观察反馈并修正行为。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;趋势&lt;/strong&gt;：长文本支持（Long Context）、低延迟流式输出以及与现实世界接口的深度整合。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;下面将从开发者的视角出发，了解和学习LLM相关的知识&lt;/p&gt;
+&lt;h2&gt;一、什么是 LLM（大语言模型）&lt;/h2&gt;
+&lt;p&gt;简单来说，LLM 是一种通过在海量文本数据上进行训练，学会了“预测下一个Token”的深度学习模型。&lt;/p&gt;
+&lt;h3&gt;1. 从三个维度理解 LLM&lt;/h3&gt;
+&lt;h4&gt;&lt;strong&gt;“大” (Large)&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;这里的“大”通常指两个方面：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;参数量大&lt;/strong&gt;：模型内部拥有数十亿甚至上万亿个可调节的参数（如 GPT-4, Llama 3）。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数据量大&lt;/strong&gt;：训练数据涵盖了互联网上的书籍、代码、论文、对话等几乎人类所有的公开知识。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;strong&gt;“语言” (Language)本&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;对于 LLM 来说，语言不仅是人类的谈话，还包括：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;程序代码&lt;/strong&gt;（逻辑的体现）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;数学公式&lt;/strong&gt;（严谨性的体现）&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;结构化数据&lt;/strong&gt;（如 JSON、XML，是 Agent 调用工具的基石）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;strong&gt;“模型” (Model)&lt;/strong&gt;&lt;/h4&gt;
+&lt;p&gt;LLM 本质上是一个极其复杂的概率模型。当你给它一个开头（Prompt）时，它在计算：&lt;strong&gt;“基于我读过的所有书，接下来的哪一个字最合理？”&lt;/strong&gt;&lt;/p&gt;
+&lt;h3&gt;2. LLM 的核心技术：Transformer 架构&lt;/h3&gt;
+&lt;p&gt;目前几乎所有主流的 LLM（GPT, Claude, Gemini, DeepSeek）都基于 &lt;strong&gt;Transformer&lt;/strong&gt; 架构。它最核心的创新是 &lt;strong&gt;自注意力机制 (Self-Attention)&lt;/strong&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;并行处理&lt;/strong&gt;：不同于早期的模型必须逐字阅读，Transformer 可以同时“观察”整句话。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;上下文联系&lt;/strong&gt;：它能理解长句子中不同词语之间的深层关联。例如在“苹果公司发布了新手机，它很受欢迎”中，模型能准确知道“它”指的是“手机”还是“苹果公司”。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3.大语言模型的本质&lt;/h3&gt;
+&lt;p&gt;从本质看，&lt;strong&gt;LLM 是一个在给定上下文条件下，预测下一个 token 概率分布的函数。&lt;/strong&gt;
+当你向 LLM 输入一段文本时，例如：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“今天北京的天气很……”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;模型并不是在“理解天气”，而是在内部执行这样一件事：&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;P(下一个 token | 已有的所有 token)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;它会对词表中的所有 token 计算一个概率分布，例如：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;token&lt;/th&gt;
+&lt;th&gt;概率&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;冷&lt;/td&gt;
+&lt;td&gt;0.31&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;好&lt;/td&gt;
+&lt;td&gt;0.27&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;热&lt;/td&gt;
+&lt;td&gt;0.18&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;不错&lt;/td&gt;
+&lt;td&gt;0.12&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;🍎&lt;/td&gt;
+&lt;td&gt;0.00001&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;然后根据采样策略（temperature、top-p 等），&lt;strong&gt;选出一个 token&lt;/strong&gt;，拼接到已有文本后面，再继续预测下一个。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;from IPython.display import HTML, display
+
+display(HTML(&quot;&quot;&quot;
+&amp;lt;figure&amp;gt;
+  &amp;lt;video width=&quot;600&quot; controls&amp;gt;
+    &amp;lt;source src=&quot;./raw/transformer.mp4&quot; type=&quot;video/mp4&quot;&amp;gt;
+  &amp;lt;/video&amp;gt;
+  &amp;lt;figcaption style=&quot;font-size: 12px; color: gray; margin-top: 4px;&quot;&amp;gt;
+    （来源：3Blue1Brown）
+  &amp;lt;/figcaption&amp;gt;
+&amp;lt;/figure&amp;gt;
+&quot;&quot;&quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;实战：观察token粒度&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;import tiktoken
+
+def analyze_tokens(model_name, text_list):
+    # 加载对应的编码器
+    enc = tiktoken.encoding_for_model(model_name)
+    
+    print(f&quot;--- 使用模型: {model_name} ---&quot;)
+    print(f&quot;{&apos;文本内容&apos;:&amp;lt;30} | {&apos;字符数&apos;:&amp;lt;5} | {&apos;Token数&apos;:&amp;lt;5} | {&apos;切分结果&apos;}&quot;)
+    print(&quot;-&quot; * 80)
+    
+    for text in text_list:
+        tokens = enc.encode(text)
+        # 将 token id 转换回文字，方便查看切分细节
+        token_strings = [enc.decode([t]) for t in tokens]
+        
+        print(f&quot;{text:&amp;lt;30} | {len(text):&amp;lt;8} | {len(tokens):&amp;lt;8} | {token_strings}&quot;)
+
+# 准备测试样本
+samples = [
+    &quot;你好，今天天气不错。&quot;,        # 普通中文句子
+    &quot;深度学习卷积神经网络&quot;,        # 专业术语
+    &quot;Using LangChain 部署 Agent&quot;, # 中英混合
+    &quot;龘龘靐齉爩&quot;                  # 生僻字（极端情况）
+]
+
+analyze_tokens(&quot;gpt-4o&quot;, samples)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;运行上述代码，你会发现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;中文句子&lt;/strong&gt;：通常 1 个汉字占据 1 个 Token，但标点符号也占 1 个。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;专业术语&lt;/strong&gt;：由于“卷积”、“神经”等词承载频率极高，它们有时会被合并为一个 Token，或者切分得非常整齐。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;中英混合&lt;/strong&gt;：英文单词通常按空格或子词（Subword）切分。比如 &lt;code&gt;Using&lt;/code&gt; 是 1 个 Token，但复杂的英文单词可能被拆分。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;二、「预测下一个 token」的真实含义&lt;/h2&gt;
+&lt;h3&gt;什么是 token&lt;/h3&gt;
+&lt;p&gt;首先，需要知道的是，token 不是字、词或者句子。&lt;/p&gt;
+&lt;p&gt;而是模型词表中的&lt;strong&gt;最小计算单位&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;例如，“人工智能”的token是 人 / 工 / 智能，unbelievable的token是unbelievable | un / believe / able。&lt;/p&gt;
+&lt;p&gt;模型从不“看到句子”，它只看到 &lt;strong&gt;token 序列&lt;/strong&gt;。&lt;/p&gt;
+&lt;h3&gt;预测的不是“内容”，而是概率&lt;/h3&gt;
+&lt;p&gt;模型真正输出的是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  token_A: 0.42,
+  token_B: 0.31,
+  token_C: 0.09,
+  ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;最终的“回答”，只是从这个分布中&lt;strong&gt;采样&lt;/strong&gt;出来的结果。&lt;/p&gt;
+&lt;h2&gt;实战: 模拟一个“假模型”&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;context = &quot;北京是中国的&quot;
+
+fake_next_token_probs = {
+    &quot;首都&quot;: 0.55,
+    &quot;城市&quot;: 0.15,
+    &quot;中心&quot;: 0.10,
+    &quot;经济&quot;: 0.05,
+    &quot;苹果&quot;: 0.01
+}
+
+fake_next_token_probs
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 简单采样实验
+
+import random
+
+tokens = list(fake_next_token_probs.keys())
+probs = list(fake_next_token_probs.values())
+
+def sample_once():
+    return random.choices(tokens, probs)[0]
+
+[sample_once() for _ in range(10)]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;这就是为什么同一个问题每次回答略有不同&lt;/p&gt;
+&lt;h2&gt;三、为什么一个“预测器”能产生看起来像智能的行为&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;关键原因语言本身就高度压缩了人类的知识、逻辑和行为模式&lt;/strong&gt;,LLM学到&lt;strong&gt;人类在什么情况下会说什么样的话&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;LLM学到了在语料中反复出现的&lt;strong&gt;问题 → 解决步骤 → 结论&lt;/strong&gt;, 在代码中大量存在的&lt;strong&gt;代码 → 注释 → 修复&lt;/strong&gt;等等。&lt;/p&gt;
+&lt;p&gt;但LLM没有学的事实、规则等人类拥有的这些东西&lt;/p&gt;
+&lt;h3&gt;实战: 破坏“智能感”&lt;/h3&gt;
+&lt;p&gt;提出一个“人类觉得毫无难度”的问题，比如“现在是什么时间？”, 在**没有任何外部工具（如系统时间、浏览器、函数调用）**的情况下，LLM 往往会：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;给出一个&lt;strong&gt;模糊或泛化的回答&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“我无法获取实时时间，但你可以查看设备上的时间。”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;或给出一个&lt;strong&gt;看起来合理但本质回避的问题转移&lt;/strong&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“时间取决于你所在的时区，目前可以通过系统时钟确认。”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;在部分场景中，甚至会&lt;strong&gt;直接“猜一个时间”&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/flingjie/Agent-100-Days/blob/main/week1/01.%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%88%B0%E5%BA%95%E5%9C%A8%E5%B9%B2%E4%BB%80%E4%B9%88.ipynb&quot;&gt;原文链接 Agent-100-Days 大语言模型到底在干什么&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>[转] MCP 到底是个什么鬼？</title><link>https://blog.loli.wang/blog/2025-12-26-mcp/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-12-26-mcp/doc/</guid><description>MCP 到底是个什么鬼？</description><pubDate>Fri, 26 Dec 2025 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;盘点今年最火的 AI 概念，MCP 必须算是一个，这家伙来势汹汹，各路营销号更是加班加点推波助澜，可是，静下心来想一想，我们真的知道 MCP 是个什么东西么？很多人可能并不是很清楚，只有一个模糊的印象：这玩意好像是让 LLM/Agent 拥有调用外部工具能力的一种...东西吧...&lt;/p&gt;
 &lt;p&gt;不信你去问问周围的人，1000 个人的心中可能至少有 800 个 MCP 的版本... 而且，多数可能都是似是而非的、模糊的，甚至是错误的。&lt;/p&gt;
 &lt;p&gt;之所以这么混乱，是因为乌七八糟的营销号看多了，哦不，是因为没理顺 MCP 和这几个东西之间的关系：LLM 、Agent （含各种 agent 框架）、Function calling&lt;/p&gt;
 &lt;p&gt;如果你非常清晰，这篇文章其实就不需要看了，否则，看完这篇文章你大概率会神清气爽：哦，就这啊！&lt;/p&gt;

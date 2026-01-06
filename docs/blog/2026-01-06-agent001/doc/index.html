@@ -1,0 +1,209 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> --><!-- Canonical URL --><link rel="canonical" href="https://blog.loli.wang/blog/2026-01-06-agent001/doc/"><!-- Primary Meta Tags --><title>[学习] 大语言模型到底在干什么 - 魔王の博客 </title><meta name="title" content="[学习] 大语言模型到底在干什么 - 魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://blog.loli.wang/blog/2026-01-06-agent001/doc/"><meta property="og:title" content="[学习] 大语言模型到底在干什么 - 魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://blog.loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.loli.wang/blog/2026-01-06-agent001/doc/"><meta property="twitter:title" content="[学习] 大语言模型到底在干什么 - 魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://blog.loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/hoisted.DH1pNdf-.css">
+<link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.CGSjG33K.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://blog.loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2026 YOUR NAME HERE. | <a href="https://blog.loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail" id="lightgallery"> <h2 class="post-title">[学习] 大语言模型到底在干什么</h2> <div class="post-date"> <time datetime="2026-01-06T15:27:24.000Z">2026-01-06 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://blog.loli.wang/blog/2026-01-06-agent001/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2026-01-06-Agent001/01.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://blog.loli.wang/blog/2026-01-06-agent001/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2026-01-06-Agent001/01.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2026-01-06-Agent001/01.png');"></div> <div class="post-content">  <h1 id="大语言模型到底在干什么">大语言模型到底在干什么</h1>
+<p>在开发 Agent 之前，我们需要先理解一个最核心的组件：大语言模型（Large Language Model, LLM）。
+早期的模型只是“复读机”，经历了从“统计概率”到“深度学习”，再到“通用人工智能”原型的三次跨越后，现在的 LLM 具备了世界模型（World Model）的雏形。</p>
+<p>主要发展过程如下：</p>
+<h4 id="1-萌芽期统计与神经网络2013---2017"><strong>1. 萌芽期：统计与神经网络（2013 - 2017）</strong></h4>
+<ul>
+<li><strong>关键技术</strong>：Word2Vec, RNN, LSTM。</li>
+<li><strong>特征</strong>：这一时期的模型主要用于翻译和情感分析。虽然能处理序列，但“记性”不好，难以理解长文本，更无法进行复杂的逻辑推理。</li>
+<li><strong>局限</strong>：模型规模小，且必须针对特定任务（如下棋、翻译）进行专项训练。</li>
+</ul>
+<h4 id="2-转折点transformer-的诞生2017---2019"><strong>2. 转折点：Transformer 的诞生（2017 - 2019）</strong></h4>
+<ul>
+<li><strong>里程碑</strong>：Google 发布论文 <em>Attention is All You Need</em>，提出了 <strong>Transformer</strong> 架构。</li>
+<li><strong>特征</strong>：引入了“自注意力机制（Self-Attention）”，让模型能够并行处理数据并捕捉长距离的语义联系。</li>
+<li><strong>代表作</strong>：BERT（理解力强）和 GPT-1/2（生成能力初现）。</li>
+</ul>
+<h4 id="3-爆发期大规模预训练与涌现能力2020---2022"><strong>3. 爆发期：大规模预训练与涌现能力（2020 - 2022）</strong></h4>
+<ul>
+<li><strong>里程碑</strong>：GPT-3 的发布。</li>
+<li><strong>特征</strong>：人们发现，当模型参数达到千亿级别时，会产生**“涌现能力（Emergent Abilities）”**——模型开始具备零样本学习（Zero-shot）和上下文学习（In-context Learning）能力，不再需要为每个小任务微调。</li>
+<li><strong>社会化</strong>：ChatGPT 的出现标志着 LLM 正式具备了强大的指令遵循和多轮对话能力。</li>
+</ul>
+<h4 id="4-现状从-chatbot-迈向-agent2023-至今"><strong>4. 现状：从 ChatBot 迈向 Agent（2023 至今）</strong></h4>
+<ul>
+<li><strong>核心逻辑</strong>：模型不再仅仅是“聊天工具”，而是作为<strong>推理引擎</strong>。</li>
+<li><strong>特征</strong>：随着推理能力（Reasoning，如 OpenAI o1, DeepSeek-R1）和多模态能力（Vision）的突破，模型可以自主规划步骤、调用工具、观察反馈并修正行为。</li>
+<li><strong>趋势</strong>：长文本支持（Long Context）、低延迟流式输出以及与现实世界接口的深度整合。</li>
+</ul>
+<p>下面将从开发者的视角出发，了解和学习LLM相关的知识</p>
+<h2 id="一什么是-llm大语言模型">一、什么是 LLM（大语言模型）</h2>
+<p>简单来说，LLM 是一种通过在海量文本数据上进行训练，学会了“预测下一个Token”的深度学习模型。</p>
+<h3 id="1-从三个维度理解-llm">1. 从三个维度理解 LLM</h3>
+<h4 id="大-large"><strong>“大” (Large)</strong></h4>
+<p>这里的“大”通常指两个方面：</p>
+<ul>
+<li><strong>参数量大</strong>：模型内部拥有数十亿甚至上万亿个可调节的参数（如 GPT-4, Llama 3）。</li>
+<li><strong>数据量大</strong>：训练数据涵盖了互联网上的书籍、代码、论文、对话等几乎人类所有的公开知识。</li>
+</ul>
+<h4 id="语言-language本"><strong>“语言” (Language)本</strong></h4>
+<p>对于 LLM 来说，语言不仅是人类的谈话，还包括：</p>
+<ul>
+<li><strong>程序代码</strong>（逻辑的体现）</li>
+<li><strong>数学公式</strong>（严谨性的体现）</li>
+<li><strong>结构化数据</strong>（如 JSON、XML，是 Agent 调用工具的基石）</li>
+</ul>
+<h4 id="模型-model"><strong>“模型” (Model)</strong></h4>
+<p>LLM 本质上是一个极其复杂的概率模型。当你给它一个开头（Prompt）时，它在计算：<strong>“基于我读过的所有书，接下来的哪一个字最合理？”</strong></p>
+<h3 id="2-llm-的核心技术transformer-架构">2. LLM 的核心技术：Transformer 架构</h3>
+<p>目前几乎所有主流的 LLM（GPT, Claude, Gemini, DeepSeek）都基于 <strong>Transformer</strong> 架构。它最核心的创新是 <strong>自注意力机制 (Self-Attention)</strong>。</p>
+<ul>
+<li><strong>并行处理</strong>：不同于早期的模型必须逐字阅读，Transformer 可以同时“观察”整句话。</li>
+<li><strong>上下文联系</strong>：它能理解长句子中不同词语之间的深层关联。例如在“苹果公司发布了新手机，它很受欢迎”中，模型能准确知道“它”指的是“手机”还是“苹果公司”。</li>
+</ul>
+<h3 id="3大语言模型的本质">3.大语言模型的本质</h3>
+<p>从本质看，<strong>LLM 是一个在给定上下文条件下，预测下一个 token 概率分布的函数。</strong>
+当你向 LLM 输入一段文本时，例如：</p>
+<blockquote>
+<p>“今天北京的天气很……”</p>
+</blockquote>
+<p>模型并不是在“理解天气”，而是在内部执行这样一件事：</p>
+<p><code>P(下一个 token | 已有的所有 token)</code></p>
+<p>它会对词表中的所有 token 计算一个概率分布，例如：</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>token</th><th>概率</th></tr></thead><tbody><tr><td>冷</td><td>0.31</td></tr><tr><td>好</td><td>0.27</td></tr><tr><td>热</td><td>0.18</td></tr><tr><td>不错</td><td>0.12</td></tr><tr><td>🍎</td><td>0.00001</td></tr></tbody></table>
+<p>然后根据采样策略（temperature、top-p 等），<strong>选出一个 token</strong>，拼接到已有文本后面，再继续预测下一个。</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">from</span><span style="color:#E1E4E8"> IPython.display </span><span style="color:#F97583">import</span><span style="color:#79B8FF"> HTML</span><span style="color:#E1E4E8">, display</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">display(HTML(</span><span style="color:#9ECBFF">"""</span></span>
+<span class="line"><span style="color:#9ECBFF">&#x3C;figure></span></span>
+<span class="line"><span style="color:#9ECBFF">  &#x3C;video width="600" controls></span></span>
+<span class="line"><span style="color:#9ECBFF">    &#x3C;source src="./raw/transformer.mp4" type="video/mp4"></span></span>
+<span class="line"><span style="color:#9ECBFF">  &#x3C;/video></span></span>
+<span class="line"><span style="color:#9ECBFF">  &#x3C;figcaption style="font-size: 12px; color: gray; margin-top: 4px;"></span></span>
+<span class="line"><span style="color:#9ECBFF">    （来源：3Blue1Brown）</span></span>
+<span class="line"><span style="color:#9ECBFF">  &#x3C;/figcaption></span></span>
+<span class="line"><span style="color:#9ECBFF">&#x3C;/figure></span></span>
+<span class="line"><span style="color:#9ECBFF">"""</span><span style="color:#E1E4E8">))</span></span>
+<span class="line"></span></code></pre>
+<h3 id="实战观察token粒度">实战：观察token粒度</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> tiktoken</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> analyze_tokens</span><span style="color:#E1E4E8">(model_name, text_list):</span></span>
+<span class="line"><span style="color:#6A737D">    # 加载对应的编码器</span></span>
+<span class="line"><span style="color:#E1E4E8">    enc </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> tiktoken.encoding_for_model(model_name)</span></span>
+<span class="line"><span style="color:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">"--- 使用模型: </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">model_name</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> ---"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">"</span><span style="color:#79B8FF">{</span><span style="color:#9ECBFF">'文本内容'</span><span style="color:#F97583">:&#x3C;30</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> | </span><span style="color:#79B8FF">{</span><span style="color:#9ECBFF">'字符数'</span><span style="color:#F97583">:&#x3C;5</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> | </span><span style="color:#79B8FF">{</span><span style="color:#9ECBFF">'Token数'</span><span style="color:#F97583">:&#x3C;5</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> | </span><span style="color:#79B8FF">{</span><span style="color:#9ECBFF">'切分结果'</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">    print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"-"</span><span style="color:#F97583"> *</span><span style="color:#79B8FF"> 80</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#E1E4E8">    </span></span>
+<span class="line"><span style="color:#F97583">    for</span><span style="color:#E1E4E8"> text </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> text_list:</span></span>
+<span class="line"><span style="color:#E1E4E8">        tokens </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> enc.encode(text)</span></span>
+<span class="line"><span style="color:#6A737D">        # 将 token id 转换回文字，方便查看切分细节</span></span>
+<span class="line"><span style="color:#E1E4E8">        token_strings </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [enc.decode([t]) </span><span style="color:#F97583">for</span><span style="color:#E1E4E8"> t </span><span style="color:#F97583">in</span><span style="color:#E1E4E8"> tokens]</span></span>
+<span class="line"><span style="color:#E1E4E8">        </span></span>
+<span class="line"><span style="color:#79B8FF">        print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">"</span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">text</span><span style="color:#F97583">:&#x3C;30</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> | </span><span style="color:#79B8FF">{len</span><span style="color:#E1E4E8">(text)</span><span style="color:#F97583">:&#x3C;8</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> | </span><span style="color:#79B8FF">{len</span><span style="color:#E1E4E8">(tokens)</span><span style="color:#F97583">:&#x3C;8</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> | </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">token_strings</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 准备测试样本</span></span>
+<span class="line"><span style="color:#E1E4E8">samples </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> [</span></span>
+<span class="line"><span style="color:#9ECBFF">    "你好，今天天气不错。"</span><span style="color:#E1E4E8">,        </span><span style="color:#6A737D"># 普通中文句子</span></span>
+<span class="line"><span style="color:#9ECBFF">    "深度学习卷积神经网络"</span><span style="color:#E1E4E8">,        </span><span style="color:#6A737D"># 专业术语</span></span>
+<span class="line"><span style="color:#9ECBFF">    "Using LangChain 部署 Agent"</span><span style="color:#E1E4E8">, </span><span style="color:#6A737D"># 中英混合</span></span>
+<span class="line"><span style="color:#9ECBFF">    "龘龘靐齉爩"</span><span style="color:#6A737D">                  # 生僻字（极端情况）</span></span>
+<span class="line"><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">analyze_tokens(</span><span style="color:#9ECBFF">"gpt-4o"</span><span style="color:#E1E4E8">, samples)</span></span>
+<span class="line"></span></code></pre>
+<p>运行上述代码，你会发现：</p>
+<ul>
+<li><strong>中文句子</strong>：通常 1 个汉字占据 1 个 Token，但标点符号也占 1 个。</li>
+<li><strong>专业术语</strong>：由于“卷积”、“神经”等词承载频率极高，它们有时会被合并为一个 Token，或者切分得非常整齐。</li>
+<li><strong>中英混合</strong>：英文单词通常按空格或子词（Subword）切分。比如 <code>Using</code> 是 1 个 Token，但复杂的英文单词可能被拆分。</li>
+</ul>
+<h2 id="二预测下一个-token的真实含义">二、「预测下一个 token」的真实含义</h2>
+<h3 id="什么是-token">什么是 token</h3>
+<p>首先，需要知道的是，token 不是字、词或者句子。</p>
+<p>而是模型词表中的<strong>最小计算单位</strong>。</p>
+<p>例如，“人工智能”的token是 人 / 工 / 智能，unbelievable的token是unbelievable | un / believe / able。</p>
+<p>模型从不“看到句子”，它只看到 <strong>token 序列</strong>。</p>
+<h3 id="预测的不是内容而是概率">预测的不是“内容”，而是概率</h3>
+<p>模型真正输出的是：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>{</span></span>
+<span class="line"><span>  token_A: 0.42,</span></span>
+<span class="line"><span>  token_B: 0.31,</span></span>
+<span class="line"><span>  token_C: 0.09,</span></span>
+<span class="line"><span>  ...</span></span>
+<span class="line"><span>}</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>最终的“回答”，只是从这个分布中<strong>采样</strong>出来的结果。</p>
+<h2 id="实战-模拟一个假模型">实战: 模拟一个“假模型”</h2>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#E1E4E8">context </span><span style="color:#F97583">=</span><span style="color:#9ECBFF"> "北京是中国的"</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">fake_next_token_probs </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> {</span></span>
+<span class="line"><span style="color:#9ECBFF">    "首都"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.55</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "城市"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.15</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "中心"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.10</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "经济"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.05</span><span style="color:#E1E4E8">,</span></span>
+<span class="line"><span style="color:#9ECBFF">    "苹果"</span><span style="color:#E1E4E8">: </span><span style="color:#79B8FF">0.01</span></span>
+<span class="line"><span style="color:#E1E4E8">}</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">fake_next_token_probs</span></span>
+<span class="line"></span></code></pre>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#6A737D">## 简单采样实验</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> random</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">tokens </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> list</span><span style="color:#E1E4E8">(fake_next_token_probs.keys())</span></span>
+<span class="line"><span style="color:#E1E4E8">probs </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> list</span><span style="color:#E1E4E8">(fake_next_token_probs.values())</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">def</span><span style="color:#B392F0"> sample_once</span><span style="color:#E1E4E8">():</span></span>
+<span class="line"><span style="color:#F97583">    return</span><span style="color:#E1E4E8"> random.choices(tokens, probs)[</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">]</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">[sample_once() </span><span style="color:#F97583">for</span><span style="color:#E1E4E8"> _ </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> range</span><span style="color:#E1E4E8">(</span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">)]</span></span>
+<span class="line"></span></code></pre>
+<p>这就是为什么同一个问题每次回答略有不同</p>
+<h2 id="三为什么一个预测器能产生看起来像智能的行为">三、为什么一个“预测器”能产生看起来像智能的行为</h2>
+<p><strong>关键原因语言本身就高度压缩了人类的知识、逻辑和行为模式</strong>,LLM学到<strong>人类在什么情况下会说什么样的话</strong>。</p>
+<p>LLM学到了在语料中反复出现的<strong>问题 → 解决步骤 → 结论</strong>, 在代码中大量存在的<strong>代码 → 注释 → 修复</strong>等等。</p>
+<p>但LLM没有学的事实、规则等人类拥有的这些东西</p>
+<h3 id="实战-破坏智能感">实战: 破坏“智能感”</h3>
+<p>提出一个“人类觉得毫无难度”的问题，比如“现在是什么时间？”, 在**没有任何外部工具（如系统时间、浏览器、函数调用）**的情况下，LLM 往往会：</p>
+<ul>
+<li>
+<p>给出一个<strong>模糊或泛化的回答</strong></p>
+<blockquote>
+<p>“我无法获取实时时间，但你可以查看设备上的时间。”</p>
+</blockquote>
+</li>
+<li>
+<p>或给出一个<strong>看起来合理但本质回避的问题转移</strong></p>
+<blockquote>
+<p>“时间取决于你所在的时区，目前可以通过系统时钟确认。”</p>
+</blockquote>
+</li>
+<li>
+<p>在部分场景中，甚至会<strong>直接“猜一个时间”</strong></p>
+</li>
+</ul>
+<p><a href="https://github.com/flingjie/Agent-100-Days/blob/main/week1/01.%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%88%B0%E5%BA%95%E5%9C%A8%E5%B9%B2%E4%BB%80%E4%B9%88.ipynb">原文链接 Agent-100-Days 大语言模型到底在干什么</a></p>  </div> <div class="tag-container"> <a href="/tags/大模型学习" class="tag" title="大模型学习"> 大模型学习 </a><a href="/tags/大模型" class="tag" title="大模型"> 大模型 </a> </div> </div>   </div> </div> </div>  </body></html> 
