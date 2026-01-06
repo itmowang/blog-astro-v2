@@ -204,6 +204,239 @@ def sample_once():
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/flingjie/Agent-100-Days/blob/main/week1/01.%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E5%88%B0%E5%BA%95%E5%9C%A8%E5%B9%B2%E4%BB%80%E4%B9%88.ipynb&quot;&gt;原文链接 Agent-100-Days 大语言模型到底在干什么&lt;/a&gt;&lt;/p&gt;
+</content:encoded></item><item><title>[学习] Token、Embedding 与向量空间</title><link>https://blog.loli.wang/blog/2026-01-06-agent002/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2026-01-06-agent002/doc/</guid><description>[学习] Token、Embedding 与向量空间</description><pubDate>Tue, 06 Jan 2026 15:27:24 GMT</pubDate><content:encoded>&lt;h1&gt;Token、Embedding 与向量空间&lt;/h1&gt;
+&lt;p&gt;在上一节中讲到，LLM 的本质是&lt;strong&gt;一个在给定上下文条件下，预测下一个 token 概率分布的函数&lt;/strong&gt;。那么 Token 到底是什么，为什么 LLM 要以 token 为单位，以及由此而来的 Embedding 和向量空间的概念。&lt;/p&gt;
+&lt;h2&gt;一、什么是 Token，为什么 LLM 的基本单位是 Token&lt;/h2&gt;
+&lt;p&gt;要真正理解 Token，必须回到计算机处理文字的底层逻辑。不能只停留在当下的 AI 浪潮中，而需要&lt;strong&gt;回到一个更根本的问题&lt;/strong&gt;：&lt;strong&gt;计算机究竟是如何“看到”文字的？&lt;/strong&gt;&lt;/p&gt;
+&lt;h3&gt;1. 追根溯源：从二进制到字符&lt;/h3&gt;
+&lt;p&gt;计算机的世界里，&lt;strong&gt;唯一真实存在的只有二进制&lt;/strong&gt;。无论是文字、图片还是代码，最终都必须被表示为 0 和 1。因此，计算机并不能直接理解 &lt;code&gt;A&lt;/code&gt;、&lt;code&gt;你&lt;/code&gt;、&lt;code&gt;+&lt;/code&gt; 等字符，它真正能处理的只有类似 &lt;code&gt;01000001&lt;/code&gt; 这样的形式。&lt;/p&gt;
+&lt;h3&gt;2. 编码（Encoding）：字符进入计算机的第一步&lt;/h3&gt;
+&lt;p&gt;为了让计算机“识别”人类的文字，出现了 &lt;strong&gt;编码（Encoding）&lt;/strong&gt; 的概念——&lt;strong&gt;用数字去代表字符&lt;/strong&gt;。最早被广泛使用的是 &lt;strong&gt;ASCII 编码&lt;/strong&gt;：每个字符用 8 位二进制数表示，覆盖英文字符、数字和少量符号。例如：&lt;code&gt;A&lt;/code&gt; → 十进制 &lt;code&gt;65&lt;/code&gt;，&lt;code&gt;B&lt;/code&gt; → 十进制 &lt;code&gt;66&lt;/code&gt;。ASCII 解决了英文世界的问题，但它无法表示中文、日文等非拉丁字符。&lt;/p&gt;
+&lt;h3&gt;3. Unicode：让“所有字符”都能被编码&lt;/h3&gt;
+&lt;p&gt;为了解决多语言问题，&lt;strong&gt;Unicode&lt;/strong&gt; 体系诞生了（常见实现如 UTF-8）。它的目标很明确：&lt;strong&gt;为世界上每一个字符分配一个唯一编号&lt;/strong&gt;。在这一阶段，计算机已经可以显示中文、存储多语言文本并正确传输字符序列。&lt;/p&gt;
+&lt;h3&gt;4. Token 的出现：从“编码”走向“统计压缩”&lt;/h3&gt;
+&lt;p&gt;Token 的意义，正是在这里发生了质变。与 ASCII / Unicode 不同，&lt;strong&gt;Token 不再只是编码方案&lt;/strong&gt;，而是一种基于语料统计的 &lt;strong&gt;压缩与建模方式&lt;/strong&gt;：&lt;strong&gt;把经常一起出现的字符序列，打包成一个更高层级的单位&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;换句话说：编码关心的是“这个字符用哪个数字表示？”Token 关心的是：“哪些字符经常一起出现，值得被当成一个整体？”&lt;/p&gt;
+&lt;h3&gt;5. 一个直观对比：同一句话在不同层级下的表示&lt;/h3&gt;
+&lt;p&gt;比如“人工智能”这几个字在编码和 Token 的不同表示：&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;层级&lt;/th&gt;
+&lt;th&gt;表示方式&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;ASCII / Unicode&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;人&lt;/code&gt; &lt;code&gt;工&lt;/code&gt; &lt;code&gt;智&lt;/code&gt; &lt;code&gt;能&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Token&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;人工&lt;/code&gt; &lt;code&gt;智能&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;可以看到，层级越低 → 越接近机器，序列越长；层级越高 → 越接近人类语义，结构越清晰。&lt;/p&gt;
+&lt;h3&gt;6. 为什么 LLM 的基本单位是 Token&lt;/h3&gt;
+&lt;p&gt;当前主流 LLM 的核心架构是 Transformer，而 Transformer 在底层本质上只支持 &lt;strong&gt;加法、乘法和矩阵运算&lt;/strong&gt;。这意味着：&lt;strong&gt;任何进入模型的东西，必须先被表示为数字&lt;/strong&gt;，模型无法直接理解或计算人类语言中的字符串、字符或词语。&lt;/p&gt;
+&lt;p&gt;因此，文本在进入模型之前，必须先被切分为 &lt;strong&gt;Token&lt;/strong&gt;，再映射为对应的 &lt;strong&gt;Token ID&lt;/strong&gt;，并进一步转换为向量表示（Embedding），才能参与注意力计算、矩阵运算以及梯度反向传播。在这一计算范式下，Token 不仅是一种文本表示方式，而是 Transformer &lt;strong&gt;唯一能够感知和操作的语言单位&lt;/strong&gt;。模型所展现出的理解、推理与生成能力，全部涌现自 Token 级别的数值计算之上。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;二、Embedding 是什么，它解决了什么问题&lt;/h2&gt;
+&lt;h3&gt;1. Embedding 是什么&lt;/h3&gt;
+&lt;p&gt;在 LLM 中，Token 本身只是一个 &lt;strong&gt;离散 ID（整数）&lt;/strong&gt;，例如 &lt;code&gt;12345&lt;/code&gt;。这个数字对模型没有任何语义含义，ID 之间的大小、距离也毫无意义。Embedding 的作用，就是把这些离散、无序的 Token ID 映射到一个 &lt;strong&gt;连续的高维向量空间&lt;/strong&gt; 中，使模型能够用数学方式刻画它们之间的&lt;strong&gt;相似性、方向性和组合关系&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;在这个向量空间里，语义相近的 Token 会拥有相近的向量表示，不同语义则体现为不同的方向或距离，从而让注意力机制和矩阵运算“看见”语言结构与语义关系。简单来说，它是将离散的数字 ID 转化为一个&lt;strong&gt;高维连续向量&lt;/strong&gt;（由数百或数千个实数组成的数组）的过程。&lt;/p&gt;
+&lt;p&gt;以“人工智能”为例，过程如下：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;原始文本&lt;/strong&gt;：“人工智能”&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Token 化&lt;/strong&gt;：切分为 &lt;code&gt;[人工, 智能]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Token ID&lt;/strong&gt;：转换为离散数字 &lt;code&gt;[3421, 5678]&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Embedding 层&lt;/strong&gt;：
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;3421&lt;/code&gt; → &lt;code&gt;[0.12, -0.45, 0.88, ...]&lt;/code&gt; (1536 个数字)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;5678&lt;/code&gt; → &lt;code&gt;[0.34, 0.11, -0.92, ...]&lt;/code&gt; (1536 个数字)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3&gt;2. 它解决了什么核心问题？&lt;/h3&gt;
+&lt;p&gt;在 Embedding 出现之前，计算机通过 &lt;strong&gt;One-hot Encoding（独热编码）&lt;/strong&gt; 来处理文字。这种传统方式存在两个致命缺陷，而 Embedding 完美解决了它们：&lt;/p&gt;
+&lt;h4&gt;A. 解决“语义孤岛”问题（语义关联性）&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;旧问题&lt;/strong&gt;：在独热编码中，任何两个词的向量乘积都为 0。计算机认为“猫”和“狗”的距离，与“猫”和“手机”的距离是一样远的。它无法理解词语之间的含义联系。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Embedding 方案&lt;/strong&gt;：它将词语映射到一个&lt;strong&gt;语义空间&lt;/strong&gt;。在这个空间里，意思相近的词（如“猫”和“小猫”）在几何距离上会靠得很近，而无关的词则很远。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;B. 解决“维度灾难”问题（存储效率）&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;旧问题&lt;/strong&gt;：如果词表有 10 万个词，每个词都需要一个 10 万维的向量，且里面全是 0，极度浪费空间。&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Embedding 方案&lt;/strong&gt;：它通过“降维打击”，用一个固定长度（如 GPT-3 的 12288 维）的&lt;strong&gt;稠密向量&lt;/strong&gt;来表达。这个向量不仅省空间，还能承载极其丰富的语义细节。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;3. Embedding 的特性：语义运算&lt;/h3&gt;
+&lt;p&gt;Embedding 最神奇的地方在于，它让语言具备了&lt;strong&gt;数学运算&lt;/strong&gt;的可能性。在一个训练良好的 Embedding 空间中，你可以发现类似“类比”的逻辑关系。这说明模型已经“理解”了：&lt;strong&gt;女王之于女性，等同于国王之于男性。&lt;/strong&gt; 这种性别、时态、甚至是逻辑上的关系，都被编码进了这些数字里。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(注：此处 Notebook 中包含一段 3Blue1Brown 的视频展示代码)&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;实战: 生成 Embedding&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;from sentence_transformers import SentenceTransformer
+import pandas as pd
+
+# 选择模型
+model = SentenceTransformer(&quot;all-MiniLM-L6-v2&quot;)
+
+# 生成embedding
+model.encode(&apos;dog&apos;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;输出结果：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;array([-5.31470478e-02,  1.41944205e-02,  7.14570703e-03,  6.86086714e-02,
+       -7.84803182e-02,  1.01674581e-02,  1.02283150e-01, -1.20648630e-02,
+        ...
+        1.11444503e-01,  2.98568588e-02,  2.39054970e-02,  1.10093102e-01],
+      dtype=float32)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h2&gt;三、相似性在向量空间中如何体现&lt;/h2&gt;
+&lt;p&gt;LLM 里的“相似”是指&lt;strong&gt;向量方向相近&lt;/strong&gt;。常用指标是 &lt;strong&gt;Cosine Similarity（余弦相似度）&lt;/strong&gt;：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;cos(θ) → 1&lt;/code&gt;：非常相似&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cos(θ) → 0&lt;/code&gt;：无关&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;cos(θ) → -1&lt;/code&gt;：相反&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;em&gt;(注：此处 Notebook 中包含一段关于词向量相似度的视频展示代码)&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;实战: 计算相似度&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;import numpy as np
+
+def cosine_similarity(a, b):
+    a = np.array(a)
+    b = np.array(b)
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+    
+pairs = [
+    (&quot;北京&quot;, &quot;上海&quot;),
+    (&quot;北京&quot;, &quot;东京&quot;),
+    (&quot;北京&quot;, &quot;苹果&quot;),
+    (&quot;Python&quot;, &quot;Java&quot;),
+    (&quot;Python&quot;, &quot;香蕉&quot;)
+]
+
+for a, b in pairs:
+    sim = cosine_similarity(model.encode(a), model.encode(b))
+    print(f&quot;{a} vs {b}: {sim:.3f}&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;输出结果：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;北京 vs 上海: 0.378
+北京 vs 东京: 0.836
+北京 vs 苹果: 0.173
+Python vs Java: 0.450
+Python vs 香蕉: 0.072
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h2&gt;四、类比在向量空间中如何体现&lt;/h2&gt;
+&lt;p&gt;Embedding 不仅能表示“相似”，还能隐式表达&lt;strong&gt;关系本身&lt;/strong&gt;。在高维向量空间中，&lt;strong&gt;两个词向量的差值，并不是随机噪声，而往往对应一种稳定的语义方向&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;经典例子是：&lt;code&gt;国王 - 男人 + 女人 ≈ 女王&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这并不是模型“会算术”，而是因为 &lt;code&gt;国王 - 男人&lt;/code&gt; 抽取出了“&lt;strong&gt;王权但不含性别&lt;/strong&gt;”的语义方向，再加上 &lt;code&gt;女人&lt;/code&gt;，就把性别维度切换为女性，得到的向量自然靠近 &lt;code&gt;女王&lt;/code&gt;。因此可以说明，关系本身可以被表示为向量方向，某些语义关系在不同词之间是&lt;strong&gt;可迁移、可复用的&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;(注：此处 Notebook 中包含一段关于词向量类比的视频展示代码)&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;实战: 类比&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;import numpy as np
+
+# 假设这是从预训练模型中提取的 4 维 Embedding 向量（实际模型通常是 768 或 1536 维）
+# 每一维可能隐含代表：[权力, 性别(男为正,女为负), 生物性, ... ]
+embeddings = {
+    &quot;king&quot;:   np.array([0.9,  0.8,  1.0, 0.1]),
+    &quot;man&quot;:    np.array([0.1,  0.9,  1.0, 0.0]),
+    &quot;woman&quot;:  np.array([0.1, -0.9,  1.0, 0.0]),
+    &quot;queen&quot;:  np.array([0.9, -0.8,  1.0, 0.1]),
+    &quot;apple&quot;:  np.array([0.0,  0.0,  0.0, 0.9])  # 干扰项
+}
+
+def find_closest(target_vec, word_dict):
+    best_word = None
+    max_sim = -1
+    for word, vec in word_dict.items():
+        sim = np.dot(target_vec, vec) / (np.linalg.norm(target_vec) * np.linalg.norm(vec))
+        if sim &amp;gt; max_sim:
+            max_sim = sim
+            best_word = word
+    return best_word, max_sim
+
+# 1. 执行向量运算：国王 - 男人 + 女人
+result_vec = embeddings[&quot;king&quot;] - embeddings[&quot;man&quot;] + embeddings[&quot;woman&quot;]
+
+# 2. 在空间中寻找离结果最近的词
+closest_word, similarity = find_closest(result_vec, embeddings)
+
+print(f&quot;运算结果向量指向的词是: {closest_word}&quot;)
+print(f&quot;相似度得分: {similarity:.4f}&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;输出结果：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;运算结果向量指向的词是: queen
+相似度得分: 0.9947
+&lt;/code&gt;&lt;/pre&gt;
+&lt;hr /&gt;
+&lt;h2&gt;五、联想是如何发生的&lt;/h2&gt;
+&lt;p&gt;当你向 LLM 输入一个词或一句话时，模型并不会像人类一样“联想到相关事物”，而是输入会把模型的注意力和概率分布推向某个高密度的语义区域。&lt;/p&gt;
+&lt;p&gt;例如，当你输入 &lt;code&gt;医院&lt;/code&gt;，在向量空间中，与“医院”语义最接近、共现频率最高的 Token 会被优先激活，因此模型更容易继续生成：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;医生&lt;/li&gt;
+&lt;li&gt;病人&lt;/li&gt;
+&lt;li&gt;手术&lt;/li&gt;
+&lt;li&gt;治疗&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;这看起来像是“联想”，但本质上并不是主动思考，而是在一个已经被大量语料反复强化的高密度区域中继续采样下一个 Token。换句话说，模型并不是在“想到医生”，而是在统计意义上，&lt;strong&gt;“医生”是此刻概率最高的延续结果&lt;/strong&gt;。&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;实战: 联想&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;import numpy as np
+
+# 1. 定义词表与简化的 Embedding 向量
+# 每一维可能代表 [生命健康, 科技, 生活琐事]
+vocab = {
+    &quot;医院&quot;: np.array([0.9, 0.1, 0.2]),
+    &quot;医生&quot;: np.array([0.85, 0.2, 0.3]),
+    &quot;病人&quot;: np.array([0.8, 0.0, 0.4]),
+    &quot;手术&quot;: np.array([0.95, 0.3, 0.1]),
+    &quot;代码&quot;: np.array([0.1, 0.9, 0.1]),
+    &quot;咖啡&quot;: np.array([0.2, 0.1, 0.8])
+}
+
+def simulate_association(input_word):
+    if input_word not in vocab:
+        return &quot;词不在词表中&quot;
+    
+    input_vec = vocab[input_word]
+    probabilities = {}
+
+    # 2. 计算输入词与词表中所有词的相似度（激活强度）
+    for word, vec in vocab.items():
+        if word == input_word: continue
+        similarity = np.dot(input_vec, vec) / (np.linalg.norm(input_vec) * np.linalg.norm(vec))
+        # 将相似度转化为激活概率（简化版的 Softmax）
+        probabilities[word] = np.exp(similarity * 10) 
+
+    # 3. 归一化概率
+    total_prob = sum(probabilities.values())
+    for word in probabilities:
+        probabilities[word] /= total_prob
+
+    sorted_probs = sorted(probabilities.items(), key=lambda x: x[1], reverse=True)
+    return sorted_probs
+
+# 模拟输入“医院”
+associations = simulate_association(&quot;医院&quot;)
+
+print(&quot;--- 输入词：医院 ---&quot;)
+print(&quot;模型后续 Token 的激活概率分布：&quot;)
+for word, prob in associations:
+    print(f&quot;Token: [{word}] -&amp;gt; 出现概率: {prob:.4f}&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;输出结果：&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;--- 输入词：医院 ---
+模型后续 Token 的激活概率分布：
+Token: [医生] -&amp;gt; 出现概率: 0.3717
+Token: [手术] -&amp;gt; 出现概率: 0.3290
+Token: [病人] -&amp;gt; 出现概率: 0.2972
+Token: [咖啡] -&amp;gt; 出现概率: 0.0018
+Token: [代码] -&amp;gt; 出现概率: 0.0002
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/flingjie/Agent-100-Days/blob/main/week1/02.Token%E3%80%81Embedding%E4%B8%8E%E5%90%91%E9%87%8F%E7%A9%BA%E9%97%B4.ipynb&quot;&gt;原文链接 Agent-100-Days Token、Embedding 与向量空间&lt;/a&gt;&lt;/p&gt;
 </content:encoded></item><item><title>[转] MCP 到底是个什么鬼？</title><link>https://blog.loli.wang/blog/2025-12-26-mcp/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2025-12-26-mcp/doc/</guid><description>MCP 到底是个什么鬼？</description><pubDate>Fri, 26 Dec 2025 15:27:24 GMT</pubDate><content:encoded>&lt;p&gt;盘点今年最火的 AI 概念，MCP 必须算是一个，这家伙来势汹汹，各路营销号更是加班加点推波助澜，可是，静下心来想一想，我们真的知道 MCP 是个什么东西么？很多人可能并不是很清楚，只有一个模糊的印象：这玩意好像是让 LLM/Agent 拥有调用外部工具能力的一种...东西吧...&lt;/p&gt;
 &lt;p&gt;不信你去问问周围的人，1000 个人的心中可能至少有 800 个 MCP 的版本... 而且，多数可能都是似是而非的、模糊的，甚至是错误的。&lt;/p&gt;
 &lt;p&gt;之所以这么混乱，是因为乌七八糟的营销号看多了，哦不，是因为没理顺 MCP 和这几个东西之间的关系：LLM 、Agent （含各种 agent 框架）、Function calling&lt;/p&gt;
