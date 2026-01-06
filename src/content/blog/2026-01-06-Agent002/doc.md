@@ -1,7 +1,7 @@
 ---
 title: "[学习] Token、Embedding 与向量空间"
 description: "[学习] Token、Embedding 与向量空间"
-pubDate: "2026-01-06 23:27:24"
+pubDate: "2026-01-06 23:27:25"
 heroImage: "http://img.blog.loli.wang/2026-01-06-Agent002/01.png"
 tags:
   - 大模型学习
