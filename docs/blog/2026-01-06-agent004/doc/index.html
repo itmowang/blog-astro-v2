@@ -1,0 +1,179 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> --><!-- Canonical URL --><link rel="canonical" href="https://blog.loli.wang/blog/2026-01-06-agent004/doc/"><!-- Primary Meta Tags --><title>[学习] 从训练到推理 - 魔王の博客 </title><meta name="title" content="[学习] 从训练到推理 - 魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://blog.loli.wang/blog/2026-01-06-agent004/doc/"><meta property="og:title" content="[学习] 从训练到推理 - 魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://blog.loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.loli.wang/blog/2026-01-06-agent004/doc/"><meta property="twitter:title" content="[学习] 从训练到推理 - 魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://blog.loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/hoisted.DH1pNdf-.css">
+<link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.CGSjG33K.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://blog.loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2026 YOUR NAME HERE. | <a href="https://blog.loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail" id="lightgallery"> <h2 class="post-title">[学习] 从训练到推理</h2> <div class="post-date"> <time datetime="2026-01-06T15:27:29.000Z">2026-01-06 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://blog.loli.wang/blog/2026-01-06-agent004/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2026-01-06-Agent004/01.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://blog.loli.wang/blog/2026-01-06-agent004/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2026-01-06-Agent004/01.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2026-01-06-Agent004/01.png');"></div> <div class="post-content">  <h1 id="从训练到推理">从训练到推理</h1>
+<h2 id="一预训练阶段模型到底在做什么">一、预训练阶段，模型到底在做什么？</h2>
+<p>在整个大模型生命周期中，<strong>预训练（Pre-training）是最基础、最核心、也是最容易被误解的阶段</strong>。</p>
+<p>在这个阶段，大语言模型并不是在学习事实、规则、世界观或推理方法，而是在完成一个<strong>极其单一、却被重复了数万亿次的任务</strong>，即：</p>
+<blockquote>
+<p><strong>给定一段上下文，预测下一个 Token 的概率分布。</strong></p>
+</blockquote>
+<h3 id="1-预训练任务的唯一目标">1. 预训练任务的唯一目标</h3>
+<p>所有输入文本——无论是小说、法律条文、论文、代码、网页、聊天记录——在进入模型之前，都会被统一处理为 <strong>Token 序列</strong>：</p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Token₁, Token₂, Token₃, … → 预测 Token₄</span></span>
+<span class="line"><span></span></span></code></pre>
+<p>模型不会被告知：</p>
+<ul>
+<li>这是不是事实</li>
+<li>这是不是规则</li>
+<li>这是不是一个“正确答案”</li>
+<li>这是不是在“推理”</li>
+</ul>
+<p>它只是在反复学习一件事：在这种上下文形态下，最可能接下来写什么。</p>
+<h3 id="2-什么叫预训练">2. 什么叫「预训练」？</h3>
+<p><strong>预训练的定义可以精确表述为：</strong></p>
+<blockquote>
+<p>在不区分任务、不区分领域、不引入人类偏好约束的情况下，对大规模通用语料进行无监督或弱监督的下一 Token 预测训练。</p>
+</blockquote>
+<p>几个关键词非常重要：</p>
+<ul>
+<li><strong>不区分任务</strong>：问答、对话、代码、说明书在模型眼里没有本质区别。</li>
+<li><strong>不区分领域</strong>：数学、法律、文学只是不同的统计分布。</li>
+<li><strong>弱监督</strong>：监督信号只来自“真实下一个 Token 是什么”。</li>
+</ul>
+<h3 id="3-模型在预训练阶段真正学到的是什么">3. 模型在预训练阶段“真正学到”的是什么？</h3>
+<p>当这种预测在：海量文本数据、巨大参数规模、深层 Transformer 结构、多轮梯度下降中被不断重复时，模型<strong>并没有显式学会规则</strong>，但却隐式形成了大量结构性能力。</p>
+<p>它逐渐学会了：</p>
+<ul>
+<li><strong>语言的统计结构</strong>：包括词序、语法、常见搭配。</li>
+<li><strong>文本模式的展开形态</strong>：例如“提问 → 分析 → 回答”或“定义 → 解释 → 示例”。</li>
+<li><strong>问题到解法的高频路径</strong>：如数学题的解题模板、代码的常见写法、论文与报告的组织结构。</li>
+</ul>
+<p>这些能力并不是被“教会”的，而是<strong>在概率空间中自然涌现（emerge）出来的</strong>。</p>
+<h3 id="4-预训练之后">4. 预训练之后</h3>
+<p>为了让预训练后的模型变成更加好用，通常还会有以下两个阶段：</p>
+<ol>
+<li><strong>SFT (Supervised Fine-Tuning) 有监督微调</strong>：给模型看几万组高质量的 <code>[指令] -> [回答]</code> 范本。教它学会：当人类提问时，你应该提供答案，而不是继续接龙。</li>
+<li><strong>RLHF (Reinforcement Learning from Human Feedback) 人类反馈强化学习</strong>：让人类给模型的多个回答打分，告诉它哪些回答更安全、更准确、更有礼貌。这是给模型注入“价值观”的过程。</li>
+</ol>
+<hr>
+<h2 id="二训练过程是怎样的">二、训练过程是怎样的</h2>
+<p>在上面讲了模型在预训练阶段不断“预测下一个 Token”，并通过这种反复的训练逐渐形成统计规律和模式能力。那么，这个“不断预测、不断优化”的过程，背后到底是怎么发生的呢？这里就涉及到 <strong>Loss、梯度和参数更新</strong> 等概念。</p>
+<h4 id="1-loss-模型犯错的程度"><strong>1. Loss ——模型“犯错的程度”</strong></h4>
+<p>每次模型预测下一个 Token，它都可能猜对，也可能猜错。Loss 就是用来量化这个猜测有多糟糕的指标：</p>
+<ul>
+<li>Loss 高 → 预测离真实 Token 很远，模型“犯大错”</li>
+<li>Loss 低 → 预测接近真实 Token，模型“比较聪明”</li>
+</ul>
+<p>直觉上，Loss 就像模型的<strong>自我反馈表</strong>：它告诉模型“这一步做得好不好”。</p>
+<h4 id="2-梯度-模型改进的方向"><strong>2. 梯度 ——模型“改进的方向”</strong></h4>
+<p>Loss 告诉模型哪里做错了，但不会直接告诉它该怎么改。这时，梯度就起作用了：</p>
+<ul>
+<li>梯度告诉模型：<strong>如果把参数往这个方向微调，Loss 会下降得更快</strong>。</li>
+<li>梯度的大小表示“改进有多急迫”。</li>
+<li>梯度的方向表示“改哪条路能最快变聪明”。</li>
+</ul>
+<p>梯度就像模型在海量信息中寻找“下一步微调的指南针”。</p>
+<h4 id="3-参数更新-模型试错修正的动作"><strong>3. 参数更新 ——模型“试错修正”的动作</strong></h4>
+<p>有了梯度信息，模型就可以<strong>调整自己的参数</strong>：</p>
+<ul>
+<li>小幅度更新 → 细微改善</li>
+<li>大幅度更新 → 风险大，但可能学得快</li>
+</ul>
+<p>所以，参数更新就像模型在“沿着 Loss 形成的山谷不断下坡”：Loss 是高度，梯度是坡度，参数更新就是每一步迈下去，让模型慢慢靠近“预测最准确”的谷底。</p>
+<h4 id="4-训练的整体过程"><strong>4. 训练的整体过程</strong></h4>
+<p>把三者串起来，你可以把预训练阶段想象成这样一个循环：</p>
+<ol>
+<li><strong>预测</strong> → 模型根据当前参数猜下一个 Token。</li>
+<li><strong>计算 Loss</strong> → 模型知道自己猜得好不好。</li>
+<li><strong>计算梯度</strong> → 模型知道沿哪个方向调整参数能改进。</li>
+<li><strong>参数更新</strong> → 模型沿梯度方向微调自己。</li>
+<li><strong>重复无数次</strong> → 模型逐渐掌握语言模式、问题到解法的路径。</li>
+</ol>
+<p>这个循环发生在<strong>海量文本 + 巨大参数 + 深层 Transformer</strong> 中，被重复数十亿次，最终模型形成了 emergent 能力。</p>
+<hr>
+<h3 id="实战训练过程模拟">实战:训练过程模拟</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="python"><code><span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> torch</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> torch.nn </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> nn</span></span>
+<span class="line"><span style="color:#F97583">import</span><span style="color:#E1E4E8"> torch.optim </span><span style="color:#F97583">as</span><span style="color:#E1E4E8"> optim</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 1. 数据准备</span></span>
+<span class="line"><span style="color:#E1E4E8">data </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> torch.arange(</span><span style="color:#79B8FF">0</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">10</span><span style="color:#E1E4E8">).float().unsqueeze(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">)  </span><span style="color:#6A737D"># shape (10,1)</span></span>
+<span class="line"><span style="color:#6A737D"># 假设目标就是 data + 1</span></span>
+<span class="line"><span style="color:#E1E4E8">target </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> data </span><span style="color:#F97583">+</span><span style="color:#79B8FF"> 1</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 2. 模型定义</span></span>
+<span class="line"><span style="color:#E1E4E8">model </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> nn.Linear(</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">, </span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 3. Loss 函数和优化器</span></span>
+<span class="line"><span style="color:#E1E4E8">criterion </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> nn.MSELoss()</span></span>
+<span class="line"><span style="color:#E1E4E8">optimizer </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> optim.SGD(model.parameters(), </span><span style="color:#FFAB70">lr</span><span style="color:#F97583">=</span><span style="color:#79B8FF">0.01</span><span style="color:#E1E4E8">) </span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 4. 训练循环</span></span>
+<span class="line"><span style="color:#E1E4E8">epochs </span><span style="color:#F97583">=</span><span style="color:#79B8FF"> 200</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"><span style="color:#F97583">for</span><span style="color:#E1E4E8"> epoch </span><span style="color:#F97583">in</span><span style="color:#79B8FF"> range</span><span style="color:#E1E4E8">(epochs):</span></span>
+<span class="line"><span style="color:#E1E4E8">    optimizer.zero_grad() </span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8">    output </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> model(data)</span></span>
+<span class="line"><span style="color:#E1E4E8">    loss </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> criterion(output, target)</span></span>
+<span class="line"><span style="color:#E1E4E8">    loss.backward()</span></span>
+<span class="line"><span style="color:#E1E4E8">    optimizer.step()</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#F97583">    if</span><span style="color:#E1E4E8"> (epoch</span><span style="color:#F97583">+</span><span style="color:#79B8FF">1</span><span style="color:#E1E4E8">) </span><span style="color:#F97583">%</span><span style="color:#79B8FF"> 40</span><span style="color:#F97583"> ==</span><span style="color:#79B8FF"> 0</span><span style="color:#E1E4E8">:</span></span>
+<span class="line"><span style="color:#79B8FF">        print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">"Epoch </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">epoch</span><span style="color:#F97583">+</span><span style="color:#79B8FF">1</span><span style="color:#F97583">:03d</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">: Loss = </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">loss.item()</span><span style="color:#F97583">:.4f</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF">"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 5. 测试预测</span></span>
+<span class="line"><span style="color:#E1E4E8">test_data </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> torch.tensor([[</span><span style="color:#79B8FF">5.0</span><span style="color:#E1E4E8">]]) </span></span>
+<span class="line"><span style="color:#E1E4E8">pred </span><span style="color:#F97583">=</span><span style="color:#E1E4E8"> model(test_data).item()</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#9ECBFF">"-"</span><span style="color:#F97583"> *</span><span style="color:#79B8FF"> 30</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"><span style="color:#79B8FF">print</span><span style="color:#E1E4E8">(</span><span style="color:#F97583">f</span><span style="color:#9ECBFF">"预测结果: 输入 5.0 → 预测 </span><span style="color:#79B8FF">{</span><span style="color:#E1E4E8">pred</span><span style="color:#F97583">:.2f</span><span style="color:#79B8FF">}</span><span style="color:#9ECBFF"> (目标值: 6.0)"</span><span style="color:#E1E4E8">)</span></span>
+<span class="line"></span></code></pre>
+<p><strong>输出结果：</strong></p>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="text"><code><span class="line"><span>Epoch 040: Loss = 0.1391</span></span>
+<span class="line"><span>Epoch 080: Loss = 0.0884</span></span>
+<span class="line"><span>Epoch 120: Loss = 0.0562</span></span>
+<span class="line"><span>Epoch 160: Loss = 0.0357</span></span>
+<span class="line"><span>Epoch 200: Loss = 0.0227</span></span>
+<span class="line"><span>------------------------------</span></span>
+<span class="line"><span>预测结果: 输入 5.0 → 预测 5.94 (目标值: 6.0)</span></span>
+<span class="line"><span></span></span></code></pre>
+<p><strong>过程说明：</strong></p>
+<ol>
+<li><code>loss = criterion(output, target)</code> 告诉模型预测有多差，也即模型犯错的程度。</li>
+<li><code>loss.backward()</code> 计算 Loss 对模型参数的偏导数，告诉模型“沿哪个方向调整参数才能让 Loss 降低”。</li>
+<li><code>optimizer.step()</code> 根据梯度调整权重，就像模型沿 Loss 山谷下坡，离最佳预测更近。</li>
+<li><code>for epoch in range(epochs)</code> 模拟模型在海量文本上不断重复预测、计算 Loss、更新参数，最终学会了规律。</li>
+</ol>
+<hr>
+<h2 id="三训练阶段-vs-推理阶段">三、训练阶段 vs 推理阶段</h2>
+<p>在训练阶段，模型通过<strong>不断试错、自我修正</strong>来学习规律。每次预测都会计算 Loss（模型“犯错的程度”），梯度指明调整方向，参数更新沿梯度方向微调权重。这个循环反复进行，模型能力逐渐形成。</p>
+<p>而推理阶段，模型已经完成训练，参数固定，不再更新。输入流向输出，模型使用已经学到的能力来完成任务或生成文本，不再进行自我修正。</p>
+<p><strong>对比如下：</strong></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th align="left">对比维度</th><th align="left">训练阶段（Training）</th><th align="left">推理阶段（Inference）</th></tr></thead><tbody><tr><td align="left"><strong>定义</strong></td><td align="left">模型通过 Loss → 梯度 → 参数更新循环学习规律和能力</td><td align="left">模型使用训练中学到的能力进行任务或生成文本</td></tr><tr><td align="left"><strong>参数状态</strong></td><td align="left">可更新，梯度指导参数调整</td><td align="left">固定，不再更新，使用已有参数</td></tr><tr><td align="left"><strong>数据流向</strong></td><td align="left">双向循环：预测 → Loss → 梯度 → 参数更新 → 再预测</td><td align="left">单向流：输入 → 模型 → 输出，Loss 不回传</td></tr><tr><td align="left"><strong>速度与资源</strong></td><td align="left">慢，资源消耗大，需要显存存储梯度、优化器状态</td><td align="left">快，资源消耗低，只进行前向计算</td></tr><tr><td align="left"><strong>核心目标</strong></td><td align="left">提升模型能力，学会语言规律、问题解决模式</td><td align="left">使用模型能力，完成具体任务或生成文本</td></tr></tbody></table>
+<p>我们平时使用的 ChatGPT、Gemini、Qwen、DeepSeek 等模型都是处于推理阶段。</p>
+<p><a href="https://github.com/flingjie/Agent-100-Days/blob/main/week1/04.%E4%BB%8E%E8%AE%AD%E7%BB%83%E5%88%B0%E6%8E%A8%E7%90%86.ipynb">原文链接 Agent-100-Days 从训练到推理</a></p>  </div> <div class="tag-container"> <a href="/tags/大模型学习" class="tag" title="大模型学习"> 大模型学习 </a><a href="/tags/大模型" class="tag" title="大模型"> 大模型 </a> </div> </div>   </div> </div> </div>  </body></html> 
