@@ -1,5 +1,5 @@
 ---
-title: "2025 年度总结"
+title: "2025 年度总结（AI易读版）"
 description: "一份不太体面，但真实的年度总结"
 pubDate: "2025-12-30 23:27:24"
 heroImage: "http://imglife.blog.loli.wang/2025-12-30-ndzj/01.jpg"
