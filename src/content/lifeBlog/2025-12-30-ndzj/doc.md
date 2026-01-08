@@ -174,3 +174,6 @@ tags:
 希望 2026 年，  
 能在更稳定的状态下，把路走得更远一点。
 
+
+
+以上是AI美化后的内容，原文链接：[https://blog.loli.wang/lifes/2025-12-30-ndzj/doccopy/index.html](https://blog.loli.wang/lifes/2025-12-30-ndzj/doccopy/index.html)

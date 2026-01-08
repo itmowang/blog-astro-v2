@@ -179,4 +179,5 @@ tags:
 
 
 
-以上是AI美化后的内容，原文链接：[https://blog.loli.wang/2025-12-30-ndzj/doccopy.html](https://blog.loli.wang/2025-12-30-ndzj/doccopy.html)
+
+以上是AI美化后的内容，原文链接：[https://blog.loli.wang/lifes/2025-12-30-ndzj/doccopy/index.html](https://blog.loli.wang/lifes/2025-12-30-ndzj/doccopy/index.html)
