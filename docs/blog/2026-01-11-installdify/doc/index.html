@@ -1,0 +1,52 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="description" content="Astro description"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta name="generator" content="Astro v4.7.1"><!-- <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" /> --><!-- Canonical URL --><link rel="canonical" href="https://blog.loli.wang/blog/2026-01-11-installdify/doc/"><!-- Primary Meta Tags --><title>[记录] Ubuntu 安装 dify - 魔王の博客 </title><meta name="title" content="[记录] Ubuntu 安装 dify - 魔王の博客"><meta name="description" content="高兴的使用astro构建"><!-- Open Graph / Facebook --><meta property="og:type" content="website"><meta property="og:url" content="https://blog.loli.wang/blog/2026-01-11-installdify/doc/"><meta property="og:title" content="[记录] Ubuntu 安装 dify - 魔王の博客"><meta property="og:description" content="高兴的使用astro构建"><meta property="og:image" content="https://blog.loli.wang/placeholder-social.jpg"><!-- Twitter --><meta property="twitter:card" content="summary_large_image"><meta property="twitter:url" content="https://blog.loli.wang/blog/2026-01-11-installdify/doc/"><meta property="twitter:title" content="[记录] Ubuntu 安装 dify - 魔王の博客"><meta property="twitter:description" content="高兴的使用astro构建"><meta property="twitter:image" content="https://blog.loli.wang/placeholder-social.jpg"><link rel="stylesheet" href="/_astro/hoisted.DH1pNdf-.css">
+<link rel="stylesheet" href="/_astro/about.CrVYBgZN.css"><script type="module" src="/_astro/hoisted.CGSjG33K.js"></script></head> <body>  <div id="app" class="main"> <div class="sidebar"> <div class="top-container" data-aos="fade-right"> <div class="top-header-container"> <a href="https://blog.loli.wang/" title="Mowang - Your bio" class="site-title-container"><img src="https://avatars.githubusercontent.com/u/137391282?v=4" alt="Mowang" class="site-logo"> <h1 class="site-title">魔王の博客</h1></a> <div class="menu-btn"> <div class="line"></div> </div> </div> <div> <a href="/" title="Blog" class="site-nav"> Blog </a><a href="/life" title="Life" class="site-nav"> Life </a><a href="/archive" title="Archive" class="site-nav"> Archive </a><a href="/link" title="Link" class="site-nav"> Link </a><a href="/about" title="About" class="site-nav"> About </a><a href="https://github.com/itmowang" title="Github" class="site-nav"> Github </a> </div> </div> <div class="bottom-container" data-aos="flip-up" data-aos-offset="0"> <div class="social-container"></div> <div class="site-description">高兴的使用astro构建</div> <div class="site-footer"> © 2026 YOUR NAME HERE. | <a href="https://blog.loli.wang/rss.xml" title="RSS" target="_blank" class="rss">RSS</a> </div> </div> </div>  <div class="main-container"> <div class="content-container" data-aos="fade-up">  <div class="post-detail" id="lightgallery"> <h2 class="post-title">[记录] Ubuntu 安装 dify</h2> <div class="post-date"> <time datetime="2026-01-11T15:27:29.000Z">2026-01-11 23:27</time> </div> <div class="post-share"> <div class="postShare"> <div> <div class="postShare-List">
+分享本文 :
+<a href="http://service.weibo.com/share/share.php?url=https://blog.loli.wang/blog/2026-01-11-installdify/doc/&title=undefined - 魔王の博客&pic=http://img.blog.loli.wang/2026-01-11-installdify/01.png" target="_blank"> <i class="iconfont icon-xinlang" style="color:#ff763b"></i></a> <div class="wechat-container"> <a href="#"> <i id="wechatIcon" class="iconfont icon-weichat" style="color:#33b045"></i></a> <div class="wechat-dropdown" id="wechatDropdown"> <p>分享到微信</p> <div id="qrcode"></div> <p>扫描二维码</p> <p>可在微信查看或分享至朋友圈。</p> </div> </div> <a href="https://connect.qq.com/widget/shareqq/index.html?url=https://blog.loli.wang/blog/2026-01-11-installdify/doc/&title=undefined - 魔王の博客&source=undefined - 魔王の博客&desc=高兴的使用astro构建&pics=http://img.blog.loli.wang/2026-01-11-installdify/01.png" target="_blank"> <i class="iconfont icon-QQ" style="color:#56b6e7"></i></a> <a href="" target="_blank"> <i class="iconfont icon-facebook" style="color:#44619D"></i></a> <a href="" target="_blank"> <i class="iconfont icon-fenxiang1" style="color:#33b045"></i></a> </div> </div> </div>  </div> <div class="feature-container" style="background-image: url('http://img.blog.loli.wang/2026-01-11-installdify/01.png');"></div> <div class="post-content">  <h4 id="安装dify-前需要做的准备">安装Dify 前需要做的准备</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D">  # 安装Git </span></span>
+<span class="line"><span style="color:#B392F0">  sudo</span><span style="color:#9ECBFF"> apt</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> git</span><span style="color:#79B8FF"> -y</span></span>
+<span class="line"><span style="color:#6A737D">  # 检查是否安装成功</span></span>
+<span class="line"><span style="color:#B392F0">  git</span><span style="color:#79B8FF"> --version</span></span>
+<span class="line"><span style="color:#6A737D">  # 安装 Docker</span></span>
+<span class="line"><span style="color:#B392F0">  sudo</span><span style="color:#9ECBFF"> mkdir</span><span style="color:#79B8FF"> -p</span><span style="color:#9ECBFF"> /etc/apt/keyrings</span></span>
+<span class="line"><span style="color:#B392F0">  curl</span><span style="color:#79B8FF"> -fsSL</span><span style="color:#9ECBFF"> https://download.docker.com/linux/ubuntu/gpg</span><span style="color:#F97583"> |</span><span style="color:#79B8FF"> \</span></span>
+<span class="line"><span style="color:#B392F0">  sudo</span><span style="color:#9ECBFF"> gpg</span><span style="color:#79B8FF"> --dearmor</span><span style="color:#79B8FF"> -o</span><span style="color:#9ECBFF"> /etc/apt/keyrings/docker.gpg</span></span>
+<span class="line"><span style="color:#6A737D">  # 安装 Docker Engine</span></span>
+<span class="line"><span style="color:#B392F0">  sudo</span><span style="color:#9ECBFF"> apt</span><span style="color:#9ECBFF"> update</span></span>
+<span class="line"><span style="color:#B392F0">  sudo</span><span style="color:#9ECBFF"> apt</span><span style="color:#9ECBFF"> install</span><span style="color:#9ECBFF"> docker-ce</span><span style="color:#9ECBFF"> docker-ce-cli</span><span style="color:#9ECBFF"> containerd.io</span><span style="color:#9ECBFF"> docker-compose-plugin</span><span style="color:#79B8FF"> -y</span></span>
+<span class="line"><span style="color:#6A737D">  # 检查docker 安装</span></span>
+<span class="line"><span style="color:#B392F0">  docker</span><span style="color:#79B8FF"> --version</span></span>
+<span class="line"><span style="color:#B392F0">  docker</span><span style="color:#9ECBFF"> compose</span><span style="color:#9ECBFF"> version</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#E1E4E8"> </span></span>
+<span class="line"></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<h4 id="安装dify">安装dify</h4>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"> # 拉取 Dify 官方仓库 </span></span>
+<span class="line"><span style="color:#79B8FF">  cd</span><span style="color:#9ECBFF"> /opt</span></span>
+<span class="line"><span style="color:#B392F0">  sudo</span><span style="color:#9ECBFF"> git</span><span style="color:#9ECBFF"> clone</span><span style="color:#9ECBFF"> https://github.com/langgenius/dify.git</span></span>
+<span class="line"><span style="color:#6A737D">  # 复制环境变量并改名</span></span>
+<span class="line"><span style="color:#B392F0">  cp</span><span style="color:#9ECBFF"> .env.example</span><span style="color:#9ECBFF"> .env</span></span>
+<span class="line"><span style="color:#6A737D">  # 拉取镜像并启动</span></span>
+<span class="line"><span style="color:#B392F0">  docker</span><span style="color:#9ECBFF"> compose</span><span style="color:#9ECBFF"> up</span><span style="color:#79B8FF"> -d</span><span style="color:#E1E4E8"> </span></span>
+<span class="line"></span></code></pre>
+<p><a href="http://%E6%9C%8D%E5%8A%A1%E5%99%A8IP">http://服务器IP</a>  直接可访问</p>
+<h3 id="常用维护指令">常用维护指令</h3>
+<pre class="astro-code github-dark" style="background-color:#24292e;color:#e1e4e8; overflow-x: auto;" tabindex="0" data-language="bash"><code><span class="line"><span style="color:#6A737D"># 停止服务</span></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> compose</span><span style="color:#9ECBFF"> down</span></span>
+<span class="line"><span style="color:#6A737D"># 重新启动</span></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> compose</span><span style="color:#9ECBFF"> up</span><span style="color:#79B8FF"> -d</span></span>
+<span class="line"><span style="color:#6A737D"># 更新 Dify</span></span>
+<span class="line"><span style="color:#79B8FF">cd</span><span style="color:#9ECBFF"> /opt/dify</span></span>
+<span class="line"><span style="color:#B392F0">git</span><span style="color:#9ECBFF"> pull</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#79B8FF">cd</span><span style="color:#9ECBFF"> docker</span></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> compose</span><span style="color:#9ECBFF"> pull</span></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> compose</span><span style="color:#9ECBFF"> up</span><span style="color:#79B8FF"> -d</span></span>
+<span class="line"></span>
+<span class="line"><span style="color:#6A737D"># 完全重置</span></span>
+<span class="line"><span style="color:#B392F0">docker</span><span style="color:#9ECBFF"> compose</span><span style="color:#9ECBFF"> down</span><span style="color:#79B8FF"> -v</span></span>
+<span class="line"></span>
+<span class="line"></span></code></pre>
+<p><img src="http://img.blog.loli.wang/2026-01-11-installdify/01.png" alt="1"></p>
+<p><img src="http://img.blog.loli.wang/2026-01-11-installdify/02.png" alt="2"></p>  </div> <div class="tag-container"> <a href="/tags/大模型学习" class="tag" title="大模型学习"> 大模型学习 </a><a href="/tags/大模型" class="tag" title="大模型"> 大模型 </a> </div> </div>   </div> </div> </div>  </body></html> 

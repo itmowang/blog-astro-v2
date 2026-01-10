@@ -1,4 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[学习] 从训练到推理</title><link>https://blog.loli.wang/blog/2026-01-06-agent004/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2026-01-06-agent004/doc/</guid><description>[学习] 从训练到推理</description><pubDate>Tue, 06 Jan 2026 15:27:29 GMT</pubDate><content:encoded>&lt;h1&gt;从训练到推理&lt;/h1&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>魔王の博客</title><description>高兴的使用astro构建</description><link>https://blog.loli.wang/</link><language>en-us</language><item><title>[记录] Ubuntu 安装 dify</title><link>https://blog.loli.wang/blog/2026-01-11-installdify/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2026-01-11-installdify/doc/</guid><description>[记录] Ubuntu 安装 dify</description><pubDate>Sun, 11 Jan 2026 15:27:29 GMT</pubDate><content:encoded>&lt;h4&gt;安装Dify 前需要做的准备&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;  # 安装Git 
+  sudo apt install git -y
+  # 检查是否安装成功
+  git --version
+  # 安装 Docker
+  sudo mkdir -p /etc/apt/keyrings
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  # 安装 Docker Engine
+  sudo apt update
+  sudo apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+  # 检查docker 安装
+  docker --version
+  docker compose version
+
+ 
+
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4&gt;安装dify&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt; # 拉取 Dify 官方仓库 
+  cd /opt
+  sudo git clone https://github.com/langgenius/dify.git
+  # 复制环境变量并改名
+  cp .env.example .env
+  # 拉取镜像并启动
+  docker compose up -d 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;http://服务器IP  直接可访问&lt;/p&gt;
+&lt;h3&gt;常用维护指令&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;# 停止服务
+docker compose down
+# 重新启动
+docker compose up -d
+# 更新 Dify
+cd /opt/dify
+git pull
+
+cd docker
+docker compose pull
+docker compose up -d
+
+# 完全重置
+docker compose down -v
+
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2026-01-11-installdify/01.png&quot; alt=&quot;1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://img.blog.loli.wang/2026-01-11-installdify/02.png&quot; alt=&quot;2&quot; /&gt;&lt;/p&gt;
+</content:encoded></item><item><title>[学习] 从训练到推理</title><link>https://blog.loli.wang/blog/2026-01-06-agent004/doc/</link><guid isPermaLink="true">https://blog.loli.wang/blog/2026-01-06-agent004/doc/</guid><description>[学习] 从训练到推理</description><pubDate>Tue, 06 Jan 2026 15:27:29 GMT</pubDate><content:encoded>&lt;h1&gt;从训练到推理&lt;/h1&gt;
 &lt;h2&gt;一、预训练阶段，模型到底在做什么？&lt;/h2&gt;
 &lt;p&gt;在整个大模型生命周期中，&lt;strong&gt;预训练（Pre-training）是最基础、最核心、也是最容易被误解的阶段&lt;/strong&gt;。&lt;/p&gt;
 &lt;p&gt;在这个阶段，大语言模型并不是在学习事实、规则、世界观或推理方法，而是在完成一个&lt;strong&gt;极其单一、却被重复了数万亿次的任务&lt;/strong&gt;，即：&lt;/p&gt;
